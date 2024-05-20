@@ -11,7 +11,7 @@ object RetrofitClient {
 //    private const val PORT = 8000;
 //    private const val BASE_URL = "http://localhost:$PORT/"
 
-    private const val BASE_URL = "https://mocki.io/v1/"
+    private const val BASE_URL = "https://10.0.0.97:8000/"
 
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
