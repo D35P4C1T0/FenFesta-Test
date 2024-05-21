@@ -1,4 +1,4 @@
-package com.example.logintest.view
+package com.example.logintest.view.components
 
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api

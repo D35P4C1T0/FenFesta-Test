@@ -11,6 +11,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.logintest.data.viewmodel.EventViewModel
+import com.example.logintest.view.components.BottomNavigationBar
+import com.example.logintest.view.components.TopAppBar
 import kotlinx.serialization.Serializable
 
 
@@ -30,6 +32,7 @@ fun MainScreen() {
 
     val navController = rememberNavController()
 
+
     Scaffold(modifier = Modifier.fillMaxSize(),
         topBar = { TopAppBar() },
         bottomBar = {
@@ -37,18 +40,16 @@ fun MainScreen() {
         }) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = ScreenCalendar
+            startDestination = ScreenMap
         ) {
-            composable<ScreenCalendar> {
-                EventList(modifier = Modifier.padding(innerPadding), viewModel = eventsViewModel)
-            }
             composable<ScreenMap> {
-                // MapScreen()
+                MapScreen(modifier = Modifier.padding(innerPadding))
+            }
+            composable<ScreenCalendar> {
+//                EventList(modifier = Modifier.padding(innerPadding), viewModel = eventsViewModel)
             }
         }
     }
-
-
 }
 
 @Serializable

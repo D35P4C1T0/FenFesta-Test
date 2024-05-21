@@ -1,4 +1,4 @@
-package com.example.logintest.view
+package com.example.logintest.view.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CalendarToday
@@ -17,6 +17,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavController
+import com.example.logintest.view.ScreenCalendar
+import com.example.logintest.view.ScreenMap
 
 data class TabItem<T>(
     val title: String,
@@ -48,7 +50,7 @@ fun BottomNavigationBar(navController: NavController) {
     )
 
     var selectedItemIndex by rememberSaveable {
-        mutableIntStateOf(1)
+        mutableIntStateOf(0)
     }
 
     NavigationBar {

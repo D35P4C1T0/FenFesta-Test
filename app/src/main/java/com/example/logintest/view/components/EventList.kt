@@ -1,4 +1,4 @@
-package com.example.logintest.view
+package com.example.logintest.view.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
