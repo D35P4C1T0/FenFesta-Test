@@ -90,11 +90,14 @@ fun MapScreen(modifier: Modifier = Modifier) {
 
         try {
             val location = LocationService().getCurrentLocation(context)
+            println("Location FOUND: $location")
+
 
         } catch (e: LocationService.LocationServiceException) {
             when (e) {
                 is LocationService.LocationServiceException.LocationDisabledException -> {
                     //handle location disabled, show dialog or a snack-bar to enable location
+                    println("Location disabled")
                 }
 
                 is LocationService.LocationServiceException.MissingPermissionException -> {
@@ -108,10 +111,12 @@ fun MapScreen(modifier: Modifier = Modifier) {
 
                 is LocationService.LocationServiceException.NoNetworkEnabledException -> {
                     //handle no network enabled, show dialog or a snack-bar to enable network
+                    println("No network enabled")
                 }
 
                 is LocationService.LocationServiceException.UnknownException -> {
                     //handle unknown exception
+                    println("Unknown exception")
                 }
             }
         }

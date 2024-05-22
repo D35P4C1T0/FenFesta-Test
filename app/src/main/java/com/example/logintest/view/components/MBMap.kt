@@ -37,7 +37,7 @@ fun MBMap(
             .build(),
         mapViewportState = mapViewportState,
         style = {
-            MapStyle(style = Style.STANDARD)
+            MapStyle(style = Style.MAPBOX_STREETS)
         }
 
     )

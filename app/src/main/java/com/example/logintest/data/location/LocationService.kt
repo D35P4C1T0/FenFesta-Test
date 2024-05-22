@@ -35,6 +35,7 @@ class LocationService {
         val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
         val isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+        // TODO: ^^^ investiga l'origine di questo errore (NO SIM)
 
         if (!isGpsEnabled) {
             throw LocationServiceException.LocationDisabledException()
