@@ -13,6 +13,8 @@ loggingInterceptor = "4.12.0"
 moshi = "1.15.1"
 retrofit = "2.11.0"
 material3Android = "1.2.1"
+material3AndroidVersion = "1.2.1"
+navigationCompose = "2.7.7"
 
 
 [libraries]
@@ -35,6 +37,8 @@ moshi = { module = "com.squareup.moshi:moshi", version.ref = "moshi" }
 moshi-kotlin = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshi" }
 moshi-converter = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "retrofit" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3AndroidVersion" }
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

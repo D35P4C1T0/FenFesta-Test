@@ -13,7 +13,11 @@ class EventViewModel : ViewModel() {
     val eventsData: StateFlow<List<EventModel>> = _eventsData
 
     init {
-        getAllEvents()
+        // Initialize with some dummy data
+       /* _eventsData.value = listOf(
+            EventModel("Event 1", "Description 1", "Location 1", "Date 1", "Created At 1", 100, 50, "Creator 1"),
+            EventModel("Event 2", "Description 2", "Location 2", "Date 2", "Created At 2", 200, 100, "Creator 2")
+        )*/
     }
 
     private fun getAllEvents() {
