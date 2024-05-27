@@ -1,6 +1,8 @@
 package com.example.logintest.view.components
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material.icons.filled.PinDrop
 import androidx.compose.material.icons.outlined.CalendarToday
 import androidx.compose.material.icons.outlined.PinDrop
 import androidx.compose.material3.Badge
@@ -36,14 +38,14 @@ fun BottomNavigationBar(navController: NavController) {
         TabItem<ScreenMap>(
             "Map",
             Icons.Outlined.PinDrop,
-            Icons.Outlined.PinDrop,
+            Icons.Filled.PinDrop,
             false,
             screen = ScreenMap
         ),
         TabItem<ScreenCalendar>(
             "Events",
             Icons.Outlined.CalendarToday,
-            Icons.Outlined.CalendarToday,
+            Icons.Filled.CalendarToday,
             false,
             screen = ScreenCalendar
         ),

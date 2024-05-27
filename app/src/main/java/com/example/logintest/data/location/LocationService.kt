@@ -40,13 +40,13 @@ class LocationService {
         if (!isGpsEnabled) {
             throw LocationServiceException.LocationDisabledException()
         }
-        if (!isNetworkEnabled) {
-            throw LocationServiceException.NoNetworkEnabledException()
-        }
+//        if (!isNetworkEnabled) {
+//            throw LocationServiceException.NoNetworkEnabledException()
+//        }
 
         val locationProvider = LocationServices.getFusedLocationProviderClient(context)
         val request = CurrentLocationRequest.Builder()
-            .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
+//            .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
             .build()
 
         return suspendCancellableCoroutine { continuation ->

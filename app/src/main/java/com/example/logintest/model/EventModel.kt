@@ -9,7 +9,9 @@ data class EventModel(
     val description: String,
     val id: Int,
     val location: String,
-    val name: String
+    val name: String,
+    val lat: Double,
+    val lon: Double
 ) {
     override fun toString(): String {
         return "EventModel(capacity=$capacity, capacity_left=$capacity_left, created_at='$created_at', creator=$creator, date='$date', description='$description', id=$id, location='$location', name='$name')"

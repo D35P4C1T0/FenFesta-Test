@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.logintest"
-        minSdk = 24
+        minSdk = 25
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -62,6 +62,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.play.services.location)
+    implementation(libs.androidx.compose.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -81,5 +82,7 @@ dependencies {
     implementation("com.mapbox.maps:android:11.3.1")
     // If you're using compose also add the compose extension
     implementation("com.mapbox.extension:maps-compose:11.3.1")
-
+    implementation("com.google.android.gms:play-services-location:21.2.0")
+    implementation("com.mapbox.plugin:maps-annotation:11.3.1")
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
 }
