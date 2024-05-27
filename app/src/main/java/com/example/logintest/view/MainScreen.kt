@@ -50,25 +50,25 @@ fun MainScreen() {
         modifier = Modifier.fillMaxSize(),
         topBar = { TopAppBar() },
         bottomBar = { BottomNavigationBar(navController) }) { innerPadding ->
-            NavHost(
-                navController = navController,
-                startDestination = ScreenMap,
-            ) {
-                composable<ScreenMap> {
-                    MapScreen(
-                        modifier = Modifier.padding(innerPadding),
-                        mapViewportState,
-                        firstLaunch,
-                        viewModel = eventsViewModel
-                    )
-                }
-                composable<ScreenCalendar> {
-                    EventList(
-                        modifier = Modifier.padding(innerPadding),
-                        viewModel = eventsViewModel
-                    )
-                }
+        NavHost(
+            navController = navController,
+            startDestination = ScreenMap,
+        ) {
+            composable<ScreenMap> {
+                MapScreen(
+                    modifier = Modifier.padding(innerPadding),
+                    mapViewportState,
+                    firstLaunch,
+                    viewModel = eventsViewModel
+                )
             }
+            composable<ScreenCalendar> {
+                EventList(
+                    modifier = Modifier.padding(innerPadding),
+                    viewModel = eventsViewModel
+                )
+            }
+        }
     }
 }
 

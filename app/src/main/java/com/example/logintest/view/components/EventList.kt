@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.wear.compose.material.ContentAlpha
 import com.example.logintest.data.viewmodel.EventViewModel
+import com.example.logintest.ui.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,6 +56,8 @@ fun EventList(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = modifier
     ) {
+
+        item { Calendar() }
 
         items(eventsData) { event ->
             // Card with event details
@@ -72,7 +75,7 @@ fun EventList(
 @Composable
 fun ExpandableCard(
     title: String,
-    titleFontSize: TextUnit = MaterialTheme.typography.headlineSmall.fontSize,
+    titleFontSize: TextUnit = MaterialTheme.typography.headlineSmall.fontSize.times(0.85f),
     titleFontWeight: FontWeight = FontWeight.Bold,
     description: String,
     descriptionFontSize: TextUnit = MaterialTheme.typography.bodyLarge.fontSize,
