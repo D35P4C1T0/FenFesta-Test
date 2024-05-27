@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.outlined.Grade
-import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -42,6 +41,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.wear.compose.material.ContentAlpha
 import com.example.logintest.data.viewmodel.EventViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EventList(
     modifier: Modifier = Modifier,
@@ -55,6 +55,7 @@ fun EventList(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = modifier
     ) {
+
         items(eventsData) { event ->
             // Card with event details
             ExpandableCard(

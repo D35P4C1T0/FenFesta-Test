@@ -46,22 +46,29 @@ fun MainScreen() {
         mutableStateOf(FirstLaunch)
     }
 
-    Scaffold(modifier = Modifier.fillMaxSize(),
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
         topBar = { TopAppBar() },
-        bottomBar = {
-            BottomNavigationBar(navController)
-        }) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = ScreenMap
-        ) {
-            composable<ScreenMap> {
-                MapScreen(modifier = Modifier.padding(innerPadding), mapViewportState, firstLaunch, viewModel = eventsViewModel)
+        bottomBar = { BottomNavigationBar(navController) }) { innerPadding ->
+            NavHost(
+                navController = navController,
+                startDestination = ScreenMap,
+            ) {
+                composable<ScreenMap> {
+                    MapScreen(
+                        modifier = Modifier.padding(innerPadding),
+                        mapViewportState,
+                        firstLaunch,
+                        viewModel = eventsViewModel
+                    )
+                }
+                composable<ScreenCalendar> {
+                    EventList(
+                        modifier = Modifier.padding(innerPadding),
+                        viewModel = eventsViewModel
+                    )
+                }
             }
-            composable<ScreenCalendar> {
-                EventList(modifier = Modifier.padding(innerPadding), viewModel = eventsViewModel)
-            }
-        }
     }
 }
 
