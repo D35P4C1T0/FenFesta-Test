@@ -1,5 +1,6 @@
 package com.example.logintest.ui.screens
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,13 +17,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Settings") },
+                title = { Text("Impostazioni") },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
                         Icon(
@@ -34,40 +36,40 @@ fun SettingsScreen(navController: NavController) {
             )
         },
         content = { paddingValues ->
-            SettingsContent(modifier = Modifier.padding(paddingValues))
+            SettingsContent(navController = navController, modifier = Modifier.padding(paddingValues))
         }
     )
 }
 
 @Composable
-fun SettingsContent(modifier: Modifier = Modifier) {
+fun SettingsContent(navController: NavController, modifier: Modifier = Modifier) {
     val settingsOptions = listOf(
-        "Informazioni Account" to Icons.Filled.AccountCircle,
-        "Cambio Password" to Icons.Filled.Lock,
-        "Eliminazione Account" to Icons.Filled.Delete,
-        "Gestisci Abbonamento" to Icons.Filled.MailOutline,
-        "Light/Dark Mode" to Icons.Filled.Build,
-        "Logout" to Icons.Filled.ExitToApp,
-        "Altro" to Icons.Filled.Menu,
+        Triple("Informazioni Account", Icons.Filled.AccountCircle, "account_info"),
+        Triple("Cambio Password", Icons.Filled.Lock, "change_password"),
+        Triple("Eliminazione Account", Icons.Filled.Delete, "delete_account"),
+        Triple("Gestisci Abbonamento", Icons.Filled.MailOutline, "manage_subscription"),
+        Triple("Light/Dark Mode", Icons.Filled.Build, "light_dark_mode"),
+        Triple("Logout", Icons.Filled.ExitToApp, "logout"),
+        Triple("Altro", Icons.Filled.Menu, "other")
     )
 
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(horizontal = 16.dp)
     ) {
-        items(settingsOptions) { (label, icon) ->
-            SettingItem(label = label, icon = icon)
+        items(settingsOptions) { (label, icon, route) ->
+            SettingItem(label = label, icon = icon, onClick = { navController.navigate(route) })
         }
     }
 }
 
 @Composable
-fun SettingItem(label: String, icon: ImageVector) {
+fun SettingItem(label: String, icon: ImageVector, onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { /* Handle click here */ }
+            .clickable(onClick = onClick)
             .padding(vertical = 8.dp)
     ) {
         Row(

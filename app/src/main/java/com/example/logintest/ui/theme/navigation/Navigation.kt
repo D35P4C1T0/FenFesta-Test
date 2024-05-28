@@ -9,8 +9,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.logintest.data.viewmodel.EventViewModel
-import com.example.logintest.ui.screens.EventListScreen
-import com.example.logintest.ui.screens.SettingsScreen
+import com.example.logintest.ui.screens.*
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import com.example.logintest.ui.screens.*
+
 
 @Composable
 fun MyApp(viewModel: EventViewModel) {
@@ -26,6 +29,27 @@ fun MyApp(viewModel: EventViewModel) {
         }
         composable("settings") {
             SettingsScreen(navController)
+        }
+        composable("account_info") {
+            AccountInfoScreen(navController)
+        }
+        composable("change_password") {
+            ChangePasswordScreen(navController)
+        }
+        composable("delete_account") {
+            DeleteAccountScreen(navController)
+        }
+        composable("manage_subscription") {
+            ManageSubscriptionScreen(navController)
+        }
+        composable("light_dark_mode") {
+            LightDarkModeScreen(navController)
+        }
+        composable("logout") {
+            LogoutScreen(navController)
+        }
+        composable("other") {
+            OtherScreen(navController)
         }
     }
 }
@@ -53,3 +77,19 @@ fun TopAppBarHome(navController: NavHostController) {
         }
     )
 }
+
+@Composable
+fun AppNavHost(navController: NavHostController) {
+    NavHost(navController = navController, startDestination = "home") {
+        composable("home") { /* Home Screen Content */ }
+        composable("settings") { SettingsScreen(navController) }
+        composable("account_info") { AccountInfoScreen(navController) }
+        composable("change_password") { ChangePasswordScreen(navController) }
+        composable("delete_account") { DeleteAccountScreen(navController) }
+        composable("manage_subscription") { ManageSubscriptionScreen(navController) }
+        composable("light_dark_mode") { LightDarkModeScreen(navController) }
+        composable("logout") { LogoutScreen(navController) }
+        composable("other") { OtherScreen(navController) }
+    }
+}
+
