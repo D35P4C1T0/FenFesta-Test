@@ -1,9 +1,11 @@
 package com.example.logintest.model
 
+import android.os.Parcel
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import android.os.Parcelable
 
 @JsonClass(generateAdapter = true)
 data class UserModel(
@@ -17,7 +19,50 @@ data class UserModel(
     val email: String,
     @Json(name = "is_staff")
     val isStaff: Boolean,
-)
+    val eventsParticipated: Int,
+    val profileImageUrl: String? = null
+) /*{
+    constructor(parcel: Parcel) : this(   /*questa funzione è stata creata per accountinfoscreen, per poter passare
+                                            al navigation.kt un parcelable, da cancellare poi se non serve più*/
+        parcel.readInt(),
+        parcel.readString().toString(),
+        parcel.readString().toString(),
+        parcel.readString().toString(),
+        parcel.readString().toString(),
+        parcel.readString().toString(),
+        parcel.readByte() != 0.toByte(),
+        parcel.readInt(),
+        parcel.readString()
+    ) {
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(id)
+        parcel.writeString(password)
+        parcel.writeString(username)
+        parcel.writeString(firstName)
+        parcel.writeString(lastName)
+        parcel.writeString(email)
+        parcel.writeByte(if (isStaff) 1 else 0)
+        parcel.writeInt(eventsParticipated)
+        parcel.writeString(profileImageUrl)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<UserModel> {
+        override fun createFromParcel(parcel: Parcel): UserModel {
+            return UserModel(parcel)
+        }
+
+        override fun newArray(size: Int): Array<UserModel?> {
+            return arrayOfNulls(size)
+        }
+    }
+}*/
+
 
 fun jsonToUser(json: String): UserModel {
     val moshi = Moshi.Builder()

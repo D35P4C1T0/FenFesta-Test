@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.logintest.data.remote.RetrofitClient
 import com.example.logintest.model.EventModel
+import com.example.logintest.model.UserModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -11,7 +12,6 @@ import kotlinx.coroutines.launch
 class EventViewModel : ViewModel() {
     private val _eventsData = MutableStateFlow<List<EventModel>>(emptyList())
     val eventsData: StateFlow<List<EventModel>> = _eventsData
-
     init {
         // Initialize with some dummy data
        /* _eventsData.value = listOf(

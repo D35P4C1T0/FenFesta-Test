@@ -1,31 +1,31 @@
 package com.example.logintest
-
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.example.logintest.data.viewmodel.EventViewModel
-import com.example.logintest.ui.navigation.AppNavHost
+import com.example.logintest.data.viewmodel.UserViewModel
+import com.example.logintest.model.UserModel
 import com.example.logintest.ui.navigation.MyApp
 import com.example.logintest.ui.theme.LoginTestTheme
 
 class MainActivity : ComponentActivity() {
+    private val eventViewModel: EventViewModel by viewModels()
+    private val userViewModel: UserViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        val viewModel: EventViewModel by viewModels()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             LoginTestTheme {
-                MyApp(viewModel)
+                MyApp(eventViewModel, userViewModel)
             }
         }
     }
-
-    /*@Composable
+/*@Composable
     fun MyApp(viewModel: EventViewModel) {
         val navController = rememberNavController()
         AppNavHost(navController = navController)

@@ -9,14 +9,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.logintest.data.viewmodel.EventViewModel
+import com.example.logintest.data.viewmodel.UserViewModel
 import com.example.logintest.ui.screens.*
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import com.example.logintest.ui.screens.*
+import com.example.logintest.model.UserModel
 
 
 @Composable
-fun MyApp(viewModel: EventViewModel) {
+fun MyApp(viewModel: EventViewModel, userModel: UserViewModel) {
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = "home") {
@@ -30,9 +29,11 @@ fun MyApp(viewModel: EventViewModel) {
         composable("settings") {
             SettingsScreen(navController)
         }
-        composable("account_info") {
-            AccountInfoScreen(navController)
+        composable("account_info") { backStackEntry ->
+            //val user = MyApp.userModel // Ottenere direttamente l'oggetto UserModel da MyApp
+            AccountInfoScreen(navController, userModel)
         }
+
         composable("change_password") {
             ChangePasswordScreen(navController)
         }
@@ -78,18 +79,4 @@ fun TopAppBarHome(navController: NavHostController) {
     )
 }
 
-@Composable
-fun AppNavHost(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = "home") {
-        composable("home") { /* Home Screen Content */ }
-        composable("settings") { SettingsScreen(navController) }
-        composable("account_info") { AccountInfoScreen(navController) }
-        composable("change_password") { ChangePasswordScreen(navController) }
-        composable("delete_account") { DeleteAccountScreen(navController) }
-        composable("manage_subscription") { ManageSubscriptionScreen(navController) }
-        composable("light_dark_mode") { LightDarkModeScreen(navController) }
-        composable("logout") { LogoutScreen(navController) }
-        composable("other") { OtherScreen(navController) }
-    }
-}
 
