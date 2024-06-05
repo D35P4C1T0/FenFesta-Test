@@ -19,7 +19,7 @@ class UserViewModel : ViewModel() {
 
     // Funzione per ottenere i dati dell'utente
     fun getUser(): UserModel {
-        return UserModel(123, "password", "Banana333", "Flavio", "Ranieri", "sessoconlemani@libero.it", true, 5, "https://static.nexilia.it/mangaforever/2022/08/af9011e585d0772b2332ab7d16985672-1280x720.jpg") // Valori di esempio per UserModel
+        return UserModel(123, "password", "Banana333", "Flavio", "Ranieri", "latteconlemani@libero.it", true, 5, "https://static.nexilia.it/mangaforever/2022/08/af9011e585d0772b2332ab7d16985672-1280x720.jpg") // Valori di esempio per UserModel
         //return _userData.value
     }
 }
