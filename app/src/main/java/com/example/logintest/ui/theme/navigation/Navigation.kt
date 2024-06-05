@@ -38,7 +38,7 @@ fun MyApp(viewModel: EventViewModel, userModel: UserViewModel) {
             ChangePasswordScreen(navController)
         }
         composable("delete_account") {
-            DeleteAccountScreen(navController)
+            DeleteAccountScreen(navController,userModel)
         }
         composable("manage_subscription") {
             ManageSubscriptionScreen(navController)
