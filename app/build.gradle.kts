@@ -32,8 +32,13 @@ android {
         }
     }
     compileOptions {
+
+        // Enable support for the new language APIs
+        isCoreLibraryDesugaringEnabled = true
+
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
+
     }
     kotlinOptions {
         jvmTarget = "1.8"
@@ -42,7 +47,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.14"
     }
     packaging {
         resources {
@@ -87,7 +92,8 @@ dependencies {
     implementation("com.mapbox.plugin:maps-annotation:11.3.1")
     implementation("androidx.datastore:datastore-preferences:1.1.1")
     // The compose calendar library
-    implementation("com.kizitonwose.calendar:compose:2.5.2")
+    implementation("com.kizitonwose.calendar:compose:2.6.0-beta02")
     implementation("androidx.compose.animation:animation:$composeVersion")
     implementation("androidx.compose.foundation:foundation:$composeVersion")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 }
