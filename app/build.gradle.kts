@@ -51,8 +51,9 @@ android {
     }
 }
 
-dependencies {
+var composeVersion = "1.6.8"
 
+dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -85,4 +86,8 @@ dependencies {
     implementation("com.google.android.gms:play-services-location:21.2.0")
     implementation("com.mapbox.plugin:maps-annotation:11.3.1")
     implementation("androidx.datastore:datastore-preferences:1.1.1")
+    // The compose calendar library
+    implementation("com.kizitonwose.calendar:compose:2.5.2")
+    implementation("androidx.compose.animation:animation:$composeVersion")
+    implementation("androidx.compose.foundation:foundation:$composeVersion")
 }

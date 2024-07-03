@@ -18,8 +18,8 @@ class EventViewModel : ViewModel() {
 
     private fun getAllEvents() {
         viewModelScope.launch {
-            val response = RetrofitClient.APIService.getAllEvents()
-            _eventsData.value = response
+//            val response = RetrofitClient.APIService.getAllEvents()
+//            _eventsData.value = response
         }
     }
 }

@@ -40,7 +40,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.wear.compose.material.ContentAlpha
 import com.example.logintest.data.viewmodel.EventViewModel
-import com.example.logintest.ui.Calendar
+import com.example.logintest.ui.calendar.Calendar
+import java.time.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,7 +82,7 @@ fun ExpandableCard(
     descriptionFontSize: TextUnit = MaterialTheme.typography.bodyLarge.fontSize,
     descriptionFontWeight: FontWeight = FontWeight.Normal,
     descriptionMaxLines: Int = 4,
-    date: String,
+    date: LocalDateTime,
     location: String,
     shape: Shape = MaterialTheme.shapes.extraLarge,
     padding: Dp = 14.dp
@@ -159,7 +160,7 @@ fun ExpandableCard(
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = date,
+                    text = date.toString(),
                     fontSize = descriptionFontSize,
                     fontWeight = descriptionFontWeight,
                     maxLines = descriptionMaxLines,
