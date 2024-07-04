@@ -1,6 +1,5 @@
 [versions]
 agp = "8.4.0"
-mapbox = "11.3.1"
 #kotlin = "1.9.0"
 kotlin = "1.9.24"
 coreKtx = "1.13.1"
@@ -11,7 +10,6 @@ lifecycleRuntimeKtx = "2.8.0"
 activityCompose = "1.9.0"
 composeBom = "2023.08.00"
 loggingInterceptor = "4.12.0"
-mapsCompose = "11.3.1"
 materialIconsExtendedAndroid = "1.6.7"
 moshi = "1.15.1"
 navigationCompose = "2.8.0-alpha08"
@@ -36,6 +34,7 @@ androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", versi
 androidx-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "composeUI" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-compose-material = { group = "androidx.wear.compose", name = "compose-material", version.ref = "composeMaterial" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
@@ -51,10 +50,7 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 secrets-gradle-plugin = { module = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin", version.ref = "secretsGradlePlugin" }
 
 # mapbox
-#mapbox = { module = "com.mapbox.maps:mapbox", version.ref = "mapbox" }
-#mapbox-compose = { module = "com.mapbox.extension:mapbox", version.ref = "mapbox" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
-androidx-compose-material = { group = "androidx.wear.compose", name = "compose-material", version.ref = "composeMaterial" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

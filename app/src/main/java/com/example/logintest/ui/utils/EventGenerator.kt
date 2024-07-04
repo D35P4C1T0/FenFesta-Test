@@ -22,7 +22,8 @@ object EventGenerator {
                 location = location,
                 name = name,
                 lat = Random.nextDouble(4.0, 14.0),
-                lon = Random.nextDouble(2.0, 15.0)
+                lon = Random.nextDouble(2.0, 15.0),
+                color = randomHexColor(),
             )
         }
 
@@ -54,5 +55,12 @@ object EventGenerator {
             val (name, location) = eventInfo
             add(createEvent(eventDate, name, location))
         }
+    }
+
+    fun randomHexColor(): String {
+        val red = Random.nextInt(256)
+        val green = Random.nextInt(256)
+        val blue = Random.nextInt(256)
+        return "0xFF" + String.format("%02X%02X%02X", red, green, blue)
     }
 }

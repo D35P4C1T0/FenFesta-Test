@@ -15,6 +15,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.logintest.data.viewmodel.EventViewModel
+import com.example.logintest.ui.calendar.Calendar
 import com.example.logintest.view.components.BottomNavigationBar
 import com.example.logintest.view.components.EventList
 import com.example.logintest.view.components.TopAppBar
@@ -63,6 +64,9 @@ fun MainScreen() {
                 )
             }
             composable<ScreenCalendar> {
+                Calendar(
+                    modifier = Modifier.padding(innerPadding)
+                )
                 EventList(
                     modifier = Modifier.padding(innerPadding),
                     viewModel = eventsViewModel

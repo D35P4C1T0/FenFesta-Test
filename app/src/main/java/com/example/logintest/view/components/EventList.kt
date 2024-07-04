@@ -51,15 +51,11 @@ fun EventList(
     viewModel: EventViewModel = viewModel()
 ) {
     val eventsData by viewModel.eventsData.collectAsState()
-
     LazyColumn(
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = modifier
     ) {
-
-        item { Calendar() }
-
         items(eventsData) { event ->
             // Card with event details
             ExpandableCard(
