@@ -8,10 +8,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.outlined.Grade
@@ -22,7 +22,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,7 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.wear.compose.material.ContentAlpha
 import com.example.logintest.data.viewmodel.EventViewModel
-import com.example.logintest.ui.calendar.Calendar
+import com.example.logintest.model.EventModel
 import java.time.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,22 +47,23 @@ import java.time.LocalDateTime
 fun EventList(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
-    viewModel: EventViewModel = viewModel()
+    viewModel: EventViewModel = viewModel(),
+    eventsData: List<EventModel>,
 ) {
-    val eventsData by viewModel.eventsData.collectAsState()
-    LazyColumn(
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = modifier
+//    val eventsData by viewModel.eventsData.collectAsState() // do HTTP request
+//    val eventsData = EventGenerator.generateEvents() // use dummy data
+    Column(
+        verticalArrangement = Arrangement.spacedBy(2.dp),
+//        modifier = Modifier.padding(16.dp)
     ) {
-        items(eventsData) { event ->
-            // Card with event details
+        eventsData.forEach { event ->
             ExpandableCard(
                 title = event.name,
                 description = event.description,
                 date = event.date,
                 location = event.location
             )
+            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }
@@ -174,4 +174,3 @@ fun ExpandableCard(
         }
     }
 }
-

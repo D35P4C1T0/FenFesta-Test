@@ -4,7 +4,6 @@ import com.example.logintest.model.EventModel
 import java.time.LocalDateTime
 import java.time.YearMonth
 import kotlin.random.Random
-
 object EventGenerator {
     fun generateEvents(): List<EventModel> = buildList {
         val currentMonth = YearMonth.now()
@@ -37,23 +36,32 @@ object EventGenerator {
             "Marathon" to "Kano",
             "Science Fair" to "Minna",
             "Comedy Night" to "Asaba",
-            "Cultural Festival" to "Port Harcourt"
+            "Cultural Festival" to "Port Harcourt",
+            "Fashion Show" to "Abuja",
+            "Startup Pitch" to "Owerri",
+            "Film Festival" to "Jos",
+            "Dance Competition" to "Uyo",
+            "Hackathon" to "Akure"
         )
 
-        // Generate 10 random days within the current month
+        // Generate 5-7 random days within the current month
+        val numberOfEventDays = Random.nextInt(5, 8)
         val eventDays = generateSequence { Random.nextInt(1, currentMonth.lengthOfMonth() + 1) }
             .distinct()
-            .take(10)
+            .take(numberOfEventDays)
             .sorted()
             .toList()
 
-        eventDays.zip(eventData).forEach { (day, eventInfo) ->
-            val eventDate = currentMonth.atDay(day).atTime(
-                Random.nextInt(9, 20), // Event hour between 9 AM and 7 PM
-                Random.nextInt(0, 60)  // Random minute
-            )
-            val (name, location) = eventInfo
-            add(createEvent(eventDate, name, location))
+        eventDays.forEach { day ->
+            val eventsPerDay = Random.nextInt(2, 4) // 2 or 3 events per day
+            repeat(eventsPerDay) {
+                val eventDate = currentMonth.atDay(day).atTime(
+                    Random.nextInt(9, 20), // Event hour between 9 AM and 7 PM
+                    Random.nextInt(0, 60)  // Random minute
+                )
+                val (name, location) = eventData.random()
+                add(createEvent(eventDate, name, location))
+            }
         }
     }
 

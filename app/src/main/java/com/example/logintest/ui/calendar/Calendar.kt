@@ -8,9 +8,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,6 +18,8 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,6 +41,7 @@ import androidx.compose.ui.unit.sp
 import com.example.logintest.model.EventModel
 import com.example.logintest.ui.theme.toComposeColor
 import com.example.logintest.ui.utils.EventGenerator
+import com.example.logintest.view.components.EventList
 import com.kizitonwose.calendar.compose.CalendarState
 import com.kizitonwose.calendar.compose.HorizontalCalendar
 import com.kizitonwose.calendar.compose.rememberCalendarState
@@ -49,11 +52,9 @@ import com.kizitonwose.calendar.core.OutDateStyle
 import com.kizitonwose.calendar.core.daysOfWeek
 import com.kizitonwose.calendar.core.nextMonth
 import com.kizitonwose.calendar.core.previousMonth
-import com.kizitonwose.calendar.core.yearMonth
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
-import java.time.LocalDate
 import java.time.YearMonth
 import java.util.Locale
 
@@ -73,7 +74,7 @@ fun Calendar(modifier: Modifier) {
     val endMonth = remember { currentMonth.plusMonths(500) }
     var selection by remember { mutableStateOf<CalendarDay?>(null) }
     val daysOfWeek = remember { daysOfWeek() }
-    val flightsInSelectedDate = remember {
+    val eventsInSelectedDate = remember {
         derivedStateOf {
             val date = selection?.date
             if (date == null) emptyList() else events[date].orEmpty()
@@ -82,6 +83,7 @@ fun Calendar(modifier: Modifier) {
     Column(
         modifier = modifier
 //            .background(pageBackgroundColor),
+              .verticalScroll(rememberScrollState()),
     ) {
         val state = rememberCalendarState(
             startMonth = startMonth,
@@ -135,14 +137,13 @@ fun Calendar(modifier: Modifier) {
                 )
             },
         )
-//        Divider(color = pageBackgroundColor)
-        Divider()
-        LazyColumn(modifier = Modifier.fillMaxWidth()) {
-            items(items = flightsInSelectedDate.value) { flight ->
-                EventInformation(flight)
-            }
-        }
-
+//        LazyColumn(modifier = Modifier.fillMaxWidth()) {
+//            items(items = eventsInSelectedDate.value) { flight ->
+//                EventInformation(flight)
+//            }
+//        }
+        Spacer(modifier = Modifier.height(16.dp))
+        EventList(modifier = Modifier.fillMaxWidth(), eventsData = eventsInSelectedDate.value)
     }
 }
 

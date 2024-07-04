@@ -64,13 +64,11 @@ fun MainScreen() {
                 )
             }
             composable<ScreenCalendar> {
-                Calendar(
-                    modifier = Modifier.padding(innerPadding)
-                )
-                EventList(
-                    modifier = Modifier.padding(innerPadding),
-                    viewModel = eventsViewModel
-                )
+                Calendar(modifier = Modifier.padding(innerPadding))
+//                EventList(
+//                    modifier = Modifier.padding(innerPadding),
+//                    viewModel = eventsViewModel,
+//                )
             }
         }
     }
