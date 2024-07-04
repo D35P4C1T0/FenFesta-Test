@@ -41,7 +41,7 @@ fun MyApp(viewModel: EventViewModel, userModel: UserViewModel) {
             DeleteAccountScreen(navController,userModel)
         }
         composable("manage_subscription") {
-            ManageSubscriptionScreen(navController)
+            ManageSubscriptionScreen(navController,userModel)
         }
         composable("light_dark_mode") {
             LightDarkModeScreen(navController)
