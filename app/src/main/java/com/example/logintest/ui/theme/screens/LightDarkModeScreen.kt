@@ -79,7 +79,7 @@ fun LightDarkModeContent(
         Spacer(modifier = Modifier.height(24.dp))
 
         PreviewImage(
-            imageRes = if (isDarkMode) R.drawable.dark_mode_preview else R.drawable.light_mode_preview,
+            imageRes = if (isDarkMode) R.drawable.dark_mode_preview2 else R.drawable.light_mode_preview3,
             description = if (isDarkMode) "Dark Mode Preview" else "Light Mode Preview"
         )
     }

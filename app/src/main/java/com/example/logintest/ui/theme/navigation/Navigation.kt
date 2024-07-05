@@ -11,8 +11,11 @@ import androidx.navigation.compose.rememberNavController
 import com.example.logintest.data.viewmodel.EventViewModel
 import com.example.logintest.data.viewmodel.UserViewModel
 import com.example.logintest.ui.screens.*
-import com.example.logintest.model.UserModel
-
+import com.example.logintest.ui.theme.screens.AppInfoScreen
+import com.example.logintest.ui.theme.screens.FeedbackScreen
+import com.example.logintest.ui.theme.screens.ShareAppScreen
+import com.example.logintest.ui.theme.screens.SupportScreen
+import com.example.logintest.ui.theme.screens.TermsConditionsScreen
 
 @Composable
 fun MyApp(viewModel: EventViewModel, userModel: UserViewModel) {
@@ -30,18 +33,16 @@ fun MyApp(viewModel: EventViewModel, userModel: UserViewModel) {
             SettingsScreen(navController)
         }
         composable("account_info") { backStackEntry ->
-            //val user = MyApp.userModel // Ottenere direttamente l'oggetto UserModel da MyApp
             AccountInfoScreen(navController, userModel)
         }
-
         composable("change_password") {
             ChangePasswordScreen(navController)
         }
         composable("delete_account") {
-            DeleteAccountScreen(navController,userModel)
+            DeleteAccountScreen(navController, userModel)
         }
         composable("manage_subscription") {
-            ManageSubscriptionScreen(navController,userModel)
+            ManageSubscriptionScreen(navController, userModel)
         }
         composable("light_dark_mode") {
             LightDarkModeScreen(navController)
@@ -51,6 +52,21 @@ fun MyApp(viewModel: EventViewModel, userModel: UserViewModel) {
         }
         composable("other") {
             OtherScreen(navController)
+        }
+        composable("app_info") {
+            AppInfoScreen(navController)
+        }
+        composable("support") {
+            SupportScreen(navController)
+        }
+        composable("terms_conditions") {
+            TermsConditionsScreen(navController)
+        }
+        composable("share_app") {
+            ShareAppScreen(navController)
+        }
+        composable("feedback") {
+            FeedbackScreen(navController)
         }
     }
 }
@@ -78,5 +94,3 @@ fun TopAppBarHome(navController: NavHostController) {
         }
     )
 }
-
-
