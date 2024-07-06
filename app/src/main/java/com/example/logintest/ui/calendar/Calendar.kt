@@ -92,7 +92,6 @@ fun Calendar(modifier: Modifier) {
     }
     Column(
         modifier = modifier
-//            .background(pageBackgroundColor),
             .verticalScroll(rememberScrollState()),
     ) {
         val state = rememberCalendarState(
