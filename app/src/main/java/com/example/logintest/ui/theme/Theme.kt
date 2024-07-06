@@ -27,7 +27,7 @@ private val DarkColors = darkColorScheme(
     secondary = Color(0xFFFFC107), // Amber secondary color
     background = Color(0xFF121212), // Dark background
     surface = Color(0xFF121212), // Dark surface
-    onPrimary = Color.Black,
+    onPrimary = Color.White,
     onSecondary = Color.Black,
     onBackground = Color.White,
     onSurface = Color.White
@@ -37,7 +37,7 @@ private val DarkColors = darkColorScheme(
 fun AppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

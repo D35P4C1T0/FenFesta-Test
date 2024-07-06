@@ -13,14 +13,18 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,11 +37,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.logintest.R
 import com.example.logintest.model.EventModel
 import com.example.logintest.ui.theme.toComposeColor
 import com.example.logintest.ui.utils.EventGenerator
@@ -57,6 +65,8 @@ import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.YearMonth
 import java.util.Locale
+// colors
+import com.example.logintest.ui.theme.*
 
 private val events = EventGenerator.generateEvents().groupBy { it.date.toLocalDate() }
 
@@ -83,7 +93,7 @@ fun Calendar(modifier: Modifier) {
     Column(
         modifier = modifier
 //            .background(pageBackgroundColor),
-              .verticalScroll(rememberScrollState()),
+            .verticalScroll(rememberScrollState()),
     ) {
         val state = rememberCalendarState(
             startMonth = startMonth,
@@ -117,15 +127,16 @@ fun Calendar(modifier: Modifier) {
             modifier = Modifier.wrapContentWidth(),
             state = state,
             dayContent = { day ->
-                val colors = if (day.position == DayPosition.MonthDate) {
-                    events[day.date].orEmpty().map { it.color.toComposeColor() }
+                val eventsNumber = if (day.position == DayPosition.MonthDate) {
+                    events[day.date]?.size ?: 0
                 } else {
-                    emptyList()
+                    0
                 }
-                Day(
+
+                AlternativeDay(
                     day = day,
                     isSelected = selection == day,
-                    colors = colors,
+                    eventsNumber = eventsNumber,
                 ) { clicked ->
                     selection = clicked
                 }
@@ -157,18 +168,15 @@ private fun Day(
     Box(
         modifier = Modifier
             .aspectRatio(1f) // This is important for square-sizing!
-            .border(
-                width = if (isSelected) 1.dp else 0.dp,
-                color = Color.White,
-//                color = if (isSelected) selectedItemColor else Color.Transparent,
-            )
-            .padding(1.dp)
+            .padding(6.dp)
 //            .background(color = itemBackgroundColor)
             // Disable clicks on inDates/outDates
+            .clip(CircleShape)
             .clickable(
                 enabled = day.position == DayPosition.MonthDate,
                 onClick = { onClick(day) },
             ),
+        contentAlignment = Alignment.Center,
     ) {
         val textColor = when (day.position) {
             DayPosition.MonthDate -> Color.Unspecified
@@ -199,6 +207,43 @@ private fun Day(
             }
         }
     }
+}
+
+@Composable
+private fun AlternativeDay(
+    day: CalendarDay,
+    isSelected: Boolean,
+    eventsNumber: Int,
+    onClick: (CalendarDay) -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .aspectRatio(1f) // This is important for square-sizing!
+            .testTag("MonthDay")
+            .padding(8.dp)
+//            .clip(CircleShape)
+            .background(color = if (isSelected) Selection else Color.Transparent)
+            // Disable clicks on inDates/outDates
+            .clickable(
+                enabled = day.position == DayPosition.MonthDate,
+                onClick = { onClick(day) },
+            ),
+        contentAlignment = Alignment.Center,
+    ) {
+
+            Text(
+                modifier = Modifier,
+                text = day.date.dayOfMonth.toString(),
+                fontSize = 14.sp,
+            )
+            if (eventsNumber > 0) {
+                NumberDot(
+                    number = eventsNumber,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .offset(x = 8.dp, y = (-8).dp))
+            }
+        }
 }
 
 @Composable
@@ -309,4 +354,22 @@ fun rememberFirstCompletelyVisibleMonth(state: CalendarState): CalendarMonth {
             .collect { month -> visibleMonth.value = month.month }
     }
     return visibleMonth.value
+}
+
+@Composable
+fun NumberDot(number: Int, modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .size(24.dp)
+            .background(color = MaterialTheme.colorScheme.primary , shape = CircleShape)
+            .aspectRatio(1f),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = number.toString(),
+            color = Color.White,
+            fontSize = 11.sp,
+            fontWeight = FontWeight.Bold
+        )
+    }
 }
