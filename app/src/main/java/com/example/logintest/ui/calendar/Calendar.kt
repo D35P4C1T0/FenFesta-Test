@@ -158,6 +158,7 @@ fun Calendar(modifier: Modifier) {
     }
 }
 
+/*
 @Composable
 private fun Day(
     day: CalendarDay,
@@ -208,6 +209,7 @@ private fun Day(
         }
     }
 }
+*/
 
 @Composable
 private fun AlternativeDay(
@@ -230,20 +232,26 @@ private fun AlternativeDay(
             ),
         contentAlignment = Alignment.Center,
     ) {
-
-            Text(
-                modifier = Modifier,
-                text = day.date.dayOfMonth.toString(),
-                fontSize = 14.sp,
-            )
-            if (eventsNumber > 0) {
-                NumberDot(
-                    number = eventsNumber,
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .offset(x = 8.dp, y = (-8).dp))
-            }
+        val textColor = when (day.position) {
+            // Color.Unspecified will use the default text color from the current theme
+            DayPosition.MonthDate -> if (isSelected) Color.White else Color.Unspecified
+            DayPosition.InDate, DayPosition.OutDate -> Color.Gray
         }
+        Text(
+            modifier = Modifier,
+            text = day.date.dayOfMonth.toString(),
+            color = textColor,
+            fontSize = 14.sp,
+        )
+        if (eventsNumber > 0) {
+            NumberDot(
+                number = eventsNumber,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .offset(x = 8.dp, y = (-8).dp)
+            )
+        }
+    }
 }
 
 @Composable
@@ -257,7 +265,6 @@ private fun MonthHeader(
                 modifier = Modifier.weight(1f),
                 textAlign = TextAlign.Center,
                 fontSize = 12.sp,
-                color = Color.White,
                 text = dayOfWeek.getDisplayName(
                     java.time.format.TextStyle.SHORT,
                     Locale.ENGLISH
@@ -361,7 +368,7 @@ fun NumberDot(number: Int, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .size(24.dp)
-            .background(color = MaterialTheme.colorScheme.primary , shape = CircleShape)
+            .background(color = MaterialTheme.colorScheme.primary, shape = CircleShape)
             .aspectRatio(1f),
         contentAlignment = Alignment.Center
     ) {
