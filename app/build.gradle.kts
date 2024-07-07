@@ -96,4 +96,7 @@ dependencies {
     implementation("androidx.compose.animation:animation:$composeVersion")
     implementation("androidx.compose.foundation:foundation:$composeVersion")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+
+    // http logging
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.1")
 }

@@ -1,5 +1,6 @@
 package com.example.logintest.ui.calendar
 
+// colors
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,16 +36,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.logintest.data.viewmodel.EventViewModel
 import com.example.logintest.model.EventModel
+import com.example.logintest.ui.theme.Selection
 import com.example.logintest.ui.theme.toComposeColor
-import com.example.logintest.ui.utils.EventGenerator
 import com.example.logintest.view.components.EventList
 import com.kizitonwose.calendar.compose.CalendarState
 import com.kizitonwose.calendar.compose.HorizontalCalendar
@@ -60,20 +63,20 @@ import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.YearMonth
 import java.util.Locale
-// colors
-import com.example.logintest.ui.theme.*
 
-private val events = EventGenerator.generateEvents().groupBy { it.date.toLocalDate() }
-
-//private val pageBackgroundColor: Color @Composable get() = colorResource(R.color.)
-//private val itemBackgroundColor: Color @Composable get() = colorResource(R.color.example_5_item_view_bg_color)
-//private val toolbarColor: Color @Composable get() = colorResource(R.color.example_5_toolbar_color)
-//private val selectedItemColor: Color @Composable get() = colorResource(R.color.example_5_text_grey)
+//private val events = EventGenerator.generateEvents().groupBy { it.date.toLocalDate() }
 private val inActiveTextColor = Color(0xFFD3D3D3)
 
-
 @Composable
-fun Calendar(modifier: Modifier) {
+fun Calendar(modifier: Modifier, viewModel: EventViewModel = viewModel()) {
+
+    val allEvents by viewModel.events.collectAsState()
+    LaunchedEffect(Unit) {
+        viewModel.fetchEvents()
+    }
+
+    val eventsByDate = allEvents.groupBy { it.date.toLocalDate() }
+
     val currentMonth = remember { YearMonth.now() }
     val startMonth = remember { currentMonth.minusMonths(500) }
     val endMonth = remember { currentMonth.plusMonths(500) }
@@ -82,7 +85,7 @@ fun Calendar(modifier: Modifier) {
     val eventsInSelectedDate = remember {
         derivedStateOf {
             val date = selection?.date
-            if (date == null) emptyList() else events[date].orEmpty()
+            if (date == null) emptyList() else eventsByDate[date].orEmpty()
         }
     }
     Column(
@@ -122,7 +125,7 @@ fun Calendar(modifier: Modifier) {
             state = state,
             dayContent = { day ->
                 val eventsNumber = if (day.position == DayPosition.MonthDate) {
-                    events[day.date]?.size ?: 0
+                    eventsByDate[day.date]?.size ?: 0
                 } else {
                     0
                 }
@@ -148,7 +151,8 @@ fun Calendar(modifier: Modifier) {
 //            }
 //        }
         Spacer(modifier = Modifier.height(16.dp))
-        EventList(modifier = Modifier.fillMaxWidth(), eventsData = eventsInSelectedDate.value)
+        println("Events in selected date: ${eventsInSelectedDate.value}")
+        EventList(modifier = Modifier.fillMaxWidth(), events = eventsInSelectedDate.value)
     }
 }
 
@@ -293,22 +297,17 @@ private fun LazyItemScope.EventInformation(event: EventModel) {
         }
         Box(
             modifier = Modifier
-//                .background(color = itemBackgroundColor)
                 .weight(1f)
                 .fillMaxHeight(),
         ) {
-//            EventInformation(event.departure, isDeparture = true)
         }
         Box(
             modifier = Modifier
-//                .background(color = itemBackgroundColor)
                 .weight(1f)
                 .fillMaxHeight(),
         ) {
-//            EventInformation(event.destination, isDeparture = false)
         }
     }
-//    Divider(color = pageBackgroundColor, thickness = 2.dp)
     Divider(thickness = 2.dp)
 }
 

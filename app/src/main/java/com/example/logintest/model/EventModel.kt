@@ -12,8 +12,8 @@ data class EventModel(
     val id: Int,
     val location: String,
     val name: String,
-    val lat: Double,
-    val lon: Double,
+    val lat: String,
+    val lon: String,
     val color: String,
 ) {
     override fun toString(): String {

@@ -47,7 +47,7 @@ fun MapScreen(
     viewModel: EventViewModel = viewModel()
 ) {
 
-    val eventsData by viewModel.eventsData.collectAsState()
+    val eventsData by viewModel.events.collectAsState()
 
     var relaunch by remember {
         mutableStateOf(false)

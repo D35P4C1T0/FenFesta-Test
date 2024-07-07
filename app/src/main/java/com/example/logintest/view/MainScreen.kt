@@ -15,6 +15,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.logintest.data.viewmodel.EventViewModel
+import com.example.logintest.model.EventModel
 import com.example.logintest.ui.calendar.Calendar
 import com.example.logintest.view.components.BottomNavigationBar
 import com.example.logintest.view.components.EventList
@@ -70,9 +71,23 @@ fun MainScreen() {
 //                    viewModel = eventsViewModel,
 //                )
             }
+
+            composable("eventDetail/{eventId}") { backStackEntry ->
+                val eventId = backStackEntry.arguments?.getString("eventId")?.toIntOrNull()
+
+                // Fetch the event details based on the ID
+//                val event = getEventById(eventId)
+//                event?.let {
+//                    EventDetailScreen(it)
+//                }
+            }
         }
     }
 }
+
+//fun getEventById(eventId: Int?): EventModel? {
+//    // TODO: Fetch the event details based on the ID
+//}
 
 @Serializable
 object ScreenCalendar

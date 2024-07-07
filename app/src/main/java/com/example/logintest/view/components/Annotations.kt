@@ -22,7 +22,7 @@ fun Annotations(modifier: Modifier = Modifier, eventList: List<EventModel>) {
 private fun toAnnotations(eventList: List<EventModel>): List<CircleAnnotationOptions> {
     return eventList.map {
         CircleAnnotationOptions()
-            .withPoint(Point.fromLngLat(it.lon, it.lat))
+            .withPoint(Point.fromLngLat(it.lon.toDouble(), it.lat.toDouble()))
             .withCircleColor(Color.Blue.toArgb())
             .withCircleRadius(10.0)
     }

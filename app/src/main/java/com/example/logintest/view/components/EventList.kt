@@ -24,6 +24,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,16 +51,14 @@ import java.time.LocalDateTime
 fun EventList(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
-    viewModel: EventViewModel = viewModel(),
-    eventsData: List<EventModel>,
+    events: List<EventModel>,
 ) {
-//    val eventsData by viewModel.eventsData.collectAsState() // do HTTP request
+    println("EventList: $events")
 //    val eventsData = EventGenerator.generateEvents() // use dummy data
     Column(
         verticalArrangement = Arrangement.spacedBy(2.dp),
-//        modifier = Modifier.padding(16.dp)
     ) {
-        eventsData.forEach { event ->
+        events.forEach { event ->
             ExpandableCard(
                 title = event.name,
                 description = event.description,
