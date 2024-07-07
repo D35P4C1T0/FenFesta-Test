@@ -20,6 +20,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 import java.time.LocalDateTime
+import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
 
@@ -30,6 +31,12 @@ class EventViewModel : ViewModel() {
 
     private val _selectedEvent = MutableStateFlow<EventModel?>(null)
     val selectedEvent: StateFlow<EventModel?> = _selectedEvent
+
+    private val _monthEvents = MutableStateFlow<List<EventModel>>(emptyList())
+    val monthEvents: StateFlow<List<EventModel>> = _monthEvents
+
+    private val _currentMonth = MutableStateFlow(YearMonth.now())
+    val currentMonth: StateFlow<YearMonth> = _currentMonth
 
     private val apiService: ApiService
 
@@ -64,13 +71,16 @@ class EventViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 println("Fetching events...")
-                val fetchedEvents = apiService.getEvents()
-                _events.value = fetchedEvents
-                println("Fetched ${fetchedEvents.size} events")
-                println("First event: ${fetchedEvents.firstOrNull()}")
+                val response = apiService.getEvents()
+                println("Raw response: $response")
+                _events.value = response
+                println("Fetched ${response.size} events")
+                println("First event: ${response.firstOrNull()}")
             } catch (e: Exception) {
                 println("Error fetching events: ${e.message}")
                 e.printStackTrace()
+                // Print the stack trace to get more details about the error
+                e.stackTrace.forEach { println(it) }
             }
         }
     }
@@ -90,11 +100,37 @@ class EventViewModel : ViewModel() {
         }
     }
 
+
+    fun fetchEventsByMonth(month: Int) {
+        viewModelScope.launch {
+            try {
+                println("Fetching events for month $month...")
+                val fetchedEvents = apiService.getEventsByMonth(month)
+                _monthEvents.value = fetchedEvents
+                println("Fetched ${fetchedEvents.size} events for month $month")
+                println("First event of the month: ${fetchedEvents.firstOrNull()}")
+            } catch (e: Exception) {
+                println("Error fetching events for month $month: ${e.message}")
+                e.printStackTrace()
+                // Print the stack trace to get more details about the error
+                e.stackTrace.forEach { println(it) }
+            }
+        }
+    }
+
+    fun updateCurrentMonth(yearMonth: YearMonth) {
+        _currentMonth.value = yearMonth
+        fetchEventsByMonth(yearMonth.monthValue)
+    }
+
     interface ApiService {
         @GET("events") // Replace with your actual endpoint
         suspend fun getEvents(): List<EventModel>
 
         @GET("events/{id}") // Replace with your actual endpoint
         suspend fun getEvent(@Path("id") id: Int): EventModel
+
+        @GET("events/month/{month}")
+        suspend fun getEventsByMonth(@Path("month") month: Int): List<EventModel>
     }
 }

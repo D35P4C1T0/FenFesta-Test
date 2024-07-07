@@ -53,8 +53,7 @@ fun EventList(
     contentPadding: PaddingValues = PaddingValues(0.dp),
     events: List<EventModel>,
 ) {
-    println("EventList: $events")
-//    val eventsData = EventGenerator.generateEvents() // use dummy data
+//    val events = EventGenerator.generateEvents() // use dummy data
     Column(
         verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {

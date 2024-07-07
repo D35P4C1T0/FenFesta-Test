@@ -69,54 +69,69 @@ private val inActiveTextColor = Color(0xFFD3D3D3)
 
 @Composable
 fun Calendar(modifier: Modifier, viewModel: EventViewModel = viewModel()) {
-
-    val allEvents by viewModel.events.collectAsState()
-    LaunchedEffect(Unit) {
-        viewModel.fetchEvents()
-    }
-
-    val eventsByDate = allEvents.groupBy { it.date.toLocalDate() }
-
     val currentMonth = remember { YearMonth.now() }
     val startMonth = remember { currentMonth.minusMonths(500) }
     val endMonth = remember { currentMonth.plusMonths(500) }
     var selection by remember { mutableStateOf<CalendarDay?>(null) }
     val daysOfWeek = remember { daysOfWeek() }
+
+    val allEvents by viewModel.monthEvents.collectAsState()
+
+    LaunchedEffect(currentMonth) {
+        println(currentMonth.monthValue)
+        viewModel.fetchEventsByMonth(currentMonth.monthValue)
+    }
+
+    // Derive eventsByDate from allEvents
+    val eventsByDate by remember(allEvents) {
+        derivedStateOf {
+            allEvents.groupBy { it.date.toLocalDate() }
+        }
+    }
+
     val eventsInSelectedDate = remember {
         derivedStateOf {
             val date = selection?.date
             if (date == null) emptyList() else eventsByDate[date].orEmpty()
         }
     }
+
+    val state = rememberCalendarState(
+        startMonth = startMonth,
+        endMonth = endMonth,
+        firstVisibleMonth = currentMonth,
+        firstDayOfWeek = daysOfWeek.first(),
+        outDateStyle = OutDateStyle.EndOfGrid,
+    )
+    val coroutineScope = rememberCoroutineScope()
+    val visibleMonth = rememberFirstCompletelyVisibleMonth(state)
+
+    LaunchedEffect(visibleMonth) {
+        // Clear selection if we scroll to a new month.
+        selection = null
+        // Update the current month and fetch new events
+        viewModel.updateCurrentMonth(visibleMonth.yearMonth)
+    }
+
     Column(
         modifier = modifier
             .verticalScroll(rememberScrollState()),
     ) {
-        val state = rememberCalendarState(
-            startMonth = startMonth,
-            endMonth = endMonth,
-            firstVisibleMonth = currentMonth,
-            firstDayOfWeek = daysOfWeek.first(),
-            outDateStyle = OutDateStyle.EndOfGrid,
-        )
-        val coroutineScope = rememberCoroutineScope()
-        val visibleMonth = rememberFirstCompletelyVisibleMonth(state)
-        LaunchedEffect(visibleMonth) {
-            // Clear selection if we scroll to a new month.
-            selection = null
-        }
-
         SimpleCalendarTitle(
             modifier = Modifier,
             currentMonth = visibleMonth.yearMonth,
             goToPrevious = {
                 coroutineScope.launch {
-                    state.animateScrollToMonth(state.firstVisibleMonth.yearMonth.previousMonth)
+                    val newMonth = state.firstVisibleMonth.yearMonth.previousMonth
+                    state.animateScrollToMonth(newMonth)
+                    viewModel.updateCurrentMonth(newMonth)
                 }
             },
             goToNext = {
                 coroutineScope.launch {
-                    state.animateScrollToMonth(state.firstVisibleMonth.yearMonth.nextMonth)
+                    val newMonth = state.firstVisibleMonth.yearMonth.nextMonth
+                    state.animateScrollToMonth(newMonth)
+                    viewModel.updateCurrentMonth(newMonth)
                 }
             },
         )
@@ -155,59 +170,6 @@ fun Calendar(modifier: Modifier, viewModel: EventViewModel = viewModel()) {
         EventList(modifier = Modifier.fillMaxWidth(), events = eventsInSelectedDate.value)
     }
 }
-
-/*
-@Composable
-private fun Day(
-    day: CalendarDay,
-    isSelected: Boolean = false,
-    colors: List<Color> = emptyList(),
-    onClick: (CalendarDay) -> Unit = {},
-) {
-    Box(
-        modifier = Modifier
-            .aspectRatio(1f) // This is important for square-sizing!
-            .padding(6.dp)
-//            .background(color = itemBackgroundColor)
-            // Disable clicks on inDates/outDates
-            .clip(CircleShape)
-            .clickable(
-                enabled = day.position == DayPosition.MonthDate,
-                onClick = { onClick(day) },
-            ),
-        contentAlignment = Alignment.Center,
-    ) {
-        val textColor = when (day.position) {
-            DayPosition.MonthDate -> Color.Unspecified
-            DayPosition.InDate, DayPosition.OutDate -> inActiveTextColor
-        }
-        Text(
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(top = 3.dp, end = 4.dp),
-            text = day.date.dayOfMonth.toString(),
-            color = textColor,
-            fontSize = 12.sp,
-        )
-        Column(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .padding(bottom = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp),
-        ) {
-            for (color in colors) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(5.dp)
-                        .background(color),
-                )
-            }
-        }
-    }
-}
-*/
 
 @Composable
 private fun Day(
@@ -273,6 +235,7 @@ private fun MonthHeader(
     }
 }
 
+/*
 @Composable
 private fun LazyItemScope.EventInformation(event: EventModel) {
     Row(
@@ -342,6 +305,7 @@ private fun EventInformation(event: EventModel) {
         }
     }
 }
+*/
 
 @Composable
 fun rememberFirstCompletelyVisibleMonth(state: CalendarState): CalendarMonth {
