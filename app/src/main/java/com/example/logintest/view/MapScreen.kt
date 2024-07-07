@@ -84,6 +84,11 @@ fun MapScreen(
             }
         )
         {
+
+            LaunchedEffect(Unit) {
+                viewModel.fetchEvents()
+            }
+
             Annotations(eventList = eventsData)
             MapEffect(Unit) { mapView ->
                 // Use mapView to access all the Mapbox Maps APIs including plugins etc.

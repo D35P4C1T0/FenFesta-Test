@@ -14,6 +14,7 @@ import com.mapbox.maps.plugin.annotation.generated.CircleAnnotationOptions
 @OptIn(MapboxExperimental::class)
 @Composable
 fun Annotations(modifier: Modifier = Modifier, eventList: List<EventModel>) {
+    println("Adding annotations to the map... $eventList")
     val listOfAnnotations = toAnnotations(eventList)
     val context = LocalContext.current
     CircleAnnotationGroup(annotations = listOfAnnotations)
