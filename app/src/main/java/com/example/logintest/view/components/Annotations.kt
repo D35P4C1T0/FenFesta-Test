@@ -14,11 +14,16 @@ import androidx.compose.ui.res.imageResource
 import androidx.core.content.ContextCompat
 import com.example.logintest.R
 import com.example.logintest.model.EventModel
+import com.google.gson.JsonObject
 import com.mapbox.geojson.Point
 import com.mapbox.maps.MapboxExperimental
 import com.mapbox.maps.extension.compose.annotation.generated.CircleAnnotationGroup
 import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotationGroup
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
+import org.json.JSONObject
 
 
 @OptIn(MapboxExperimental::class)
@@ -29,7 +34,12 @@ fun Annotations(modifier: Modifier = Modifier, eventList: List<EventModel>) {
     val bitmap = getBitmapFromVectorDrawable(context, R.drawable.marker_icon)
 //    val listOfAnnotations = toAnnotations(eventList)
     val listOfAnnotations = toAnnotations(eventList, bitmap)
-    PointAnnotationGroup(annotations = listOfAnnotations)
+    PointAnnotationGroup(
+        annotations = listOfAnnotations,
+        onClick = { pointAnnotation ->
+            println("Annotation clicked: ${pointAnnotation.getData()?.asJsonObject?.get("id")}")
+            true
+        })
 }
 
 //private fun toAnnotations(eventList: List<EventModel>): List<CircleAnnotationOptions> {
@@ -42,11 +52,15 @@ fun Annotations(modifier: Modifier = Modifier, eventList: List<EventModel>) {
 //}
 
 private fun toAnnotations(eventList: List<EventModel>, icon : Bitmap): List<PointAnnotationOptions> {
-    return eventList.map {
+    return eventList.map { event ->
         PointAnnotationOptions()
-            .withPoint(Point.fromLngLat(it.lon.toDouble(), it.lat.toDouble()))
+            .withPoint(Point.fromLngLat(event.lon.toDouble(), event.lat.toDouble()))
             .withIconImage(icon)
             .withIconSize(2.35)
+            .withData(JsonObject().apply {
+                addProperty("id", event.id)
+                addProperty("title", event.name)
+            })
     }
 }
 
