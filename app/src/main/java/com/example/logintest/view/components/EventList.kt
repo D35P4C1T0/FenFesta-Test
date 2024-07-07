@@ -4,7 +4,6 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -16,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.outlined.Grade
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -90,23 +90,17 @@ fun ExpandableCard(
         targetValue = if (expandedState) 180f else 0f, label = ""
     )
 
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .animateContentSize(
-                animationSpec = tween(
-                    durationMillis = 300,
-                    easing = LinearOutSlowInEasing
-                )
-            ),
-        shape = shape,
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primary
-        ),
-        onClick = {
-            expandedState = !expandedState
-        }
-    ) {
+    Card(modifier = Modifier
+        .fillMaxWidth()
+        .animateContentSize(
+            animationSpec = tween(
+                durationMillis = 300, easing = LinearOutSlowInEasing
+            )
+        ), shape = shape, colors = CardDefaults.cardColors(
+        containerColor = MaterialTheme.colorScheme.primary
+    ), onClick = {
+        expandedState = !expandedState
+    }) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -116,19 +110,17 @@ fun ExpandableCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    modifier = Modifier
-                        .weight(6f),
+                    modifier = Modifier.weight(6f),
                     text = title,
                     fontSize = titleFontSize,
                     fontWeight = titleFontWeight,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                IconButton(
-                    modifier = Modifier
-                        .weight(1f)
-                        .alpha(ContentAlpha.medium)
-                        .rotate(rotationState),
+                IconButton(modifier = Modifier
+                    .weight(1f)
+                    .alpha(ContentAlpha.medium)
+                    .rotate(rotationState),
                     onClick = {
                         expandedState = !expandedState
                     }) {
@@ -137,13 +129,21 @@ fun ExpandableCard(
                         contentDescription = "Drop-Down Arrow"
                     )
                 }
+
+                // open event page in details
+                IconButton(modifier = Modifier.weight(1f), onClick = {
+                    //TODO("open event page in details")
+                }) {
+                    Icon(
+                        imageVector = Icons.Outlined.Info,
+                        contentDescription = "Open Event Page",
+                    )
+                }
+
                 // add to favorites button, allign far right
-                IconButton(
-                    modifier = Modifier
-                        .weight(1f),
-                    onClick = {
-                        //TODO("add to fav functionality here")
-                    }) {
+                IconButton(modifier = Modifier.weight(1f), onClick = {
+                    //TODO("add to fav functionality here")
+                }) {
                     Icon(
                         imageVector = Icons.Outlined.Grade,
                         contentDescription = "Add to Favourites",

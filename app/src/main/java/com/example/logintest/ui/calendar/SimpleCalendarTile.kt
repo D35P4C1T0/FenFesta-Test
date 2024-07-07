@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
@@ -81,7 +82,7 @@ private fun CalendarNavigationIcon(
             .fillMaxSize()
             .padding(4.dp)
             .align(Alignment.Center),
-        painter = icon, // TODO: imagevector as icon
+        painter = rememberVectorPainter(image = icon), // TODO: imagevector as icon
         contentDescription = contentDescription,
     )
 }
