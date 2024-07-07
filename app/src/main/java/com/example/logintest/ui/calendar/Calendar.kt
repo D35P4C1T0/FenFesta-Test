@@ -3,25 +3,20 @@ package com.example.logintest.ui.calendar
 // colors
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -46,7 +41,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.logintest.data.viewmodel.EventViewModel
 import com.example.logintest.model.EventModel
 import com.example.logintest.ui.theme.Selection
-import com.example.logintest.ui.theme.toComposeColor
 import com.example.logintest.view.components.EventList
 import com.kizitonwose.calendar.compose.CalendarState
 import com.kizitonwose.calendar.compose.HorizontalCalendar
@@ -68,7 +62,11 @@ import java.util.Locale
 private val inActiveTextColor = Color(0xFFD3D3D3)
 
 @Composable
-fun Calendar(modifier: Modifier, viewModel: EventViewModel = viewModel()) {
+fun Calendar(
+    modifier: Modifier,
+    viewModel: EventViewModel = viewModel(),
+    onEventClick: (EventModel) -> Unit
+) {
     val currentMonth = remember { YearMonth.now() }
     val startMonth = remember { currentMonth.minusMonths(500) }
     val endMonth = remember { currentMonth.plusMonths(500) }
@@ -167,7 +165,7 @@ fun Calendar(modifier: Modifier, viewModel: EventViewModel = viewModel()) {
 //        }
         Spacer(modifier = Modifier.height(16.dp))
         println("Events in selected date: ${eventsInSelectedDate.value}")
-        EventList(modifier = Modifier.fillMaxWidth(), events = eventsInSelectedDate.value)
+        EventList(modifier = Modifier.fillMaxWidth(), events = eventsInSelectedDate.value, onEventClick = onEventClick)
     }
 }
 

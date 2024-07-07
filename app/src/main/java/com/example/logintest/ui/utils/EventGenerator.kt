@@ -22,7 +22,7 @@ object EventGenerator {
                 name = name,
                 lat = Random.nextDouble(4.0, 14.0).toString(),
                 lon = Random.nextDouble(2.0, 15.0).toString(),
-                color = randomHexColor(),
+//                color = randomHexColor(),
             )
         }
 

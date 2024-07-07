@@ -24,8 +24,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,11 +38,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.wear.compose.material.ContentAlpha
-import com.example.logintest.data.viewmodel.EventViewModel
 import com.example.logintest.model.EventModel
-import java.time.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,17 +47,17 @@ fun EventList(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     events: List<EventModel>,
+    onEventClick: (EventModel) -> Unit,
 ) {
 //    val events = EventGenerator.generateEvents() // use dummy data
     Column(
+        modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         events.forEach { event ->
             ExpandableCard(
-                title = event.name,
-                description = event.description,
-                date = event.date,
-                location = event.location
+                event = event,
+                onEventClick = onEventClick,
             )
             Spacer(modifier = Modifier.height(8.dp))
         }
@@ -72,18 +67,22 @@ fun EventList(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExpandableCard(
-    title: String,
+    event: EventModel,
     titleFontSize: TextUnit = MaterialTheme.typography.headlineSmall.fontSize.times(0.85f),
     titleFontWeight: FontWeight = FontWeight.Bold,
-    description: String,
     descriptionFontSize: TextUnit = MaterialTheme.typography.bodyLarge.fontSize,
     descriptionFontWeight: FontWeight = FontWeight.Normal,
     descriptionMaxLines: Int = 4,
-    date: LocalDateTime,
-    location: String,
     shape: Shape = MaterialTheme.shapes.extraLarge,
-    padding: Dp = 14.dp
+    padding: Dp = 14.dp,
+    onEventClick: (EventModel) -> Unit,
 ) {
+
+    val title = event.name
+    val description = event.description
+    val date = event.date
+    val location = event.location
+
     var expandedState by remember { mutableStateOf(false) }
     val rotationState by animateFloatAsState(
         targetValue = if (expandedState) 180f else 0f, label = ""
@@ -131,7 +130,7 @@ fun ExpandableCard(
 
                 // open event page in details
                 IconButton(modifier = Modifier.weight(1f), onClick = {
-                    //TODO("open event page in details")
+                    onEventClick(event)
                 }) {
                     Icon(
                         imageVector = Icons.Outlined.Info,
