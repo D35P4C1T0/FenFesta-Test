@@ -11,11 +11,9 @@ import androidx.navigation.compose.rememberNavController
 import com.example.logintest.data.viewmodel.EventViewModel
 import com.example.logintest.data.viewmodel.UserViewModel
 import com.example.logintest.ui.screens.*
-import com.example.logintest.ui.theme.screens.AppInfoScreen
-import com.example.logintest.ui.theme.screens.FeedbackScreen
 import com.example.logintest.ui.theme.screens.ShareAppScreen
 import com.example.logintest.ui.theme.screens.SupportScreen
-import com.example.logintest.ui.theme.screens.TermsConditionsScreen
+
 
 @Composable
 fun MyApp(viewModel: EventViewModel, userModel: UserViewModel) {
@@ -59,15 +57,15 @@ fun MyApp(viewModel: EventViewModel, userModel: UserViewModel) {
         composable("support") {
             SupportScreen(navController)
         }
-        composable("terms_conditions") {
+       /* composable("terms_conditions") {
             TermsConditionsScreen(navController)
-        }
+        }*/
         composable("share_app") {
             ShareAppScreen(navController)
         }
-        composable("feedback") {
+        /*composable("feedback") {
             FeedbackScreen(navController)
-        }
+        }*/
     }
 }
 

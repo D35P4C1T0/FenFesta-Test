@@ -46,9 +46,9 @@ fun OtherContent(modifier: Modifier = Modifier, navController: NavController) {
     val options = listOf(
         Triple("Informazioni sull'App", Icons.Filled.Info, "app_info"),
         Triple("Supporto", Icons.Filled.Call, "support"),
-        Triple("Termini e Condizioni", Icons.Filled.Warning, "terms_conditions"),
+       // Triple("Termini e Condizioni", Icons.Filled.Warning, "terms_conditions"),
         Triple("Condividi App", Icons.Filled.Share, "share_app"),
-        Triple("Feedback", Icons.Filled.ThumbUp, "feedback")
+       // Triple("Feedback", Icons.Filled.ThumbUp, "feedback")
     )
 
     LazyColumn(

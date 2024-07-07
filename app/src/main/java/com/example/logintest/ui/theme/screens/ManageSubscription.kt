@@ -122,7 +122,7 @@ fun SubscriptionOption(
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.primary,
+                color = Color(0xFF4CAF50),
                 fontSize = 20.sp,
                 textAlign = TextAlign.Center // Centrare il testo
             )
