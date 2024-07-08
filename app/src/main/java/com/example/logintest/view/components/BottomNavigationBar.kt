@@ -27,32 +27,32 @@ import androidx.navigation.Navigator
 import com.example.logintest.view.ScreenCalendar
 import com.example.logintest.view.ScreenMap
 
-data class TabItem<T>(
+data class TabItem(
     val title: String,
     val unselectedIcon: ImageVector,
     val selectedIcon: ImageVector,
     val hasNews: Boolean,
     val badgeCount: Int? = null,
-    val screen: T,
+    val route: String,
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomNavigationBar(navController: NavController) {
     val items = listOf(
-        TabItem<ScreenMap>(
+        TabItem(
             "Map",
             Icons.Outlined.PinDrop,
             Icons.Filled.PinDrop,
             false,
-            screen = ScreenMap
+            route = "mapbox"
         ),
-        TabItem<ScreenCalendar>(
+        TabItem(
             "Events",
             Icons.Outlined.CalendarToday,
             Icons.Filled.CalendarToday,
             false,
-            screen = ScreenCalendar
+            route = "calendar"
         ),
     )
 
@@ -62,7 +62,6 @@ fun BottomNavigationBar(navController: NavController) {
 
     NavigationBar(
         contentColor = MaterialTheme.colorScheme.primary,
-//        containerColor = MaterialTheme.colorScheme.primary,
     ) {
         items.forEachIndexed { index, item ->
             NavigationBarItem(
@@ -87,7 +86,7 @@ fun BottomNavigationBar(navController: NavController) {
                 selected = selectedItemIndex == index,
                 onClick = {
                     selectedItemIndex = index
-                    navController.navigate(item.screen)
+                    navController.navigate(item.route)
                 },
             )
         }
