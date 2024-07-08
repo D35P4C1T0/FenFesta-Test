@@ -1,14 +1,24 @@
 package com.example.logintest.ui.screens
 
-import com.example.logintest.data.viewmodel.UserViewModel
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,50 +31,35 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
 import com.example.logintest.R
+import com.example.logintest.data.viewmodel.UserViewModel
 import com.example.logintest.model.UserModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AccountInfoScreen(navController: NavController, viewModel: UserViewModel) {
+fun AccountInfoScreen(modifier: Modifier, navController: NavController, viewModel: UserViewModel) {
     val user = viewModel.getUser()
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Informazioni Account") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = "Back",
-                        )
-                    }
-                }
-            )
-        },
-        content = {
-            AccountInfoContent(user = user)
-        }
-    )
+    AccountInfoContent(user = user, modifier = modifier)
 }
 
 @Composable
-fun AccountInfoContent(user: UserModel) {
+fun AccountInfoContent(user: UserModel, modifier: Modifier) {
     val profileImage = remember { mutableStateOf(user.profileImageUrl) }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = modifier
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState(), enabled = true),
+        horizontalAlignment = Alignment.CenterHorizontally,
+
     ) {
-        Spacer(modifier = Modifier.height(72.dp)) // Aggiungi spazio sopra all'immagine
+//        Spacer(modifier = Modifier.height(23.dp)) // Aggiungi spazio sopra all'immagine
 
         if (profileImage.value != null) {
             Image(
-                painter = rememberImagePainter(profileImage.value),
+                painter = rememberAsyncImagePainter(profileImage.value),
                 contentDescription = "Profile Image",
                 modifier = Modifier
                     .size(100.dp)
@@ -105,7 +100,7 @@ fun AccountInfoContent(user: UserModel) {
         Button(
             onClick = { /* Handle edit action */ },
             colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
-            modifier = Modifier.padding(bottom = 48.dp) // Spazio aggiuntivo sotto il pulsante
+            modifier = Modifier.padding(top = 48.dp, bottom = 48.dp) // Spazio aggiuntivo sotto il pulsante
         ) {
             Text(text = "Modifica", color = Color.White)
         }
@@ -123,7 +118,10 @@ fun AccountInfoRow(label: String, value: String) {
         Text(
             text = value,
             style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(start = 8.dp, bottom = 2.dp) // Riduci lo spazio di indentazione e lo spazio verticale
+            modifier = Modifier.padding(
+                start = 8.dp,
+                bottom = 2.dp
+            ) // Riduci lo spazio di indentazione e lo spazio verticale
         )
         Divider(
             color = MaterialTheme.colorScheme.primary,

@@ -78,89 +78,90 @@ fun MyApp(userModel: UserViewModel) {
         topBar = { TopAppBarHome(navController = navController, currentScreen = currentScreen) },
         bottomBar = {
             BottomNavigationBar(navController)
-        }) { innerPadding ->
-        NavHost(navController = navController,
-            startDestination = "mapbox",
-            enterTransition = { EnterTransition.None },
-            exitTransition = { ExitTransition.None },
-            popEnterTransition = { EnterTransition.None },
-            popExitTransition = { ExitTransition.None }) {
-            composable("mapbox") {
-                currentScreen = Screen.Home
-                MapScreen(
-                    modifier = Modifier.padding(innerPadding),
-                    mapViewportState,
-                    firstLaunch,
-                    viewModel = eventsViewModel,
-                    navController = navController,
-                )
-            }
-            composable("calendar") {
-                currentScreen = Screen.Home
-                Calendar(modifier = Modifier.padding(innerPadding), onEventClick = { event ->
-                    navController.navigate("eventDetails/${event.id}")
-                })
-            }
-
-            composable(
-                "eventDetails/{eventId}",
-                arguments = listOf(navArgument("eventId") { type = NavType.IntType })
-            ) { backStackEntry ->
-
-                currentScreen = Screen.Home
-
-                val eventId = backStackEntry.arguments?.getInt("eventId")
-                val viewModel: EventViewModel = viewModel()
-                val event by viewModel.selectedEvent.collectAsState()
-
-                LaunchedEffect(eventId) {
-                    eventId?.let { viewModel.fetchEventById(it) }
-                }
-
-                event?.let {
-                    EventDetailsScreen(
-                        event = it,
-                        onBackPress = { navController.popBackStack() }
+        },
+        content = { innerPadding ->
+            NavHost(navController = navController,
+                startDestination = "mapbox",
+                enterTransition = { EnterTransition.None },
+                exitTransition = { ExitTransition.None },
+                popEnterTransition = { EnterTransition.None },
+                popExitTransition = { ExitTransition.None }) {
+                composable("mapbox") {
+                    currentScreen = Screen.Home
+                    MapScreen(
+                        modifier = Modifier.padding(innerPadding),
+                        mapViewportState,
+                        firstLaunch,
+                        viewModel = eventsViewModel,
+                        navController = navController,
                     )
                 }
-            }
+                composable("calendar") {
+                    currentScreen = Screen.Home
+                    Calendar(modifier = Modifier.padding(innerPadding), onEventClick = { event ->
+                        navController.navigate("eventDetails/${event.id}")
+                    })
+                }
 
-            composable("settings") {
-                currentScreen = Screen.Settings
-                SettingsScreen(navController)
+                composable(
+                    "eventDetails/{eventId}",
+                    arguments = listOf(navArgument("eventId") { type = NavType.IntType })
+                ) { backStackEntry ->
+
+                    currentScreen = Screen.Home
+
+                    val eventId = backStackEntry.arguments?.getInt("eventId")
+                    val viewModel: EventViewModel = viewModel()
+                    val event by viewModel.selectedEvent.collectAsState()
+
+                    LaunchedEffect(eventId) {
+                        eventId?.let { viewModel.fetchEventById(it) }
+                    }
+
+                    event?.let {
+                        EventDetailsScreen(
+                            event = it,
+                            onBackPress = { navController.popBackStack() }
+                        )
+                    }
+                }
+
+                composable("settings") {
+                    currentScreen = Screen.Settings
+                    SettingsScreen(navController)
+                }
+                composable("account_info") {
+                    AccountInfoScreen(Modifier.padding(innerPadding), navController, userModel)
+                }
+                composable("change_password") {
+                    ChangePasswordScreen(navController)
+                }
+                composable("delete_account") {
+                    DeleteAccountScreen(navController, userModel)
+                }
+                composable("manage_subscription") {
+                    ManageSubscriptionScreen(navController, userModel)
+                }
+                composable("light_dark_mode") {
+                    LightDarkModeScreen(navController)
+                }
+                composable("logout") {
+                    LogoutScreen(navController)
+                }
+                composable("other") {
+                    OtherScreen(navController)
+                }
+                composable("app_info") {
+                    AppInfoScreen(navController)
+                }
+                composable("support") {
+                    SupportScreen(navController)
+                }
+                composable("share_app") {
+                    ShareAppScreen(navController)
+                }
             }
-            composable("account_info") { backStackEntry ->
-                AccountInfoScreen(navController, userModel)
-            }
-            composable("change_password") {
-                ChangePasswordScreen(navController)
-            }
-            composable("delete_account") {
-                DeleteAccountScreen(navController, userModel)
-            }
-            composable("manage_subscription") {
-                ManageSubscriptionScreen(navController, userModel)
-            }
-            composable("light_dark_mode") {
-                LightDarkModeScreen(navController)
-            }
-            composable("logout") {
-                LogoutScreen(navController)
-            }
-            composable("other") {
-                OtherScreen(navController)
-            }
-            composable("app_info") {
-                AppInfoScreen(navController)
-            }
-            composable("support") {
-                SupportScreen(navController)
-            }
-            composable("share_app") {
-                ShareAppScreen(navController)
-            }
-        }
-    }
+        })
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
