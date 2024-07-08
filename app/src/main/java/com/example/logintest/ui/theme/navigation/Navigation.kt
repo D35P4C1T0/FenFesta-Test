@@ -1,4 +1,4 @@
-package com.example.logintest.ui.navigation
+package com.example.logintest.ui.theme.navigation
 
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
@@ -36,14 +36,14 @@ import com.example.logintest.R
 import com.example.logintest.data.viewmodel.EventViewModel
 import com.example.logintest.data.viewmodel.UserViewModel
 import com.example.logintest.ui.screens.AccountInfoScreen
-import com.example.logintest.ui.screens.AppInfoScreen
-import com.example.logintest.ui.screens.ChangePasswordScreen
-import com.example.logintest.ui.screens.DeleteAccountScreen
-import com.example.logintest.ui.screens.LightDarkModeScreen
-import com.example.logintest.ui.screens.LogoutScreen
-import com.example.logintest.ui.screens.ManageSubscriptionScreen
-import com.example.logintest.ui.screens.OtherScreen
-import com.example.logintest.ui.screens.SettingsScreen
+import com.example.logintest.ui.theme.screens.AppInfoScreen
+import com.example.logintest.ui.theme.screens.ChangePasswordScreen
+import com.example.logintest.ui.theme.screens.DeleteAccountScreen
+import com.example.logintest.ui.theme.screens.LightDarkModeScreen
+import com.example.logintest.ui.theme.screens.LogoutScreen
+import com.example.logintest.ui.theme.screens.ManageSubscriptionScreen
+import com.example.logintest.ui.theme.screens.OtherScreen
+import com.example.logintest.ui.theme.screens.SettingsScreen
 import com.example.logintest.ui.theme.screens.MapScreen
 import com.example.logintest.ui.theme.screens.SearchScreen
 import com.example.logintest.ui.theme.screens.ShareAppScreen

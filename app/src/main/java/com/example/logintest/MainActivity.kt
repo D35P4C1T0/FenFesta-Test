@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import com.example.logintest.data.viewmodel.UserViewModel
-import com.example.logintest.ui.navigation.MyApp
+import com.example.logintest.ui.theme.navigation.MyApp
 import com.example.logintest.ui.theme.AppTheme
 
 
