@@ -38,7 +38,7 @@ fun EventDetailsScreen(modifier: Modifier, event: EventModel, onBackPress: () ->
             modifier = modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(16.dp)
+                .padding(28.dp)
         ) {
             // Event description
             Text(

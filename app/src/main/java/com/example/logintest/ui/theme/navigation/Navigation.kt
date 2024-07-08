@@ -3,6 +3,7 @@ package com.example.logintest.ui.theme.navigation
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -36,10 +37,11 @@ import com.example.logintest.R
 import com.example.logintest.data.viewmodel.EventViewModel
 import com.example.logintest.data.viewmodel.UserViewModel
 import com.example.logintest.ui.screens.AccountInfoScreen
+import com.example.logintest.data.viewmodel.ThemeOption
+import com.example.logintest.data.viewmodel.ThemeViewModel
 import com.example.logintest.ui.theme.screens.AppInfoScreen
 import com.example.logintest.ui.theme.screens.ChangePasswordScreen
 import com.example.logintest.ui.theme.screens.DeleteAccountScreen
-import com.example.logintest.ui.theme.screens.LightDarkModeScreen
 import com.example.logintest.ui.theme.screens.LogoutScreen
 import com.example.logintest.ui.theme.screens.ManageSubscriptionScreen
 import com.example.logintest.ui.theme.screens.OtherScreen
@@ -48,6 +50,7 @@ import com.example.logintest.ui.theme.screens.MapScreen
 import com.example.logintest.ui.theme.screens.SearchScreen
 import com.example.logintest.ui.theme.screens.ShareAppScreen
 import com.example.logintest.ui.theme.screens.SupportScreen
+import com.example.logintest.ui.theme.screens.ThemeSelector
 import com.example.logintest.ui.theme.screens.calendar.Calendar
 import com.example.logintest.ui.theme.screens.event.EventDetailsScreen
 import com.example.logintest.view.components.BottomNavigationBar
@@ -62,7 +65,8 @@ enum class Screen {
 
 @OptIn(MapboxExperimental::class)
 @Composable
-fun MyApp(userModel: UserViewModel) {
+fun MyApp(userModel: UserViewModel, themeViewModel: ThemeViewModel) {
+
     val navController = rememberNavController()
     val mapViewportState = rememberMapViewportState {}
     var firstLaunch by remember {
@@ -70,6 +74,7 @@ fun MyApp(userModel: UserViewModel) {
     }
 
     val eventsViewModel = viewModel<EventViewModel>()
+    val themeOption by themeViewModel.themeOption.collectAsState()
 
     var currentScreen by remember(navController) {
         mutableStateOf(Screen.Home)
@@ -146,7 +151,11 @@ fun MyApp(userModel: UserViewModel) {
                     ManageSubscriptionScreen(navController, userModel)
                 }
                 composable("light_dark_mode") {
-                    LightDarkModeScreen(navController)
+                    ThemeSelector(
+                        modifier = Modifier.padding(innerPadding),
+                        currentTheme = themeOption,
+                        onThemeSelected = { themeViewModel.setThemeOption(it) }
+                    )
                 }
                 composable("logout") {
                     LogoutScreen(navController)
