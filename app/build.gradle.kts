@@ -3,14 +3,9 @@ import org.jetbrains.kotlin.gradle.plugin.extraProperties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-
-
+    alias(libs.plugins.kotlin.serialization)
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
-/*plugins {
-    //id("com.android.application")
-    id("kotlin-android")
-    id("kotlin-parcelize") // Assicurati di includere questo plugin
-}*/
 
 android {
     namespace = "com.example.logintest"
@@ -18,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.logintest"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -39,6 +34,10 @@ android {
         }
     }
     compileOptions {
+
+        // Enable support for the new language APIs
+        isCoreLibraryDesugaringEnabled = true
+
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -49,7 +48,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.14"
     }
     packaging {
         resources {
@@ -58,7 +57,10 @@ android {
     }
 }
 
+var composeVersion = "1.6.8"
+
 dependencies {
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -68,7 +70,9 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
-    implementation(libs.firebase.firestore.ktx)
+    //implementation(libs.firebase.firestore.ktx)
+    implementation(libs.play.services.location)
+    implementation(libs.androidx.compose.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -88,4 +92,21 @@ dependencies {
     // Add Retrofit for network requests
     implementation(libs.retrofit)
     implementation(libs.logging.interceptor)
+    implementation(libs.androidx.material.icons.extended.android)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
+    implementation("com.mapbox.maps:android:11.3.1")
+    // If you're using compose also add the compose extension
+    implementation("com.mapbox.extension:maps-compose:11.3.1")
+    implementation("com.google.android.gms:play-services-location:21.2.0")
+    implementation("com.mapbox.plugin:maps-annotation:11.3.1")
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+    // The compose calendar library
+    implementation("com.kizitonwose.calendar:compose:2.6.0-beta02")
+    implementation("androidx.compose.animation:animation:$composeVersion")
+    implementation("androidx.compose.foundation:foundation:$composeVersion")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+
+    // http logging
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.1")
 }

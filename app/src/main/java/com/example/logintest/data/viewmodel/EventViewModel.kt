@@ -2,28 +2,135 @@ package com.example.logintest.data.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.logintest.data.remote.ApiService
+import com.example.logintest.data.remote.EventModelListAdapter
+import com.example.logintest.data.remote.LocalTimeAdapter
 import com.example.logintest.data.remote.RetrofitClient
 import com.example.logintest.model.EventModel
-import com.example.logintest.model.UserModel
+import com.squareup.moshi.FromJson
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.http.GET
+import retrofit2.http.Path
+import java.time.LocalDateTime
+import java.time.YearMonth
+import java.time.format.DateTimeFormatter
+import java.util.concurrent.TimeUnit
 
 class EventViewModel : ViewModel() {
-    private val _eventsData = MutableStateFlow<List<EventModel>>(emptyList())
-    val eventsData: StateFlow<List<EventModel>> = _eventsData
+
+    private val _events = MutableStateFlow<List<EventModel>>(emptyList())
+    val events: StateFlow<List<EventModel>> = _events
+
+    private val _selectedEvent = MutableStateFlow<EventModel?>(null)
+    val selectedEvent: StateFlow<EventModel?> = _selectedEvent
+
+    private val _monthEvents = MutableStateFlow<List<EventModel>>(emptyList())
+    val monthEvents: StateFlow<List<EventModel>> = _monthEvents
+
+    private val _currentMonth = MutableStateFlow(YearMonth.now())
+    val currentMonth: StateFlow<YearMonth> = _currentMonth
+
+    private val apiService: ApiService
+
     init {
-        // Initialize with some dummy data
-       /* _eventsData.value = listOf(
-            EventModel("Event 1", "Description 1", "Location 1", "Date 1", "Created At 1", 100, 50, "Creator 1"),
-            EventModel("Event 2", "Description 2", "Location 2", "Date 2", "Created At 2", 200, 100, "Creator 2")
-        )*/
+        val moshi = Moshi.Builder()
+            .add(EventModelListAdapter())
+            .add(LocalTimeAdapter())
+            .add(KotlinJsonAdapterFactory())
+            .build()
+
+        val loggingInterceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+
+        val okHttpClient = OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .connectTimeout(15, TimeUnit.SECONDS)
+            .readTimeout(15, TimeUnit.SECONDS)
+            .build()
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://10.0.0.97:8000/") // Replace with your actual base URL
+            .client(okHttpClient)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build()
+
+        apiService = retrofit.create(ApiService::class.java)
     }
 
-    private fun getAllEvents() {
+
+    fun fetchEvents() {
         viewModelScope.launch {
-            val response = RetrofitClient.APIService.getAllEvents()
-            _eventsData.value = response
+            try {
+                println("Fetching events...")
+                val response = apiService.getEvents()
+                println("Raw response: $response")
+                _events.value = response
+                println("Fetched ${response.size} events")
+                println("First event: ${response.firstOrNull()}")
+            } catch (e: Exception) {
+                println("Error fetching events: ${e.message}")
+                e.printStackTrace()
+                // Print the stack trace to get more details about the error
+                e.stackTrace.forEach { println(it) }
+            }
         }
+    }
+
+    fun fetchEventById(id: Int) {
+        viewModelScope.launch {
+            try {
+                println("Fetching event with id $id...")
+                val fetchedEvent = apiService.getEvent(id)
+                _selectedEvent.value = fetchedEvent
+                println("Fetched event: $fetchedEvent")
+            } catch (e: Exception) {
+                println("Error fetching event with id $id: ${e.message}")
+                e.printStackTrace()
+                _selectedEvent.value = null
+            }
+        }
+    }
+
+
+    fun fetchEventsByMonth(month: Int) {
+        viewModelScope.launch {
+            try {
+                println("Fetching events for month $month...")
+                val fetchedEvents = apiService.getEventsByMonth(month)
+                _monthEvents.value = fetchedEvents
+                println("Fetched ${fetchedEvents.size} events for month $month")
+                println("First event of the month: ${fetchedEvents.firstOrNull()}")
+            } catch (e: Exception) {
+                println("Error fetching events for month $month: ${e.message}")
+                e.printStackTrace()
+                // Print the stack trace to get more details about the error
+                e.stackTrace.forEach { println(it) }
+            }
+        }
+    }
+
+    fun updateCurrentMonth(yearMonth: YearMonth) {
+        _currentMonth.value = yearMonth
+        fetchEventsByMonth(yearMonth.monthValue)
+    }
+
+    interface ApiService {
+        @GET("events") // Replace with your actual endpoint
+        suspend fun getEvents(): List<EventModel>
+
+        @GET("events/{id}") // Replace with your actual endpoint
+        suspend fun getEvent(@Path("id") id: Int): EventModel
+
+        @GET("events/month/{month}")
+        suspend fun getEventsByMonth(@Path("month") month: Int): List<EventModel>
     }
 }
