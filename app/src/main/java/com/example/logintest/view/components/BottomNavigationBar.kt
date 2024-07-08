@@ -24,8 +24,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavController
 import androidx.navigation.Navigator
-import com.example.logintest.view.ScreenCalendar
-import com.example.logintest.view.ScreenMap
 
 data class TabItem(
     val title: String,
@@ -71,7 +69,6 @@ fun BottomNavigationBar(navController: NavController) {
                                 item.selectedIcon
                             } else item.unselectedIcon,
                             contentDescription = item.title,
-//                            tint = MaterialTheme.colorScheme.primary
                         )
                 },
                 colors = NavigationBarItemDefaults.colors(
@@ -82,7 +79,7 @@ fun BottomNavigationBar(navController: NavController) {
                 label = {
                     Text(item.title)
                 },
-                alwaysShowLabel = false,
+                alwaysShowLabel = true,
                 selected = selectedItemIndex == index,
                 onClick = {
                     selectedItemIndex = index

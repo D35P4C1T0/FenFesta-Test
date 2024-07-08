@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -44,7 +43,7 @@ import com.example.logintest.ui.screens.SettingsScreen
 import com.example.logintest.ui.theme.screens.ShareAppScreen
 import com.example.logintest.ui.theme.screens.SupportScreen
 import com.example.logintest.view.EventDetailsScreen
-import com.example.logintest.view.MapScreen
+import com.example.logintest.ui.theme.screens.MapScreen
 import com.example.logintest.view.components.BottomNavigationBar
 import com.example.logintest.view.utils.FirstLaunch
 import com.mapbox.maps.MapboxExperimental
@@ -88,7 +87,8 @@ fun MyApp(userModel: UserViewModel) {
                     modifier = Modifier.padding(innerPadding),
                     mapViewportState,
                     firstLaunch,
-                    viewModel = eventsViewModel
+                    viewModel = eventsViewModel,
+                    navController = navController,
                 )
             }
             composable("calendar") {

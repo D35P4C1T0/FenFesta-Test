@@ -1,4 +1,4 @@
-package com.example.logintest.view
+package com.example.logintest.ui.theme.screens
 
 
 import android.Manifest
@@ -16,6 +16,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.logintest.data.location.LocationService
 import com.example.logintest.data.viewmodel.EventViewModel
 import com.example.logintest.view.components.Annotations
@@ -44,7 +45,8 @@ fun MapScreen(
     modifier: Modifier = Modifier,
     mapViewportState: MapViewportState,
     firstLaunch: FirstLaunch,
-    viewModel: EventViewModel = viewModel()
+    viewModel: EventViewModel = viewModel(),
+    navController: NavController,
 ) {
 
     val eventsData by viewModel.events.collectAsState()
@@ -89,7 +91,7 @@ fun MapScreen(
                 viewModel.fetchEvents()
             }
 
-            Annotations(eventList = eventsData)
+            Annotations(eventList = eventsData, navController = navController)
             MapEffect(Unit) { mapView ->
                 // Use mapView to access all the Mapbox Maps APIs including plugins etc.
                 // For example, to enable debug mode:
