@@ -2,8 +2,10 @@ package com.example.logintest.ui.navigation
 
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
@@ -12,7 +14,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -21,6 +22,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -28,6 +31,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.logintest.R
 import com.example.logintest.data.viewmodel.EventViewModel
 import com.example.logintest.data.viewmodel.UserViewModel
 import com.example.logintest.ui.calendar.Calendar
@@ -40,10 +44,10 @@ import com.example.logintest.ui.screens.LogoutScreen
 import com.example.logintest.ui.screens.ManageSubscriptionScreen
 import com.example.logintest.ui.screens.OtherScreen
 import com.example.logintest.ui.screens.SettingsScreen
+import com.example.logintest.ui.theme.screens.MapScreen
 import com.example.logintest.ui.theme.screens.ShareAppScreen
 import com.example.logintest.ui.theme.screens.SupportScreen
 import com.example.logintest.view.EventDetailsScreen
-import com.example.logintest.ui.theme.screens.MapScreen
 import com.example.logintest.view.components.BottomNavigationBar
 import com.example.logintest.view.utils.FirstLaunch
 import com.mapbox.maps.MapboxExperimental
@@ -166,7 +170,13 @@ fun TopAppBarHome(
     navController: NavHostController,
 ) {
     CenterAlignedTopAppBar(
-        title = { Text("My App") },
+        title = {
+            Image(
+                painter = painterResource(id = R.drawable.logo_fen_festa),
+                contentDescription = "logo",
+                modifier = Modifier.size(72.dp)
+            )
+        },
         navigationIcon = {
             when (currentScreen) {
                 Screen.Home -> {
@@ -177,6 +187,7 @@ fun TopAppBarHome(
                         )
                     }
                 }
+
                 Screen.Settings -> {
                     IconButton(onClick = { navController.navigateUp() }) {
                         Icon(
@@ -188,24 +199,4 @@ fun TopAppBarHome(
             }
         }
     )
-
-//    CenterAlignedTopAppBar(
-//        title = {
-//            Text(
-//                text = "FenFesta Alpha",
-//                style = MaterialTheme.typography.headlineMedium,
-//            )
-//        },
-//        navigationIcon = {
-//            IconButton(onClick = {
-//                navController.navigate("settings")
-//            }) {
-//                Icon(
-//                    imageVector = Icons.Filled.Settings,
-//                    contentDescription = "Settings",
-//                    tint = LocalContentColor.current
-//                )
-//            }
-//        }
-//    )
 }
