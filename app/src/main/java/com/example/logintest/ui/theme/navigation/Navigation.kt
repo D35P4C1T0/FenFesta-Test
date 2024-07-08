@@ -110,7 +110,7 @@ fun MyApp(userModel: UserViewModel) {
                     arguments = listOf(navArgument("eventId") { type = NavType.IntType })
                 ) { backStackEntry ->
 
-                    currentScreen = Screen.Home
+                    currentScreen = Screen.Settings
 
                     val eventId = backStackEntry.arguments?.getInt("eventId")
                     val viewModel: EventViewModel = viewModel()
@@ -122,6 +122,7 @@ fun MyApp(userModel: UserViewModel) {
 
                     event?.let {
                         EventDetailsScreen(
+                            modifier = Modifier.padding(innerPadding),
                             event = it,
                             onBackPress = { navController.popBackStack() }
                         )
