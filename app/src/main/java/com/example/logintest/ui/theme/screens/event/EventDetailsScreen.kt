@@ -1,6 +1,5 @@
-package com.example.logintest.view
+package com.example.logintest.ui.theme.screens.event
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,10 +17,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Tag
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -72,6 +71,11 @@ fun EventDetailsScreen(event: EventModel, onBackPress: () -> Unit) {
                 icon = Icons.Default.Person,
                 label = "Capacity",
                 value = "${event.capacity_left}/${event.capacity} spots available"
+            )
+            EventDetailItem(
+                icon = Icons.Default.Tag,
+                label = "Tags",
+                value = event.tags
             )
 
             Spacer(modifier = Modifier.height(24.dp))

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,7 +35,6 @@ import androidx.navigation.navArgument
 import com.example.logintest.R
 import com.example.logintest.data.viewmodel.EventViewModel
 import com.example.logintest.data.viewmodel.UserViewModel
-import com.example.logintest.ui.calendar.Calendar
 import com.example.logintest.ui.screens.AccountInfoScreen
 import com.example.logintest.ui.screens.AppInfoScreen
 import com.example.logintest.ui.screens.ChangePasswordScreen
@@ -45,9 +45,11 @@ import com.example.logintest.ui.screens.ManageSubscriptionScreen
 import com.example.logintest.ui.screens.OtherScreen
 import com.example.logintest.ui.screens.SettingsScreen
 import com.example.logintest.ui.theme.screens.MapScreen
+import com.example.logintest.ui.theme.screens.SearchScreen
 import com.example.logintest.ui.theme.screens.ShareAppScreen
 import com.example.logintest.ui.theme.screens.SupportScreen
-import com.example.logintest.view.EventDetailsScreen
+import com.example.logintest.ui.theme.screens.calendar.Calendar
+import com.example.logintest.ui.theme.screens.event.EventDetailsScreen
 import com.example.logintest.view.components.BottomNavigationBar
 import com.example.logintest.view.utils.FirstLaunch
 import com.mapbox.maps.MapboxExperimental
@@ -160,6 +162,15 @@ fun MyApp(userModel: UserViewModel) {
                 composable("share_app") {
                     ShareAppScreen(navController)
                 }
+                composable("search_page") {
+                    currentScreen = Screen.Settings
+                    SearchScreen(
+                        Modifier.padding(innerPadding),
+                        eventsViewModel,
+                        onEventClick = { event ->
+                            navController.navigate("eventDetails/${event.id}")
+                        })
+                }
             }
         })
 }
@@ -178,7 +189,7 @@ fun TopAppBarHome(
                 modifier = Modifier.size(72.dp)
             )
         },
-        navigationIcon = {
+        navigationIcon = @Composable {
             when (currentScreen) {
                 Screen.Home -> {
                     IconButton(onClick = { navController.navigate("settings") }) {
@@ -197,6 +208,20 @@ fun TopAppBarHome(
                         )
                     }
                 }
+            }
+        },
+        actions = @Composable {
+            when (currentScreen) {
+                Screen.Home -> {
+                    IconButton(onClick = { navController.navigate("search_page") }) {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = "Settings"
+                        )
+                    }
+                }
+
+                Screen.Settings -> {} // no icon
             }
         }
     )

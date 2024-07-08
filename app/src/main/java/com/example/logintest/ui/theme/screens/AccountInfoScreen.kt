@@ -36,7 +36,6 @@ import com.example.logintest.R
 import com.example.logintest.data.viewmodel.UserViewModel
 import com.example.logintest.model.UserModel
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AccountInfoScreen(modifier: Modifier, navController: NavController, viewModel: UserViewModel) {

@@ -24,6 +24,7 @@ class EventModelListAdapter {
                     name = json["name"] as? String ?: "",
                     lat = json["lat"] as? String ?: "",
                     lon = json["lon"] as? String ?: "",
+                    tags = json["tags"] as? String ?: "",
                 )
             } catch (e: Exception) {
                 println("Error parsing event: $e")
@@ -61,6 +62,7 @@ class EventModelListAdapter {
                 "name" to event.name,
                 "lat" to event.lat,
                 "lon" to event.lon,
+                "tags" to event.tags,
             )
         }
     }
