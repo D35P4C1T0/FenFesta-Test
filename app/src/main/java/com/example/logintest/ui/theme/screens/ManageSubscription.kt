@@ -4,12 +4,11 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -29,7 +28,7 @@ fun ManageSubscriptionScreen(navController: NavController, viewModel: UserViewMo
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
                         Icon(
-                            imageVector = Icons.Filled.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back",
                         )
                     }
@@ -122,7 +121,7 @@ fun SubscriptionOption(
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleMedium,
-                color = Color(0xFF4CAF50),
+                color = MaterialTheme.colorScheme.primary,
                 fontSize = 20.sp,
                 textAlign = TextAlign.Center // Centrare il testo
             )
@@ -135,7 +134,7 @@ fun SubscriptionOption(
             Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = onSubscribe,
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)) // Verde
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary) // Verde
             ) {
                 Text(text = "Sottoscrivi")
             }
@@ -166,7 +165,7 @@ fun SubscriptionConfirmationDialog(
         confirmButton = {
             TextButton(
                 onClick = onConfirm,
-                colors = ButtonDefaults.textButtonColors(contentColor = Color(0xFF4CAF50)) // Verde
+                colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.primary) // Verde
             ) {
                 Text("Conferma")
             }
@@ -174,7 +173,7 @@ fun SubscriptionConfirmationDialog(
         dismissButton = {
             TextButton(
                 onClick = onDismiss,
-                colors = ButtonDefaults.textButtonColors(contentColor = Color(0xFF4CAF50)) // Verde
+                colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.primary) // Verde
             ) {
                 Text("Annulla")
             }

@@ -104,7 +104,7 @@ fun AccountInfoContent(user: UserModel) {
 
         Button(
             onClick = { /* Handle edit action */ },
-            colors = ButtonDefaults.buttonColors(Color.Green),
+            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
             modifier = Modifier.padding(bottom = 48.dp) // Spazio aggiuntivo sotto il pulsante
         ) {
             Text(text = "Modifica", color = Color.White)
@@ -126,7 +126,7 @@ fun AccountInfoRow(label: String, value: String) {
             modifier = Modifier.padding(start = 8.dp, bottom = 2.dp) // Riduci lo spazio di indentazione e lo spazio verticale
         )
         Divider(
-            color = Color.Green,
+            color = MaterialTheme.colorScheme.primary,
             thickness = 1.dp,
             modifier = Modifier
                 .fillMaxWidth()

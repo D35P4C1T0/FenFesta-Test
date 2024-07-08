@@ -118,7 +118,7 @@ fun ChangePasswordContent(modifier: Modifier) {
                     errorMessage = "Le nuove password non corrispondono"
                 }
             },
-            colors = ButtonDefaults.buttonColors(Color.Green),
+            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = "Modifica", color = Color.White)

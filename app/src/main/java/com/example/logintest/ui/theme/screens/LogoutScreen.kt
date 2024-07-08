@@ -69,7 +69,7 @@ fun LogoutContent(modifier: Modifier = Modifier, showDialog: () -> Unit) {
             imageVector = Icons.Filled.ExitToApp,
             contentDescription = "Logout Icon",
             modifier = Modifier.size(64.dp),
-            tint = Color(0xFF4CAF50) // Verde
+            tint = MaterialTheme.colorScheme.primary // Verde
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -87,7 +87,7 @@ fun LogoutContent(modifier: Modifier = Modifier, showDialog: () -> Unit) {
             onClick = showDialog,
             modifier = Modifier
                 .defaultMinSize(minWidth = 120.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)) // Verde
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary) // Verde
         ) {
             Text(text = "Logout", color = Color.White)
         }
@@ -116,7 +116,7 @@ fun LogoutConfirmationDialog(
         confirmButton = {
             TextButton(
                 onClick = onConfirm,
-                colors = ButtonDefaults.textButtonColors(contentColor = Color(0xFF4CAF50)) // Verde
+                colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.primary) // Verde
             ) {
                 Text("Logout")
             }
@@ -124,7 +124,7 @@ fun LogoutConfirmationDialog(
         dismissButton = {
             TextButton(
                 onClick = onDismiss,
-                colors = ButtonDefaults.textButtonColors(contentColor = Color(0xFF4CAF50)) // Verde
+                colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.primary) // Verde
             ) {
                 Text("Annulla")
             }

@@ -91,7 +91,7 @@ fun SettingItem(label: String, icon: ImageVector, onClick: () -> Unit) {
             )
         }
         Divider(
-            color = Color.Green,
+            color = MaterialTheme.colorScheme.primary,
             thickness = 1.dp,
             modifier = Modifier
                 .fillMaxWidth()

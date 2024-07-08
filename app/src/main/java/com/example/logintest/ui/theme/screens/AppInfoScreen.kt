@@ -50,7 +50,7 @@ fun AppInfoContent(modifier: Modifier = Modifier) {
         Text(
             text = "FenFesta Alpha",
             style = MaterialTheme.typography.headlineLarge,
-            color = Color(0xFF4CAF50)
+            color = MaterialTheme.colorScheme.primary
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
@@ -79,7 +79,7 @@ fun AppInfoContent(modifier: Modifier = Modifier) {
         Text(
             text = "Sviluppato da:",
             style = MaterialTheme.typography.titleMedium,
-            color = Color(0xFF4CAF50),
+            color = MaterialTheme.colorScheme.primary,
             fontSize = 20.sp
         )
         Text(
@@ -99,7 +99,7 @@ fun AppInfoContent(modifier: Modifier = Modifier) {
         Text(
             text = "Privacy Policy e Termini di Servizio:",
             style = MaterialTheme.typography.titleMedium,
-            color = Color(0xFF4CAF50),
+            color = MaterialTheme.colorScheme.primary,
             fontSize = 20.sp
         )
         Text(
@@ -114,7 +114,7 @@ fun AppInfoContent(modifier: Modifier = Modifier) {
         Text(
             text = "Licenze Open Source:",
             style = MaterialTheme.typography.titleMedium,
-            color = Color(0xFF4CAF50),
+            color = MaterialTheme.colorScheme.primary,
             fontSize = 20.sp
         )
         Text(
@@ -129,7 +129,7 @@ fun AppInfoContent(modifier: Modifier = Modifier) {
         Text(
             text = "Note di Rilascio:",
             style = MaterialTheme.typography.titleMedium,
-            color = Color(0xFF4CAF50),
+            color = MaterialTheme.colorScheme.primary,
             fontSize = 20.sp
         )
         Text(
@@ -144,7 +144,7 @@ fun AppInfoContent(modifier: Modifier = Modifier) {
         Text(
             text = "Ringraziamenti:",
             style = MaterialTheme.typography.titleMedium,
-            color = Color(0xFF4CAF50),
+            color = MaterialTheme.colorScheme.primary,
             fontSize = 20.sp
         )
         Text(

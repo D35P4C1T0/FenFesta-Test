@@ -52,7 +52,7 @@ fun SupportContent(modifier: Modifier = Modifier) {
             text = "Contatti per il Supporto",
             style = MaterialTheme.typography.titleLarge.copy(
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF4CAF50)
+                color = MaterialTheme.colorScheme.primary
             ),
             modifier = Modifier.padding(bottom = 16.dp)
         )
@@ -90,7 +90,7 @@ fun ContactItem(label: String, detail: String, icon: ImageVector) {
         Icon(
             imageVector = icon,
             contentDescription = label,
-            tint = Color(0xFF4CAF50),
+            tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.size(40.dp)
         )
         Spacer(modifier = Modifier.width(16.dp))
@@ -116,7 +116,7 @@ fun FAQSection() {
             text = "FAQ",
             style = MaterialTheme.typography.titleMedium.copy(
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF4CAF50)
+                color = MaterialTheme.colorScheme.primary
             ),
             modifier = Modifier.padding(bottom = 16.dp)
         )
@@ -168,7 +168,7 @@ fun FeedbackSection() {
             text = "Inviaci un Feedback",
             style = MaterialTheme.typography.titleMedium.copy(
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF4CAF50)
+                color = MaterialTheme.colorScheme.primary
             ),
             modifier = Modifier.padding(bottom = 16.dp)
         )
@@ -189,7 +189,7 @@ fun FeedbackSection() {
                 // Logica per l'invio del feedback
                 isSubmitted = true
             },
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
@@ -200,7 +200,7 @@ fun FeedbackSection() {
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = "Grazie per il tuo feedback!",
-                color = Color(0xFF4CAF50),
+                color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
         }

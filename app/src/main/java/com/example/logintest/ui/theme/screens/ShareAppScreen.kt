@@ -55,7 +55,7 @@ fun ShareAppContent(modifier: Modifier = Modifier) {
         Text(
             text = "Condividi l'app con i tuoi amici!",
             style = MaterialTheme.typography.titleLarge,
-            color = Color(0xFF4CAF50), // Verde
+            color = MaterialTheme.colorScheme.primary, // Verde
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
@@ -78,7 +78,7 @@ fun ShareAppContent(modifier: Modifier = Modifier) {
                 context.startActivity(chooserIntent)
             },
             modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)) // Verde
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary) // Verde
         ) {
             Icon(
                 imageVector = Icons.Default.Share,
