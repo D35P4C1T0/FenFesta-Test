@@ -2,6 +2,8 @@ package com.example.logintest.ui.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ExitToApp
@@ -17,29 +19,11 @@ import androidx.navigation.NavController
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun LogoutScreen(navController: NavController) {
+fun LogoutScreen(modifier: Modifier, navController: NavController) {
     var showDialog by remember { mutableStateOf(false) }
-
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Logout") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = "Back",
-                        )
-                    }
-                }
-            )
-        },
-        content = { paddingValues ->
-            LogoutContent(
-                modifier = Modifier.padding(paddingValues),
-                showDialog = { showDialog = true }
-            )
-        }
+    LogoutContent(
+        modifier = modifier,
+        showDialog = { showDialog = true }
     )
 
     if (showDialog) {
@@ -61,7 +45,8 @@ fun LogoutContent(modifier: Modifier = Modifier, showDialog: () -> Unit) {
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState(), enabled = true),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

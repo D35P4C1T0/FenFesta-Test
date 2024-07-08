@@ -128,37 +128,37 @@ fun MyApp(userModel: UserViewModel) {
 
                 composable("settings") {
                     currentScreen = Screen.Settings
-                    SettingsScreen(navController)
+                    SettingsScreen(Modifier.padding(innerPadding), navController)
                 }
                 composable("account_info") {
                     AccountInfoScreen(Modifier.padding(innerPadding), navController, userModel)
                 }
                 composable("change_password") {
-                    ChangePasswordScreen(navController)
+                    ChangePasswordScreen(Modifier.padding(innerPadding),navController, userModel)
                 }
                 composable("delete_account") {
-                    DeleteAccountScreen(navController, userModel)
+                    DeleteAccountScreen(Modifier.padding(innerPadding),navController, userModel)
                 }
                 composable("manage_subscription") {
-                    ManageSubscriptionScreen(navController, userModel)
+                    ManageSubscriptionScreen(Modifier.padding(innerPadding), navController, userModel)
                 }
                 composable("light_dark_mode") {
-                    LightDarkModeScreen(navController)
+                    LightDarkModeScreen(navController, Modifier.padding(innerPadding))
                 }
                 composable("logout") {
-                    LogoutScreen(navController)
+                    LogoutScreen(Modifier.padding(innerPadding), navController)
                 }
                 composable("other") {
-                    OtherScreen(navController)
+                    OtherScreen(Modifier.padding(innerPadding),navController)
                 }
                 composable("app_info") {
-                    AppInfoScreen(navController)
+                    AppInfoScreen(Modifier.padding(innerPadding),navController)
                 }
                 composable("support") {
-                    SupportScreen(navController)
+                    SupportScreen(Modifier.padding(innerPadding), navController)
                 }
                 composable("share_app") {
-                    ShareAppScreen(navController)
+                    ShareAppScreen(Modifier.padding(innerPadding),navController)
                 }
             }
         })

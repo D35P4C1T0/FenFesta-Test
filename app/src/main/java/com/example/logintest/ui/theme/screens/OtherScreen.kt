@@ -5,6 +5,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -20,25 +22,8 @@ import androidx.navigation.NavController
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun OtherScreen(navController: NavController) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Altro") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = "Back",
-                        )
-                    }
-                }
-            )
-        },
-        content = { paddingValues ->
-            OtherContent(modifier = Modifier.padding(paddingValues), navController = navController)
-        }
-    )
+fun OtherScreen(modifier: Modifier, navController: NavController) {
+    OtherContent(modifier = modifier, navController = navController)
 }
 
 @Composable
@@ -68,7 +53,7 @@ fun OtherOptionItem(label: String, icon: ImageVector, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(vertical = 8.dp)
+            .padding(vertical = 8.dp),
     ) {
         Row(
             modifier = Modifier

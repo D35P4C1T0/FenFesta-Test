@@ -2,7 +2,9 @@ package com.example.logintest.ui.theme.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -18,25 +20,10 @@ import androidx.navigation.NavController
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun SupportScreen(navController: NavController) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Supporto") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = "Back",
-                        )
-                    }
-                }
-            )
-        },
-        content = { paddingValues ->
-            SupportContent(modifier = Modifier.padding(paddingValues))
-        }
-    )
+fun SupportScreen(modifier: Modifier, navController: NavController) {
+
+    SupportContent(modifier = modifier)
+
 }
 
 @Composable
@@ -44,7 +31,8 @@ fun SupportContent(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState(), enabled = true),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
     ) {

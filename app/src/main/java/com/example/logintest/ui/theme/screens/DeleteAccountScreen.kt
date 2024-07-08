@@ -2,6 +2,8 @@ package com.example.logintest.ui.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
@@ -17,25 +19,9 @@ import com.example.logintest.data.viewmodel.UserViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun DeleteAccountScreen(navController: NavController, viewModel: UserViewModel) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Elimina Account") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = "Back",
-                        )
-                    }
-                }
-            )
-        },
-        content = { paddingValues ->
-            DeleteAccountContent(modifier = Modifier.padding(paddingValues), viewModel = viewModel)
-        }
-    )
+fun DeleteAccountScreen(modifier: Modifier, navController: NavController, viewModel: UserViewModel) {
+    val user = viewModel.getUser()
+    DeleteAccountContent(modifier, viewModel)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,7 +35,8 @@ fun DeleteAccountContent(modifier: Modifier = Modifier, viewModel: UserViewModel
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState(), enabled = true),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

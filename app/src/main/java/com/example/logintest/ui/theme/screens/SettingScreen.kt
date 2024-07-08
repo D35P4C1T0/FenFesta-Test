@@ -5,6 +5,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -20,25 +22,10 @@ import androidx.navigation.NavController
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(navController: NavController) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Impostazioni") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = "Back",
-                        )
-                    }
-                }
-            )
-        },
-        content = { paddingValues ->
-            SettingsContent(navController = navController, modifier = Modifier.padding(paddingValues))
-        }
-    )
+fun SettingsScreen(modifier: Modifier, navController: NavController) {
+
+    SettingsContent(navController = navController, modifier = modifier)
+
 }
 
 @Composable
@@ -57,6 +44,7 @@ fun SettingsContent(navController: NavController, modifier: Modifier = Modifier)
         modifier = modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp)
+
     ) {
         items(settingsOptions) { (label, icon, route) ->
             SettingItem(label = label, icon = icon, onClick = { navController.navigate(route) })
@@ -70,7 +58,7 @@ fun SettingItem(label: String, icon: ImageVector, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(vertical = 8.dp)
+            .padding(vertical = 8.dp),
     ) {
         Row(
             modifier = Modifier

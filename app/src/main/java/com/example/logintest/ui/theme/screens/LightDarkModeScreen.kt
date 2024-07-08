@@ -3,6 +3,8 @@ package com.example.logintest.ui.screens
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
@@ -18,31 +20,13 @@ import com.example.logintest.R
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun LightDarkModeScreen(navController: NavController) {
+fun LightDarkModeScreen(navController: NavController, modifier: Modifier) {
     var isDarkMode by remember { mutableStateOf(false) }
-
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Tema Chiaro/Scuro") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = "Back",
-                        )
-                    }
-                }
-            )
-        },
-        content = { paddingValues ->
             LightDarkModeContent(
                 isDarkMode = isDarkMode,
                 onModeChange = { isDarkMode = it },
-                modifier = Modifier.padding(paddingValues)
+                modifier = modifier
             )
-        }
-    )
 }
 
 @Composable
@@ -54,7 +38,7 @@ fun LightDarkModeContent(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp).verticalScroll(rememberScrollState(), enabled = true),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {

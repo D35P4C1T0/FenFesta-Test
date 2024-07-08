@@ -5,6 +5,8 @@ package com.example.logintest.ui.theme.screens
 import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -20,25 +22,10 @@ import com.example.logintest.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ShareAppScreen(navController: NavController) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Condividi App") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = "Back",
-                        )
-                    }
-                }
-            )
-        },
-        content = { paddingValues ->
-            ShareAppContent(modifier = Modifier.padding(paddingValues))
-        }
-    )
+fun ShareAppScreen(modifier: Modifier, navController: NavController) {
+
+    ShareAppContent(modifier = modifier)
+
 }
 
 @Composable
@@ -48,7 +35,8 @@ fun ShareAppContent(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState(), enabled = true),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

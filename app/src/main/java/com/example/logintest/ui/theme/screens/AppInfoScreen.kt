@@ -18,31 +18,17 @@ import androidx.navigation.NavController
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun AppInfoScreen(navController: NavController) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Informazioni sull'App") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Back")
-                    }
-                }
-            )
-        },
-        content = { paddingValues ->
-            AppInfoContent(modifier = Modifier.padding(paddingValues))
-        }
-    )
+fun AppInfoScreen(modifier: Modifier, navController: NavController) {
+    AppInfoContent(modifier = modifier)
 }
 
 @Composable
 fun AppInfoContent(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
-            .fillMaxSize()
+            //.fillMaxSize()
             .padding(16.dp)
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(rememberScrollState(), enabled = true),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
     ) {

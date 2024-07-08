@@ -18,6 +18,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -34,33 +36,19 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.logintest.data.viewmodel.UserViewModel
+import com.example.logintest.model.UserModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChangePasswordScreen(navController: NavController) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Cambio Password") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = "Back",
-                        )
-                    }
-                }
-            )
-        },
-        content = { paddingValues ->
-            ChangePasswordContent(modifier = Modifier.padding(paddingValues) )
-        }
-    )
+fun ChangePasswordScreen(modifier: Modifier, navController: NavController, userModel: UserViewModel) {
+    val user = userModel.getUser()
+    ChangePasswordContent(user = user, modifier = modifier)
 }
 
 @Composable
-fun ChangePasswordContent(modifier: Modifier) {
+fun ChangePasswordContent(user: UserModel, modifier: Modifier) {
     var currentPassword by remember { mutableStateOf("") }
     var newPassword by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
@@ -70,7 +58,8 @@ fun ChangePasswordContent(modifier: Modifier) {
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState(), enabled = true),
         verticalArrangement = Arrangement.Center
     ) {
         TextField(

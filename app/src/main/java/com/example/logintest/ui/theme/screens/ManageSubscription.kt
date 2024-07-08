@@ -3,6 +3,8 @@ package com.example.logintest.ui.screens
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
@@ -20,36 +22,22 @@ import com.example.logintest.data.viewmodel.UserViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun ManageSubscriptionScreen(navController: NavController, viewModel: UserViewModel) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Gestisci Abbonamento") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back",
-                        )
-                    }
-                }
-            )
-        },
-        content = { paddingValues ->
-            ManageSubscriptionContent(modifier = Modifier.padding(paddingValues))
-        }
-    )
+fun ManageSubscriptionScreen(modifier: Modifier, navController: NavController, viewModel: UserViewModel) {
+
+    ManageSubscriptionContent(modifier = modifier, viewModel)
+
 }
 
 @Composable
-fun ManageSubscriptionContent(modifier: Modifier = Modifier) {
+fun ManageSubscriptionContent(modifier: Modifier = Modifier, viewModel: UserViewModel) {
     var showDialog by remember { mutableStateOf(false) }
     var selectedOption by remember { mutableStateOf<SubscriptionOption?>(null) }
 
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState(), enabled = true),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
