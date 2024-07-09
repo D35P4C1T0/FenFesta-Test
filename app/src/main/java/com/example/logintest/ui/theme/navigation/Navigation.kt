@@ -3,7 +3,6 @@ package com.example.logintest.ui.theme.navigation
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -35,19 +34,19 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.logintest.R
 import com.example.logintest.data.viewmodel.EventViewModel
+import com.example.logintest.data.viewmodel.ThemeViewModel
 import com.example.logintest.data.viewmodel.UserViewModel
 import com.example.logintest.ui.screens.AccountInfoScreen
-import com.example.logintest.data.viewmodel.ThemeOption
-import com.example.logintest.data.viewmodel.ThemeViewModel
 import com.example.logintest.ui.theme.screens.AppInfoScreen
 import com.example.logintest.ui.theme.screens.ChangePasswordScreen
 import com.example.logintest.ui.theme.screens.DeleteAccountScreen
+import com.example.logintest.ui.theme.screens.LoginPage
 import com.example.logintest.ui.theme.screens.LogoutScreen
 import com.example.logintest.ui.theme.screens.ManageSubscriptionScreen
-import com.example.logintest.ui.theme.screens.OtherScreen
-import com.example.logintest.ui.theme.screens.SettingsScreen
 import com.example.logintest.ui.theme.screens.MapScreen
+import com.example.logintest.ui.theme.screens.OtherScreen
 import com.example.logintest.ui.theme.screens.SearchScreen
+import com.example.logintest.ui.theme.screens.SettingsScreen
 import com.example.logintest.ui.theme.screens.ShareAppScreen
 import com.example.logintest.ui.theme.screens.SupportScreen
 import com.example.logintest.ui.theme.screens.ThemeSelector
@@ -156,6 +155,11 @@ fun MyApp(userModel: UserViewModel, themeViewModel: ThemeViewModel) {
                         currentTheme = themeOption,
                         onThemeSelected = { themeViewModel.setThemeOption(it) }
                     )
+                }
+                composable("login") {
+                    LoginPage(
+                        userViewModel = userModel,
+                        onLoginSuccess = { println("Login success") })
                 }
                 composable("logout") {
                     LogoutScreen(navController)

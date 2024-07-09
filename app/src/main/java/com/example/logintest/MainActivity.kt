@@ -11,12 +11,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.logintest.data.settings.DataStoreUserPreference
 import com.example.logintest.data.settings.ThemePreferences
+import com.example.logintest.data.viewmodel.LoginState
 import com.example.logintest.data.viewmodel.ThemeOption
 import com.example.logintest.data.viewmodel.ThemeViewModel
 import com.example.logintest.data.viewmodel.ThemeViewModelFactory
 import com.example.logintest.data.viewmodel.UserViewModel
+import com.example.logintest.data.viewmodel.UserViewModelFactory
 import com.example.logintest.ui.theme.AppTheme
 import com.example.logintest.ui.theme.navigation.MyApp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -24,7 +29,6 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 class MainActivity : ComponentActivity() {
 
-    private val userViewModel: UserViewModel by viewModels()
     private val themeViewModel: ThemeViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,7 +40,6 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             DynamicTheme(
-                userViewModel = userViewModel,
                 themeViewModel = viewModel(factory = themeViewModelFactory)
             )
         }
@@ -44,12 +47,31 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun DynamicTheme(userViewModel: UserViewModel, themeViewModel: ThemeViewModel) {
+fun DynamicTheme(themeViewModel: ThemeViewModel) {
+    // Theme
     val themeOption by themeViewModel.themeOption.collectAsState()
     val darkTheme = when (themeOption) {
         ThemeOption.LIGHT -> false
         ThemeOption.DARK -> true
         ThemeOption.SYSTEM -> isSystemInDarkTheme()
+    }
+
+    // Login
+    val context = LocalContext.current
+    val userPreferences = remember { DataStoreUserPreference(context) }
+    val userViewModel: UserViewModel = viewModel(
+        factory = UserViewModelFactory(userPreferences)
+    )
+    val loginState by userViewModel.loginState.collectAsState()
+
+    when (loginState) {
+        is LoginState.Success -> {
+            // Show main app content
+            //MainContent(userViewModel)
+        }
+        else -> {
+            //LoginScreen(userViewModel = userViewModel)
+        }
     }
 
     AppTheme(darkTheme = darkTheme) {

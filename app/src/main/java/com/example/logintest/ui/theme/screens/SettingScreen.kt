@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.automirrored.filled.Login
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -48,7 +50,8 @@ fun SettingsContent(navController: NavController, modifier: Modifier = Modifier)
         Triple("Eliminazione Account", Icons.Filled.Delete, "delete_account"),
         Triple("Gestisci Abbonamento", Icons.Filled.MailOutline, "manage_subscription"),
         Triple("Light/Dark Mode", Icons.Filled.Build, "light_dark_mode"),
-        Triple("Logout", Icons.Filled.ExitToApp, "logout"),
+        Triple("Login", Icons.AutoMirrored.Filled.Login, "login"),
+        Triple("Logout", Icons.AutoMirrored.Filled.ExitToApp, "logout"),
         Triple("Altro", Icons.Filled.Menu, "other")
     )
 
