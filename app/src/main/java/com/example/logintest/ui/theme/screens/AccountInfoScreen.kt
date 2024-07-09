@@ -1,8 +1,8 @@
-package com.example.logintest.ui.screens
+package com.example.logintest.ui.theme.screens
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,13 +13,19 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -29,8 +35,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.logintest.R
 import com.example.logintest.data.viewmodel.UserViewModel
@@ -38,9 +45,19 @@ import com.example.logintest.model.UserModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AccountInfoScreen(modifier: Modifier, navController: NavController, viewModel: UserViewModel) {
-    val user = viewModel.getUser()
-    AccountInfoContent(user = user, modifier = modifier)
+fun AccountInfoScreen(modifier: Modifier, viewModel: UserViewModel, navController: NavHostController) {
+    val userData by viewModel.userData.collectAsState()
+
+    if (userData != null) {
+        AccountInfoContent(user = userData!!, modifier = modifier)
+    } else {
+        // empty info
+        EmptyAccountInfo(
+            modifier = modifier,
+            onCreateAccountClick = { navController.navigate("register")},
+            onLoginClick = { navController.navigate("login") }
+        )
+    }
 }
 
 @Composable
@@ -53,9 +70,7 @@ fun AccountInfoContent(user: UserModel, modifier: Modifier) {
             .verticalScroll(rememberScrollState(), enabled = true),
         horizontalAlignment = Alignment.CenterHorizontally,
 
-    ) {
-//        Spacer(modifier = Modifier.height(23.dp)) // Aggiungi spazio sopra all'immagine
-
+        ) {
         if (profileImage.value != null) {
             Image(
                 painter = rememberAsyncImagePainter(profileImage.value),
@@ -90,7 +105,8 @@ fun AccountInfoContent(user: UserModel, modifier: Modifier) {
         AccountInfoRow(label = "Email", value = user.email)
         AccountInfoRow(
             label = "Eventi partecipati",
-            value = user.eventsParticipated.toString()
+//            value = user.eventsParticipated.toString()
+            value = "69"
         )
         AccountInfoRow(label = "id", value = user.id.toString())
 
@@ -99,7 +115,10 @@ fun AccountInfoContent(user: UserModel, modifier: Modifier) {
         Button(
             onClick = { /* Handle edit action */ },
             colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
-            modifier = Modifier.padding(top = 48.dp, bottom = 48.dp) // Spazio aggiuntivo sotto il pulsante
+            modifier = Modifier.padding(
+                top = 48.dp,
+                bottom = 48.dp
+            ) // Spazio aggiuntivo sotto il pulsante
         ) {
             Text(text = "Modifica", color = Color.White)
         }
@@ -129,5 +148,66 @@ fun AccountInfoRow(label: String, value: String) {
                 .fillMaxWidth()
                 .padding(vertical = 4.dp) // Riduci lo spazio verticale
         )
+    }
+}
+
+@Composable
+fun EmptyAccountInfo(
+    modifier: Modifier,
+    onCreateAccountClick: () -> Unit,
+    onLoginClick: () -> Unit
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Icon(
+            imageVector = Icons.Outlined.AccountCircle,
+            contentDescription = "Account Icon",
+            modifier = Modifier.size(120.dp),
+            tint = MaterialTheme.colorScheme.primary
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Text(
+            text = "Ciao Festaiolo!",
+            style = MaterialTheme.typography.headlineMedium,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = "Crea un account o accedi per usufruire delle funzionalità personalizzate e salvare le tue preferenze.",
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(horizontal = 16.dp)
+        )
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        Button(
+            onClick = onCreateAccountClick,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 32.dp)
+        ) {
+            Text("Crea Account")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedButton(
+            onClick = onLoginClick,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 32.dp)
+        ) {
+            Text("Accedi")
+        }
     }
 }

@@ -60,7 +60,7 @@ fun DynamicTheme(themeViewModel: ThemeViewModel) {
     val context = LocalContext.current
     val userPreferences = remember { DataStoreUserPreference(context) }
     val userViewModel: UserViewModel = viewModel(
-        factory = UserViewModelFactory(userPreferences)
+        factory = UserViewModelFactory(userPreferences, context)
     )
     val loginState by userViewModel.loginState.collectAsState()
 

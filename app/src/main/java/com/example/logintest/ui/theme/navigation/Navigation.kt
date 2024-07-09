@@ -36,7 +36,7 @@ import com.example.logintest.R
 import com.example.logintest.data.viewmodel.EventViewModel
 import com.example.logintest.data.viewmodel.ThemeViewModel
 import com.example.logintest.data.viewmodel.UserViewModel
-import com.example.logintest.ui.screens.AccountInfoScreen
+import com.example.logintest.ui.theme.screens.AccountInfoScreen
 import com.example.logintest.ui.theme.screens.AppInfoScreen
 import com.example.logintest.ui.theme.screens.ChangePasswordScreen
 import com.example.logintest.ui.theme.screens.DeleteAccountScreen
@@ -45,6 +45,7 @@ import com.example.logintest.ui.theme.screens.LogoutScreen
 import com.example.logintest.ui.theme.screens.ManageSubscriptionScreen
 import com.example.logintest.ui.theme.screens.MapScreen
 import com.example.logintest.ui.theme.screens.OtherScreen
+import com.example.logintest.ui.theme.screens.RegistrationScreen
 import com.example.logintest.ui.theme.screens.SearchScreen
 import com.example.logintest.ui.theme.screens.SettingsScreen
 import com.example.logintest.ui.theme.screens.ShareAppScreen
@@ -138,7 +139,7 @@ fun MyApp(userModel: UserViewModel, themeViewModel: ThemeViewModel) {
                     SettingsScreen(navController)
                 }
                 composable("account_info") {
-                    AccountInfoScreen(Modifier.padding(innerPadding), navController, userModel)
+                    AccountInfoScreen(Modifier.padding(innerPadding), userModel, navController)
                 }
                 composable("change_password") {
                     ChangePasswordScreen(navController)
@@ -158,12 +159,26 @@ fun MyApp(userModel: UserViewModel, themeViewModel: ThemeViewModel) {
                 }
                 composable("login") {
                     LoginPage(
+                        Modifier.padding(innerPadding),
                         userViewModel = userModel,
-                        onLoginSuccess = { println("Login success") })
+                        onLoginSuccess = { println("Login success") },
+                        onNavigateToRegister = { navController.navigate("register") },
+                        goBackToHome = { navController.navigate("mapbox") }
+                    )
                 }
+
+                composable("register") {
+                    RegistrationScreen(
+                        userModel,
+                        onRegistrationSuccess = { println("Registration success") },
+                        onNavigateToLogin = { navController.navigate("login") }
+                    )
+                }
+
                 composable("logout") {
-                    LogoutScreen(navController)
+                    LogoutScreen(Modifier.padding(innerPadding), navController, userModel)
                 }
+
                 composable("other") {
                     OtherScreen(navController)
                 }
