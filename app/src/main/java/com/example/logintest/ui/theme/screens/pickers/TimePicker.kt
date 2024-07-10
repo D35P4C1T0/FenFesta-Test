@@ -16,11 +16,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.width
-import androidx.compose.ui.unit.dp
-import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,13 +48,15 @@ fun MyTimePicker(modifier: Modifier) {
         )
     }
 
+    val formattedTime = String.format("%02d:%02d", selectedHour, selectedMinute)
+
     OutlinedTextField(
-        value = "$selectedHour:$selectedMinute",
+        value = formattedTime,
         onValueChange = { },
         modifier = modifier,
         label = { Text("Ora") },
         trailingIcon = {
-            // Button to open the date picker
+            // Button to open the time picker
             TextButton(onClick = { showTimePicker = true }) {
                 Icon(imageVector = Icons.Filled.AccessTime, contentDescription = "time")
             }
