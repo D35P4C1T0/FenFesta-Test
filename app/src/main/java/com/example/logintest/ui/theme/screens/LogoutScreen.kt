@@ -1,60 +1,93 @@
-package com.example.logintest.ui.screens
+package com.example.logintest.ui.theme.screens
 
-import android.annotation.SuppressLint
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ExitToApp
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.logintest.data.viewmodel.LogoutState
+import com.example.logintest.data.viewmodel.UserViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun LogoutScreen(modifier: Modifier, navController: NavController) {
+fun LogoutScreen(modifier: Modifier, navController: NavController, userViewModel: UserViewModel) {
     var showDialog by remember { mutableStateOf(false) }
+    val logoutState by userViewModel.logoutState.collectAsState()
+
     LogoutContent(
         modifier = modifier,
-        showDialog = { showDialog = true }
+        showDialog = { showDialog = true },
+        logoutState = logoutState
     )
 
     if (showDialog) {
         LogoutConfirmationDialog(
             onConfirm = {
                 showDialog = false
-                // Aggiungi la logica di logout qui, ad esempio navigare alla schermata di login
-                navController.navigate("login") {
-                    popUpTo(navController.graph.startDestinationId) { inclusive = true }
-                }
+                userViewModel.logout()
             },
             onDismiss = { showDialog = false }
         )
     }
+
+    // Handle logout state
+    LaunchedEffect(logoutState) {
+        when (logoutState) {
+            is LogoutState.Success -> {
+                // Navigate to login screen after successful logout
+                navController.navigate("login") {
+                    popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                }
+            }
+
+            else -> {} // Handle other states if needed
+        }
+    }
 }
 
 @Composable
-fun LogoutContent(modifier: Modifier = Modifier, showDialog: () -> Unit) {
+fun LogoutContent(
+    modifier: Modifier = Modifier,
+    showDialog: () -> Unit,
+    logoutState: LogoutState
+) {
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState(), enabled = true),
+            .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(
-            imageVector = Icons.Filled.ExitToApp,
+            imageVector = Icons.AutoMirrored.Filled.ExitToApp,
             contentDescription = "Logout Icon",
             modifier = Modifier.size(64.dp),
-            tint = MaterialTheme.colorScheme.primary // Verde
+            tint = MaterialTheme.colorScheme.primary
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -70,11 +103,22 @@ fun LogoutContent(modifier: Modifier = Modifier, showDialog: () -> Unit) {
 
         Button(
             onClick = showDialog,
-            modifier = Modifier
-                .defaultMinSize(minWidth = 120.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary) // Verde
+            modifier = Modifier.defaultMinSize(minWidth = 120.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+            enabled = logoutState !is LogoutState.Loading
         ) {
             Text(text = "Logout", color = Color.White)
+        }
+
+        when (logoutState) {
+            is LogoutState.Loading -> CircularProgressIndicator(modifier = Modifier.padding(top = 16.dp))
+            is LogoutState.Error -> Text(
+                text = logoutState.message,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(top = 16.dp)
+            )
+
+            else -> {} // Handle other states if needed
         }
     }
 }
@@ -101,7 +145,7 @@ fun LogoutConfirmationDialog(
         confirmButton = {
             TextButton(
                 onClick = onConfirm,
-                colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.primary) // Verde
+                colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.primary)
             ) {
                 Text("Logout")
             }
@@ -109,7 +153,7 @@ fun LogoutConfirmationDialog(
         dismissButton = {
             TextButton(
                 onClick = onDismiss,
-                colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.primary) // Verde
+                colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.primary)
             ) {
                 Text("Annulla")
             }

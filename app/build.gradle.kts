@@ -109,4 +109,10 @@ dependencies {
 
     // http logging
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.1")
+
+    // datastore
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    // dynamic status bar
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
 }

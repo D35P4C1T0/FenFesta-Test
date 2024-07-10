@@ -10,7 +10,7 @@ import android.os.Parcelable
 @JsonClass(generateAdapter = true)
 data class UserModel(
     val id: Int,
-    val password: String,
+//    val password: String,
     val username: String,
     @Json(name = "first_name")
     val firstName: String,
@@ -19,14 +19,17 @@ data class UserModel(
     val email: String,
     @Json(name = "is_staff")
     val isStaff: Boolean,
-    val eventsParticipated: Int,
-    val profileImageUrl: String? = null
-) /*{
+//    val eventsParticipated: Int,
+    val profileImageUrl: String? = null,
+    val isActive: Boolean = true,
+    val dateJoined: String? = null
+)
+/*{
     constructor(parcel: Parcel) : this(   /*questa funzione è stata creata per accountinfoscreen, per poter passare
                                             al navigation.kt un parcelable, da cancellare poi se non serve più*/
         parcel.readInt(),
-        parcel.readString().toString(),
-        parcel.readString().toString(),
+        parcel.readString().toString(),     // EDO IO LA PARCELLA LA CHIEDEREI ALLO SPICHIATRA DIO CANE
+        parcel.readString().toString(),     // dannato chatgpt
         parcel.readString().toString(),
         parcel.readString().toString(),
         parcel.readString().toString(),
@@ -62,12 +65,3 @@ data class UserModel(
         }
     }
 }*/
-
-
-fun jsonToUser(json: String): UserModel {
-    val moshi = Moshi.Builder()
-        .add(KotlinJsonAdapterFactory())
-        .build()
-    val jsonAdapter = moshi.adapter(UserModel::class.java)
-    return jsonAdapter.fromJson(json)!!
-}

@@ -1,4 +1,4 @@
-package com.example.logintest.ui.calendar
+package com.example.logintest.ui.theme.screens.calendar
 
 // colors
 import androidx.compose.foundation.background

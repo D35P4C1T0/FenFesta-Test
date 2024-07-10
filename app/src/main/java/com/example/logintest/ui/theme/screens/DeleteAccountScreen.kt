@@ -1,4 +1,4 @@
-package com.example.logintest.ui.screens
+package com.example.logintest.ui.theme.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*

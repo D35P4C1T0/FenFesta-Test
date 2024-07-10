@@ -1,59 +1,52 @@
-package com.example.logintest.view
+package com.example.logintest.ui.theme.screens.event
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.example.logintest.model.EventModel
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Tag
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp
+import com.example.logintest.model.EventModel
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun EventDetailsScreen(event: EventModel, onBackPress: () -> Unit) {
+fun EventDetailsScreen(modifier: Modifier, event: EventModel, onBackPress: () -> Unit) {
+    val spacerHeight = 16.dp
     Box(modifier = Modifier.fillMaxSize()) {
         // Background color based on event color
         Column(
-            modifier = Modifier
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(16.dp)
+                .padding(28.dp)
         ) {
-            // Top bar with back button and event name
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(onClick = onBackPress) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                }
-                Text(
-                    text = event.name,
-                    style = MaterialTheme.typography.headlineSmall,
-                    modifier = Modifier.padding(start = 16.dp)
-                )
-            }
+            // Event description
+            Text(
+                text = "Description",
+                style = MaterialTheme.typography.headlineSmall,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            Text(text = event.description)
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -73,16 +66,11 @@ fun EventDetailsScreen(event: EventModel, onBackPress: () -> Unit) {
                 label = "Capacity",
                 value = "${event.capacity_left}/${event.capacity} spots available"
             )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Event description
-            Text(
-                text = "Description",
-                style = MaterialTheme.typography.headlineSmall,
-                modifier = Modifier.padding(bottom = 8.dp)
+            EventDetailItem(
+                icon = Icons.Default.Tag,
+                label = "Tags",
+                value = event.tags
             )
-            Text(text = event.description)
 
             Spacer(modifier = Modifier.height(32.dp))
 

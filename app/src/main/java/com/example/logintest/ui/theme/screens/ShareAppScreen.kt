@@ -1,5 +1,3 @@
-// ShareAppScreen.kt
-
 package com.example.logintest.ui.theme.screens
 
 import android.content.Intent

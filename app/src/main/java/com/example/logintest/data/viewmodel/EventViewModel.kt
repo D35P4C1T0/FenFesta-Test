@@ -19,6 +19,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 import java.time.LocalDateTime
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
@@ -37,6 +38,9 @@ class EventViewModel : ViewModel() {
 
     private val _currentMonth = MutableStateFlow(YearMonth.now())
     val currentMonth: StateFlow<YearMonth> = _currentMonth
+
+    private val _searchResults = MutableStateFlow<List<EventModel>>(emptyList())
+    val searchResults: StateFlow<List<EventModel>> = _searchResults
 
     private val apiService: ApiService
 
@@ -123,6 +127,25 @@ class EventViewModel : ViewModel() {
         fetchEventsByMonth(yearMonth.monthValue)
     }
 
+    fun searchEvents(keyword: String) {
+        viewModelScope.launch {
+            try {
+                println("Searching events with keyword: $keyword")
+                val results = apiService.searchEvents(keyword)
+                _searchResults.value = results
+                println("Found ${results.size} events matching the keyword")
+            } catch (e: Exception) {
+                println("Error searching events: ${e.message}")
+                e.printStackTrace()
+                _searchResults.value = emptyList()
+            }
+        }
+    }
+
+    fun clearSearch() {
+        _searchResults.value = emptyList()
+    }
+
     interface ApiService {
         @GET("events") // Replace with your actual endpoint
         suspend fun getEvents(): List<EventModel>
@@ -132,5 +155,8 @@ class EventViewModel : ViewModel() {
 
         @GET("events/month/{month}")
         suspend fun getEventsByMonth(@Path("month") month: Int): List<EventModel>
+
+        @GET("events/search")
+        suspend fun searchEvents(@Query("keyword") keyword: String): List<EventModel>
     }
 }
