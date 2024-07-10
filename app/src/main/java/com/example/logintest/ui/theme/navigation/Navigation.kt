@@ -1,7 +1,7 @@
 package com.example.logintest.ui.theme.navigation
 
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -110,10 +110,8 @@ fun MyApp(
             NavHost(
                 navController = navController,
                 startDestination = "mapbox",
-                enterTransition = { EnterTransition.None },
-                exitTransition = { ExitTransition.None },
-                popEnterTransition = { EnterTransition.None },
-                popExitTransition = { ExitTransition.None }
+                enterTransition = { fadeIn() },
+                exitTransition = { fadeOut() },
             ) {
                 composable("mapbox") {
                     currentScreen = Screen.Home
