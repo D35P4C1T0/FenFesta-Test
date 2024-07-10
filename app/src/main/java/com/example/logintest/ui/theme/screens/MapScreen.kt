@@ -4,6 +4,9 @@ package com.example.logintest.ui.theme.screens
 import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -68,83 +71,89 @@ fun MapScreen(
         }
     )
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-    ) {
-        val context = LocalContext.current
-        MapboxMap(
-            Modifier.fillMaxSize(),
-            locationComponentSettings = LocationComponentSettings
-                .Builder(createDefault2DPuck(withBearing = true))
-                .setEnabled(true)
-                .setPuckBearingEnabled(true)
-                .setPuckBearing(PuckBearing.HEADING)
-                .build(),
-            mapViewportState = mapViewportState,
-            style = {
-                MapStyle(style = Style.MAPBOX_STREETS)
-            }
-        )
-        {
-
-            LaunchedEffect(Unit) {
-                viewModel.fetchEvents()
-            }
-
-            Annotations(eventList = eventsData, navController = navController)
-            MapEffect(Unit) { mapView ->
-                // Use mapView to access all the Mapbox Maps APIs including plugins etc.
-                // For example, to enable debug mode:
-                mapView.mapboxMap.style?.localizeLabels(locale = Locale("it"))
-                mapView.location.pulsingEnabled = true
-                mapView.location.apply {
-                    enabled = true
-                    locationPuck = createDefault2DPuck(withBearing = true)
-                    puckBearingEnabled = true
-                    puckBearing = PuckBearing.HEADING
+    AnimatedVisibility(visible = true, enter = fadeIn(), exit = fadeOut()) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+        ) {
+            val context = LocalContext.current
+            MapboxMap(
+                Modifier.fillMaxSize(),
+                locationComponentSettings = LocationComponentSettings
+                    .Builder(createDefault2DPuck(withBearing = true))
+                    .setEnabled(true)
+                    .setPuckBearingEnabled(true)
+                    .setPuckBearing(PuckBearing.HEADING)
+                    .build(),
+                mapViewportState = mapViewportState,
+                style = {
+                    MapStyle(style = Style.MAPBOX_STREETS)
                 }
-            }
-        }
+            )
+            {
 
-        LaunchedEffect(key1 = relaunch) {
-            try {
-                val location = LocationService().getCurrentLocation(context)
-                println("Location: $location")
-                if (firstLaunch.isFirstLaunch) {
-                    mapViewportState.flyTo(
-                        cameraOptions = CameraOptions.Builder()
-                            .center(location)
-                            .zoom(15.0)
-                            .build(),
-                        animationOptions = MapAnimationOptions.mapAnimationOptions { duration(3500) },
-                    )
-                    firstLaunch.toggleFirstLaunch()
+                LaunchedEffect(Unit) {
+                    viewModel.fetchEvents()
                 }
 
-            } catch (e: LocationService.LocationServiceException) {
-                when (e) {
-                    is LocationService.LocationServiceException.LocationDisabledException -> {
-                        //handle location disabled, show dialog or a snack-bar to enable location
-                        println("Location disabled")
+                Annotations(eventList = eventsData, navController = navController)
+                MapEffect(Unit) { mapView ->
+                    // Use mapView to access all the Mapbox Maps APIs including plugins etc.
+                    // For example, to enable debug mode:
+                    mapView.mapboxMap.style?.localizeLabels(locale = Locale("it"))
+                    mapView.location.pulsingEnabled = true
+                    mapView.location.apply {
+                        enabled = true
+                        locationPuck = createDefault2DPuck(withBearing = true)
+                        puckBearingEnabled = true
+                        puckBearing = PuckBearing.HEADING
                     }
+                }
+            }
 
-                    is LocationService.LocationServiceException.MissingPermissionException -> {
-                        permissionRequest.launch(
-                            arrayOf(
-                                Manifest.permission.ACCESS_FINE_LOCATION,
-                                Manifest.permission.ACCESS_COARSE_LOCATION
-                            )
+            LaunchedEffect(key1 = relaunch) {
+                try {
+                    val location = LocationService().getCurrentLocation(context)
+                    println("Location: $location")
+                    if (firstLaunch.isFirstLaunch) {
+                        mapViewportState.flyTo(
+                            cameraOptions = CameraOptions.Builder()
+                                .center(location)
+                                .zoom(15.0)
+                                .build(),
+                            animationOptions = MapAnimationOptions.mapAnimationOptions {
+                                duration(
+                                    3500
+                                )
+                            },
                         )
+                        firstLaunch.toggleFirstLaunch()
                     }
 
-                    is LocationService.LocationServiceException.NoNetworkEnabledException -> {
-                        //handle no network enabled, show dialog or a snack-bar to enable network
-                        println("No network enabled")
-                    }
+                } catch (e: LocationService.LocationServiceException) {
+                    when (e) {
+                        is LocationService.LocationServiceException.LocationDisabledException -> {
+                            //handle location disabled, show dialog or a snack-bar to enable location
+                            println("Location disabled")
+                        }
 
-                    is LocationService.LocationServiceException.UnknownException -> {
-                        //handle unknown exception
-                        println("Unknown exception")
+                        is LocationService.LocationServiceException.MissingPermissionException -> {
+                            permissionRequest.launch(
+                                arrayOf(
+                                    Manifest.permission.ACCESS_FINE_LOCATION,
+                                    Manifest.permission.ACCESS_COARSE_LOCATION
+                                )
+                            )
+                        }
+
+                        is LocationService.LocationServiceException.NoNetworkEnabledException -> {
+                            //handle no network enabled, show dialog or a snack-bar to enable network
+                            println("No network enabled")
+                        }
+
+                        is LocationService.LocationServiceException.UnknownException -> {
+                            //handle unknown exception
+                            println("Unknown exception")
+                        }
                     }
                 }
             }

@@ -17,7 +17,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.logintest.data.settings.DataStoreUserPreference
 import com.example.logintest.data.settings.SearchHistoryDataStore
 import com.example.logintest.data.settings.ThemePreferences
-import com.example.logintest.data.viewmodel.LoginState
 import com.example.logintest.data.viewmodel.SearchHistoryViewModel
 import com.example.logintest.data.viewmodel.ThemeOption
 import com.example.logintest.data.viewmodel.ThemeViewModel
@@ -68,18 +67,6 @@ fun DynamicTheme(themeViewModel: ThemeViewModel) {
     val searchHistoryDataStore = remember { SearchHistoryDataStore(context) }
     val searchHistoryViewModel: SearchHistoryViewModel =
         viewModel { SearchHistoryViewModel(searchHistoryDataStore) }
-
-
-    when (loginState) {
-        is LoginState.Success -> {
-            // Show main app content
-            //MainContent(userViewModel)
-        }
-
-        else -> {
-            //LoginScreen(userViewModel = userViewModel)
-        }
-    }
 
     AppTheme(darkTheme = darkTheme) {
         SystemUIController(isDarkTheme = darkTheme)

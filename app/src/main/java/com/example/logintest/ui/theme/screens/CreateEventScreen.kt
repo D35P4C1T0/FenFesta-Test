@@ -8,13 +8,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -52,6 +50,9 @@ fun CreateEventScreen(
     var eventTags by remember { mutableStateOf("") }
     var eventDescription by remember { mutableStateOf("") }
     var eventLocation by remember { mutableStateOf("") }
+
+
+
 
     Column(
         modifier = modifier
@@ -131,8 +132,7 @@ fun CreateEventScreen(
                 onValueChange = { eventLocation = it },
                 label = { Text("Luogo") },
                 modifier = Modifier
-                    .weight(1f)
-                    .height(100.dp)  // Match the height of the image box
+                    .weight(1f) // Match the height of the image box
             )
         }
 

@@ -1,7 +1,7 @@
 package com.example.logintest.ui.theme.navigation
 
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -58,6 +58,10 @@ import com.example.logintest.ui.theme.screens.SupportScreen
 import com.example.logintest.ui.theme.screens.ThemeSelector
 import com.example.logintest.ui.theme.screens.calendar.Calendar
 import com.example.logintest.ui.theme.screens.event.EventDetailsScreen
+import com.example.logintest.ui.utils.NavAnimations.enterTransition
+import com.example.logintest.ui.utils.NavAnimations.exitTransition
+import com.example.logintest.ui.utils.NavAnimations.popEnterTransition
+import com.example.logintest.ui.utils.NavAnimations.popExitTransition
 import com.example.logintest.view.components.BottomNavigationBar
 import com.example.logintest.view.utils.FirstLaunch
 import com.mapbox.maps.MapboxExperimental
@@ -110,10 +114,27 @@ fun MyApp(
             NavHost(
                 navController = navController,
                 startDestination = "mapbox",
-                enterTransition = { fadeIn() },
-                exitTransition = { fadeOut() },
+                enterTransition = { enterTransition },
+                exitTransition = { exitTransition },
+                popEnterTransition = { popEnterTransition },
+                popExitTransition = { popExitTransition }
             ) {
-                composable("mapbox") {
+                composable(
+                    route = "mapbox",
+                    enterTransition = {
+                        when (initialState.destination.route) {
+                            "settings" -> slideInHorizontally(initialOffsetX = { it })
+                            "calendar" -> slideInHorizontally(initialOffsetX = { -it })
+                            else -> null
+                        }
+                    },
+                    exitTransition = {
+                        when (targetState.destination.route) {
+                            "settings" -> slideOutHorizontally(targetOffsetX = { it })
+                            "calendar" -> slideOutHorizontally(targetOffsetX = { -it })
+                            else -> null
+                        }
+                    }) {
                     currentScreen = Screen.Home
                     MapScreen(
                         modifier = Modifier.padding(innerPadding),
@@ -123,7 +144,20 @@ fun MyApp(
                         navController = navController
                     )
                 }
-                composable("calendar") {
+                composable(
+                    route = "calendar",
+                    enterTransition = {
+                        when (initialState.destination.route) {
+                            "settings", "mapbox" -> slideInHorizontally(initialOffsetX = { it })
+                            else -> null
+                        }
+                    },
+                    exitTransition = {
+                        when (targetState.destination.route) {
+                            "settings", "mapbox" -> slideOutHorizontally(targetOffsetX = { it })
+                            else -> null
+                        }
+                    }) {
                     currentScreen = Screen.Home
                     Calendar(modifier = Modifier.padding(innerPadding), onEventClick = { event ->
                         navController.navigate("eventDetails/${event.id}")
@@ -153,7 +187,21 @@ fun MyApp(
                         )
                     }
                 }
-                composable("settings") {
+                composable(
+                    route = "settings",
+                    enterTransition = {
+                        when (initialState.destination.route) {
+                            "mapbox", "calendar" -> slideInHorizontally(initialOffsetX = { -it })
+                            else -> null
+                        }
+                    },
+                    exitTransition = {
+                        when (targetState.destination.route) {
+                            "mapbox", "calendar" -> slideOutHorizontally(targetOffsetX = { -it })
+                            else -> null
+                        }
+                    }
+                ) {
                     currentScreen = Screen.Settings
                     SettingsScreen(
                         modifier = Modifier.padding(innerPadding),
