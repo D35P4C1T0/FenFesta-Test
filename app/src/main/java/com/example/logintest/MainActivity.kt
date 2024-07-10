@@ -15,8 +15,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.logintest.data.settings.DataStoreUserPreference
+import com.example.logintest.data.settings.SearchHistoryDataStore
 import com.example.logintest.data.settings.ThemePreferences
 import com.example.logintest.data.viewmodel.LoginState
+import com.example.logintest.data.viewmodel.SearchHistoryViewModel
 import com.example.logintest.data.viewmodel.ThemeOption
 import com.example.logintest.data.viewmodel.ThemeViewModel
 import com.example.logintest.data.viewmodel.ThemeViewModelFactory
@@ -63,12 +65,17 @@ fun DynamicTheme(themeViewModel: ThemeViewModel) {
         factory = UserViewModelFactory(userPreferences, context)
     )
     val loginState by userViewModel.loginState.collectAsState()
+    val searchHistoryDataStore = remember { SearchHistoryDataStore(context) }
+    val searchHistoryViewModel: SearchHistoryViewModel =
+        viewModel { SearchHistoryViewModel(searchHistoryDataStore) }
+
 
     when (loginState) {
         is LoginState.Success -> {
             // Show main app content
             //MainContent(userViewModel)
         }
+
         else -> {
             //LoginScreen(userViewModel = userViewModel)
         }
@@ -76,7 +83,11 @@ fun DynamicTheme(themeViewModel: ThemeViewModel) {
 
     AppTheme(darkTheme = darkTheme) {
         SystemUIController(isDarkTheme = darkTheme)
-        MyApp(userViewModel, themeViewModel)
+        MyApp(
+            userModel = userViewModel,
+            themeViewModel = themeViewModel,
+            searchHistoryViewModel = searchHistoryViewModel
+        )
     }
 }
 

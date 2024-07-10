@@ -34,6 +34,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.logintest.R
 import com.example.logintest.data.viewmodel.EventViewModel
+import com.example.logintest.data.viewmodel.SearchHistoryViewModel
 import com.example.logintest.data.viewmodel.ThemeViewModel
 import com.example.logintest.data.viewmodel.UserViewModel
 import com.example.logintest.ui.theme.screens.AccountInfoScreen
@@ -65,7 +66,7 @@ enum class Screen {
 
 @OptIn(MapboxExperimental::class)
 @Composable
-fun MyApp(userModel: UserViewModel, themeViewModel: ThemeViewModel) {
+fun MyApp(userModel: UserViewModel, themeViewModel: ThemeViewModel, searchHistoryViewModel: SearchHistoryViewModel) {
 
     val navController = rememberNavController()
     val mapViewportState = rememberMapViewportState {}
@@ -74,6 +75,7 @@ fun MyApp(userModel: UserViewModel, themeViewModel: ThemeViewModel) {
     }
 
     val eventsViewModel = viewModel<EventViewModel>()
+
     val themeOption by themeViewModel.themeOption.collectAsState()
 
     var currentScreen by remember(navController) {
@@ -196,6 +198,7 @@ fun MyApp(userModel: UserViewModel, themeViewModel: ThemeViewModel) {
                     SearchScreen(
                         Modifier.padding(innerPadding),
                         eventsViewModel,
+                        searchHistoryViewModel,
                         onEventClick = { event ->
                             navController.navigate("eventDetails/${event.id}")
                         })
