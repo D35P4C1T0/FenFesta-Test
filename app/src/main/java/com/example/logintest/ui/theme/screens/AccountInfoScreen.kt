@@ -40,23 +40,45 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.logintest.R
+import com.example.logintest.data.viewmodel.LoginState
 import com.example.logintest.data.viewmodel.UserViewModel
 import com.example.logintest.model.UserModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AccountInfoScreen(modifier: Modifier, viewModel: UserViewModel, navController: NavHostController) {
-    val userData by viewModel.userData.collectAsState()
+fun AccountInfoScreen(
+    modifier: Modifier,
+    userViewModel: UserViewModel,
+    navController: NavHostController
+) {
+    val userData by userViewModel.userData.collectAsState()
+    val loginState by userViewModel.loginState.collectAsState()
 
-    if (userData != null) {
-        AccountInfoContent(user = userData!!, modifier = modifier)
-    } else {
-        // empty info
-        EmptyAccountInfo(
-            modifier = modifier,
-            onCreateAccountClick = { navController.navigate("register")},
-            onLoginClick = { navController.navigate("login") }
-        )
+    when (loginState) {
+        is LoginState.Success -> {
+            userViewModel.profileInfo() // fetches profile info
+            userData?.let {
+                AccountInfoContent(user = userData!!, modifier = modifier)
+            } ?: run {
+                Text(
+                    text = "Errore Loggato ma no dati",
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = modifier
+                )
+            }
+        }
+
+        is LoginState.Idle -> {
+            EmptyAccountInfo(
+                modifier = modifier,
+                onCreateAccountClick = { navController.navigate("register") },
+                onLoginClick = { navController.navigate("login") }
+            )
+        }
+
+        else -> {
+            Text(text = "Errore", style = MaterialTheme.typography.bodyLarge)
+        }
     }
 }
 

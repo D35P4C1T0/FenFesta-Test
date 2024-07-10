@@ -19,6 +19,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
 import java.util.concurrent.TimeUnit
 
@@ -65,6 +66,7 @@ class UserViewModel(
             if (accessToken.isNotEmpty()) {
                 _loginState.value = LoginState.Success
                 // Optionally fetch user data here
+                profileInfo()
             }
         }
     }
@@ -195,6 +197,31 @@ class UserViewModel(
             }
         }
     }
+
+    fun profileInfo() {
+        viewModelScope.launch {
+            try {
+                val response = apiService.getProfile()
+                println("Profile info response: $response")
+                if (response.isSuccessful) {
+                    response.body()?.let { profileInfoResponse ->
+                        _userData.value = UserModel(
+                            id = profileInfoResponse.user.id,
+                            username = profileInfoResponse.user.username,
+                            firstName = profileInfoResponse.user.firstName,
+                            lastName = profileInfoResponse.user.lastName,
+                            email = profileInfoResponse.user.email,
+                            isStaff = profileInfoResponse.user.isStaff,
+                            isActive = profileInfoResponse.user.isActive,
+                            dateJoined = profileInfoResponse.user.dateJoined
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                println("Error fetching profile info: ${e.message}")
+            }
+        }
+    }
 }
 
 sealed class AuthState
@@ -223,6 +250,12 @@ sealed class LogoutState {
 data class AuthResponse(
     @Json(name = "access") val accessToken: String,
     @Json(name = "refresh") val refreshToken: String,
+    @Json(name = "user") val user: JsonToUser
+)
+
+
+@JsonClass(generateAdapter = true)
+data class ProfileInfoResponse(
     @Json(name = "user") val user: JsonToUser
 )
 
@@ -266,6 +299,9 @@ interface ApiService {
 
     @POST("auth/register")
     suspend fun register(@Body registrationRequest: RegistrationRequest): Response<AuthResponse>
+
+    @GET("users/profile")
+    suspend fun getProfile(): Response<ProfileInfoResponse>
 }
 
 class AuthInterceptor(private val userPreferences: DataStoreUserPreference) : Interceptor {
