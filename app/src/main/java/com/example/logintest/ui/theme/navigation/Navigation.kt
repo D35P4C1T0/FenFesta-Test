@@ -15,8 +15,10 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -45,6 +47,7 @@ import com.example.logintest.data.viewmodel.UserViewModel
 import com.example.logintest.ui.theme.screens.AccountInfoScreen
 import com.example.logintest.ui.theme.screens.AppInfoScreen
 import com.example.logintest.ui.theme.screens.ChangePasswordScreen
+import com.example.logintest.ui.theme.screens.CreateEventScreen
 import com.example.logintest.ui.theme.screens.DeleteAccountScreen
 import com.example.logintest.ui.theme.screens.LoginPage
 import com.example.logintest.ui.theme.screens.LogoutScreen

@@ -3,28 +3,44 @@ package com.example.logintest.ui.theme.screens
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Event
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
 import com.example.logintest.R
-import java.util.*
+import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,131 +82,136 @@ fun CreateEventScreen(
         true
     )
 
-    Scaffold(
-        modifier = modifier.fillMaxSize(),
-        content = { innerPadding ->
-            Column(
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .padding(16.dp)
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState(), enabled = true),
-                verticalArrangement = Arrangement.SpaceBetween
+
+    Column(
+        modifier = modifier
+            .padding(16.dp)
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState(), enabled = true),
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        Column {
+            OutlinedTextField(
+                value = eventName,
+                onValueChange = { eventName = it },
+                label = { Text("Nome Evento") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Column {
-                    OutlinedTextField(
-                        value = eventName,
-                        onValueChange = { eventName = it },
-                        label = { Text("Nome Evento") },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        OutlinedTextField(
-                            value = eventDate,
-                            onValueChange = { eventDate = it },
-                            label = { Text("Data") },
-                            modifier = Modifier.weight(1f),
-                            trailingIcon = {
-                                IconButton(onClick = { datePickerDialog.show() }) {
-                                    Icon(imageVector = Icons.Default.Event, contentDescription = "Pick Date")
-                                }
-                            }
-                        )
-
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        OutlinedTextField(
-                            value = eventTime,
-                            onValueChange = { eventTime = it },
-                            label = { Text("Ora") },
-                            modifier = Modifier.weight(1f),
-                            trailingIcon = {
-                                IconButton(onClick = { timePickerDialog.show() }) {
-                                    Icon(imageVector = Icons.Default.Event, contentDescription = "Pick Time")
-                                }
-                            }
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    OutlinedTextField(
-                        value = eventTags,
-                        onValueChange = { eventTags = it },
-                        label = { Text("Tag") },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    OutlinedTextField(
-                        value = eventDescription,
-                        onValueChange = { eventDescription = it },
-                        label = { Text("Descrizione") },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(150.dp),
-                        maxLines = 5
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-                }
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column {
-                        Text(text = "Immagine")
-                        Box(
-                            modifier = Modifier
-                                .size(100.dp)
-                                .background(Color.Gray)
-                        ) {
-                            // Placeholder for image picker
-                            IconButton(onClick = { /* TODO: Implement image picker */ }) {
-                                Icon(
-                                    painter = rememberImagePainter(R.drawable.logo_fen_festa),
-                                    contentDescription = "Add Image"
-                                )
-                            }
+                OutlinedTextField(
+                    value = eventDate,
+                    onValueChange = { eventDate = it },
+                    label = { Text("Data") },
+                    modifier = Modifier.weight(1f),
+                    trailingIcon = {
+                        IconButton(onClick = { datePickerDialog.show() }) {
+                            Icon(
+                                imageVector = Icons.Default.Event,
+                                contentDescription = "Pick Date"
+                            )
                         }
                     }
-                    Spacer(modifier = Modifier.width(8.dp))
-                    OutlinedTextField(
-                        value = eventLocation,
-                        onValueChange = { eventLocation = it },
-                        label = { Text("Luogo") },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f)
-                    )
-                }
-                Spacer(modifier = Modifier.height(32.dp))
+                )
 
+                Spacer(modifier = Modifier.width(8.dp))
+
+                OutlinedTextField(
+                    value = eventTime,
+                    onValueChange = { eventTime = it },
+                    label = { Text("Ora") },
+                    modifier = Modifier.weight(1f),
+                    trailingIcon = {
+                        IconButton(onClick = { timePickerDialog.show() }) {
+                            Icon(
+                                imageVector = Icons.Default.Event,
+                                contentDescription = "Pick Time"
+                            )
+                        }
+                    }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedTextField(
+                value = eventTags,
+                onValueChange = { eventTags = it },
+                label = { Text("Tag") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedTextField(
+                value = eventDescription,
+                onValueChange = { eventDescription = it },
+                label = { Text("Descrizione") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(150.dp),
+                maxLines = 5
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column {
+                Text(text = "Immagine", modifier = Modifier.padding(start = 4.dp))
                 Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.Center
+                    modifier = Modifier
+                        .size(100.dp)
+                        .border(1.dp, MaterialTheme.colorScheme.outline, MaterialTheme.shapes.small)
+                        .background(MaterialTheme.colorScheme.surface)
                 ) {
-                    Button(
-                        onClick = {
-                            // Handle event creation
-                            Toast.makeText(context, "Evento creato", Toast.LENGTH_SHORT).show()
-                            navController.popBackStack()
-                        },
-                        modifier = Modifier.size(150.dp, 50.dp) // Aumenta le dimensioni del pulsante
-                    ) {
-                        Text(text = "Crea", fontSize = 18.sp)  // Aumenta la dimensione del testo
+                    // Placeholder for image picker
+                    IconButton(
+                        modifier = Modifier.fillMaxSize(),
+                        onClick = { /* TODO: Implement image picker */ }) {
+                        Icon(
+                            painter = rememberAsyncImagePainter(R.drawable.logo_fen_festa),
+                            contentDescription = "Add Image",
+                            modifier = Modifier.fillMaxSize(),
+                        )
                     }
                 }
             }
+            Spacer(modifier = Modifier.width(8.dp))
+            OutlinedTextField(
+                value = eventLocation,
+                onValueChange = { eventLocation = it },
+                label = { Text("Luogo") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            )
         }
-    )
+        Spacer(modifier = Modifier.height(32.dp))
+
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            Button(
+                onClick = {
+                    // Handle event creation
+                    Toast.makeText(context, "Evento creato", Toast.LENGTH_SHORT).show()
+                    navController.popBackStack()
+                },
+                modifier = Modifier.size(150.dp, 50.dp) // Aumenta le dimensioni del pulsante
+            ) {
+                Text(text = "Crea", fontSize = 18.sp)  // Aumenta la dimensione del testo
+            }
+        }
+    }
 }
