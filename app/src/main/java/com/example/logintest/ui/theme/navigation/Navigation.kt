@@ -66,7 +66,11 @@ enum class Screen {
 
 @OptIn(MapboxExperimental::class)
 @Composable
-fun MyApp(userModel: UserViewModel, themeViewModel: ThemeViewModel, searchHistoryViewModel: SearchHistoryViewModel) {
+fun MyApp(
+    userModel: UserViewModel,
+    themeViewModel: ThemeViewModel,
+    searchHistoryViewModel: SearchHistoryViewModel
+) {
 
     val navController = rememberNavController()
     val mapViewportState = rememberMapViewportState {}
@@ -138,7 +142,11 @@ fun MyApp(userModel: UserViewModel, themeViewModel: ThemeViewModel, searchHistor
 
                 composable("settings") {
                     currentScreen = Screen.Settings
-                    SettingsScreen(navController)
+                    SettingsScreen(
+                        modifier = Modifier.padding(innerPadding),
+                        navController = navController,
+                        userViewModel = userModel,
+                    )
                 }
                 composable("account_info") {
                     AccountInfoScreen(Modifier.padding(innerPadding), userModel, navController)

@@ -56,7 +56,7 @@ fun SearchScreen(
     Column(modifier = modifier.padding(16.dp)) {
         TextField(
             value = searchQuery,
-            placeholder = { Text("Search events...") },
+            placeholder = { Text("Cerca...") },
             singleLine = true,
             onValueChange = {
                 searchQuery = it
@@ -68,10 +68,6 @@ fun SearchScreen(
             },
             modifier = Modifier
                 .fillMaxWidth()
-//                .clickable {
-//                    println("Search bar clicked")
-//                    isHistoryExpanded = true
-//                }
                 .onFocusChanged {
                     isSearchBarFocused = it.isFocused
                 },
