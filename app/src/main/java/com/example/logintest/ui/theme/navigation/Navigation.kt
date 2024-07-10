@@ -3,11 +3,9 @@ package com.example.logintest.ui.theme.navigation
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
@@ -28,8 +26,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -94,7 +90,12 @@ fun MyApp(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = { TopAppBarHome(navController = navController, currentScreen = currentScreen) },
-        bottomBar = { BottomNavigationBar(navController) },
+        bottomBar = {
+            when (currentScreen) {
+                Screen.Home -> BottomNavigationBar(navController = navController)
+                Screen.Settings -> {}
+            }
+        },
         floatingActionButton = {
             if (currentScreen != Screen.Settings) {
                 FloatingActionButton(
@@ -172,7 +173,11 @@ fun MyApp(
                     DeleteAccountScreen(Modifier.padding(innerPadding), navController, userModel)
                 }
                 composable("manage_subscription") {
-                    ManageSubscriptionScreen(Modifier.padding(innerPadding), navController, userModel)
+                    ManageSubscriptionScreen(
+                        Modifier.padding(innerPadding),
+                        navController,
+                        userModel
+                    )
                 }
                 composable("light_dark_mode") {
                     ThemeSelector(
@@ -257,6 +262,7 @@ fun TopAppBarHome(
                         )
                     }
                 }
+
                 Screen.Settings -> {
                     IconButton(onClick = { navController.navigateUp() }) {
                         Icon(

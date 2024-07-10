@@ -1,7 +1,6 @@
 package com.example.logintest.ui.theme.screens
 
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
+//import android.app.DatePickerDialog
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -19,14 +18,17 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Event
+import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material3.Button
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TimePicker
+import androidx.compose.material3.TimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,6 +42,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.logintest.R
+import com.example.logintest.ui.theme.screens.pickers.MyDatePicker
+import com.example.logintest.ui.theme.screens.pickers.MyTimePicker
 import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -61,26 +65,26 @@ fun CreateEventScreen(
     val calendar = Calendar.getInstance()
 
     // Function to show DatePicker
-    val datePickerDialog = DatePickerDialog(
-        context,
-        { _, year, month, dayOfMonth ->
-            eventDate = "$dayOfMonth/${month + 1}/$year"
-        },
-        calendar.get(Calendar.YEAR),
-        calendar.get(Calendar.MONTH),
-        calendar.get(Calendar.DAY_OF_MONTH)
-    )
-
-    // Function to show TimePicker
-    val timePickerDialog = TimePickerDialog(
-        context,
-        { _, hourOfDay, minute ->
-            eventTime = "$hourOfDay:$minute"
-        },
-        calendar.get(Calendar.HOUR_OF_DAY),
-        calendar.get(Calendar.MINUTE),
-        true
-    )
+//    val datePickerDialog = DatePickerDialog(
+//        context,
+//        { _, year, month, dayOfMonth ->
+//            eventDate = "$dayOfMonth/${month + 1}/$year"
+//        },
+//        calendar.get(Calendar.YEAR),
+//        calendar.get(Calendar.MONTH),
+//        calendar.get(Calendar.DAY_OF_MONTH)
+//    )
+//
+//    // Function to show TimePicker
+//    val timePickerDialog = TimePickerDialog(
+//        context,
+//        { _, hourOfDay, minute ->
+//            eventTime = "$hourOfDay:$minute"
+//        },
+//        calendar.get(Calendar.HOUR_OF_DAY),
+//        calendar.get(Calendar.MINUTE),
+//        true
+//    )
 
 
     Column(
@@ -104,37 +108,30 @@ fun CreateEventScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                OutlinedTextField(
-                    value = eventDate,
-                    onValueChange = { eventDate = it },
-                    label = { Text("Data") },
-                    modifier = Modifier.weight(1f),
-                    trailingIcon = {
-                        IconButton(onClick = { datePickerDialog.show() }) {
-                            Icon(
-                                imageVector = Icons.Default.Event,
-                                contentDescription = "Pick Date"
-                            )
-                        }
-                    }
-                )
+//                OutlinedTextField(
+//                    value = eventDate,
+//                    onValueChange = { eventDate = it },
+//                    label = { Text("Data") },
+//                    modifier = Modifier.weight(1f),
+//                    trailingIcon = {
+//                        MyDatePicker()
+//                    }
+//                )
 
+                MyDatePicker(modifier.weight(1f))
                 Spacer(modifier = Modifier.width(8.dp))
+                MyTimePicker(modifier.weight(1f))
 
-                OutlinedTextField(
-                    value = eventTime,
-                    onValueChange = { eventTime = it },
-                    label = { Text("Ora") },
-                    modifier = Modifier.weight(1f),
-                    trailingIcon = {
-                        IconButton(onClick = { timePickerDialog.show() }) {
-                            Icon(
-                                imageVector = Icons.Default.Event,
-                                contentDescription = "Pick Time"
-                            )
-                        }
-                    }
-                )
+//                OutlinedTextField(
+//                    value = eventTime,
+//                    onValueChange = { eventTime = it },
+//                    label = { Text("Ora") },
+//                    modifier = Modifier.weight(1f),
+//                    trailingIcon = {
+//                        MyTimePicker()
+//                    }
+//                )
+
             }
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -176,10 +173,12 @@ fun CreateEventScreen(
                 ) {
                     // Placeholder for image picker
                     IconButton(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .size(50.dp),
                         onClick = { /* TODO: Implement image picker */ }) {
                         Icon(
-                            painter = rememberAsyncImagePainter(R.drawable.logo_fen_festa),
+                            painter = rememberAsyncImagePainter(R.drawable.logo_fen_festa_monocromo),
                             contentDescription = "Add Image",
                             modifier = Modifier.fillMaxSize(),
                         )
