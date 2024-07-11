@@ -1,5 +1,7 @@
 package com.example.logintest.data.viewmodel
 
+import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.logintest.data.remote.ApiService
@@ -41,6 +43,7 @@ class EventViewModel : ViewModel() {
     private val apiService: ApiService
 
     init {
+        Log.d("EventViewModel", "ViewModel created: ${this.hashCode()}")
         val moshi = Moshi.Builder()
             .add(EventModelListAdapter())
             .add(LocalTimeAdapter())
@@ -66,8 +69,12 @@ class EventViewModel : ViewModel() {
         apiService = retrofit.create(ApiService::class.java)
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        Log.d("EventViewModel", "ViewModel cleared: ${this.hashCode()}")
+    }
 
-    fun fetchEvents() {
+    suspend fun fetchEvents() {
         viewModelScope.launch {
             try {
                 val response = apiService.getEvents()
@@ -81,7 +88,7 @@ class EventViewModel : ViewModel() {
         }
     }
 
-    fun fetchEventById(id: Int) {
+    suspend fun fetchEventById(id: Int) {
         viewModelScope.launch {
             try {
                 val fetchedEvent = apiService.getEvent(id)
@@ -94,8 +101,7 @@ class EventViewModel : ViewModel() {
         }
     }
 
-
-    fun fetchEventsByMonth(month: Int) {
+    suspend fun fetchEventsByMonth(month: Int) {
         viewModelScope.launch {
             try {
                 val fetchedEvents = apiService.getEventsByMonth(month)
@@ -109,7 +115,7 @@ class EventViewModel : ViewModel() {
         }
     }
 
-    fun updateCurrentMonth(yearMonth: YearMonth) {
+    suspend fun updateCurrentMonth(yearMonth: YearMonth) {
         _currentMonth.value = yearMonth
         fetchEventsByMonth(yearMonth.monthValue)
     }

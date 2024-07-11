@@ -10,6 +10,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -23,10 +24,7 @@ import androidx.navigation.NavController
 import com.example.logintest.data.location.LocationService
 import com.example.logintest.data.viewmodel.EventViewModel
 import com.example.logintest.view.components.Annotations
-import com.example.logintest.view.utils.FirstLaunch
-import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
-import com.mapbox.maps.MapView
 import com.mapbox.maps.MapboxExperimental
 import com.mapbox.maps.Style
 import com.mapbox.maps.extension.compose.MapEffect
@@ -36,7 +34,6 @@ import com.mapbox.maps.extension.compose.style.MapStyle
 import com.mapbox.maps.extension.localization.localizeLabels
 import com.mapbox.maps.plugin.PuckBearing
 import com.mapbox.maps.plugin.animation.MapAnimationOptions
-import com.mapbox.maps.plugin.animation.camera
 import com.mapbox.maps.plugin.locationcomponent.createDefault2DPuck
 import com.mapbox.maps.plugin.locationcomponent.generated.LocationComponentSettings
 import com.mapbox.maps.plugin.locationcomponent.location
@@ -47,12 +44,19 @@ import java.util.Locale
 fun MapScreen(
     modifier: Modifier = Modifier,
     mapViewportState: MapViewportState,
-    firstLaunch: FirstLaunch,
     viewModel: EventViewModel = viewModel(),
     navController: NavController,
 ) {
 
     val eventsData by viewModel.events.collectAsState()
+
+    val isFirstTime = remember { mutableStateOf(true) }
+    // Dispose the isFirstTime value when the composable is disposed
+    DisposableEffect(Unit) {
+        onDispose {
+            isFirstTime.value = false
+        }
+    }
 
     var relaunch by remember {
         mutableStateOf(false)
@@ -88,7 +92,7 @@ fun MapScreen(
                 style = {
                     MapStyle(style = Style.MAPBOX_STREETS)
                 },
-                scaleBar = {  }, // no scale bar
+                scaleBar = { }, // no scale bar
             )
             {
 
@@ -115,7 +119,7 @@ fun MapScreen(
                 try {
                     val location = LocationService().getCurrentLocation(context)
                     println("Location: $location")
-                    if (firstLaunch.isFirstLaunch) {
+                    if (isFirstTime.value) {
                         mapViewportState.flyTo(
                             cameraOptions = CameraOptions.Builder()
                                 .center(location)
@@ -127,7 +131,7 @@ fun MapScreen(
                                 )
                             },
                         )
-                        firstLaunch.toggleFirstLaunch()
+                        isFirstTime.value = false
                     }
 
                 } catch (e: LocationService.LocationServiceException) {
@@ -159,26 +163,5 @@ fun MapScreen(
                 }
             }
         }
-    }
-}
-
-object MapUtils {
-    fun mapFlyTo(mapView: MapView, point: Point) {
-        mapView.camera.flyTo(
-            CameraOptions.Builder()
-                .center(point)
-                .zoom(15.0)
-                .build()
-        )
-    }
-
-    fun centerToLocation(mapView: MapView, point: Point) {
-        mapView.camera.flyTo(
-            CameraOptions.Builder()
-                .center(point)
-                .zoom(15.0)
-                .build()
-        )
-        mapView.mapboxMap.setCamera(CameraOptions.Builder().center(point).build())
     }
 }

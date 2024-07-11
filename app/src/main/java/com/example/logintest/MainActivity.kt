@@ -17,6 +17,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.logintest.data.settings.DataStoreUserPreference
 import com.example.logintest.data.settings.SearchHistoryDataStore
 import com.example.logintest.data.settings.ThemePreferences
+import com.example.logintest.data.viewmodel.EventViewModel
+import com.example.logintest.data.viewmodel.EventViewModelFactory
 import com.example.logintest.data.viewmodel.SearchHistoryViewModel
 import com.example.logintest.data.viewmodel.ThemeOption
 import com.example.logintest.data.viewmodel.ThemeViewModel
@@ -63,7 +65,11 @@ fun DynamicTheme(themeViewModel: ThemeViewModel) {
     val userViewModel: UserViewModel = viewModel(
         factory = UserViewModelFactory(userPreferences, context)
     )
-    val loginState by userViewModel.loginState.collectAsState()
+
+    val eventViewModel: EventViewModel = viewModel(
+        factory = EventViewModelFactory()
+    )
+
     val searchHistoryDataStore = remember { SearchHistoryDataStore(context) }
     val searchHistoryViewModel: SearchHistoryViewModel =
         viewModel { SearchHistoryViewModel(searchHistoryDataStore) }
@@ -73,7 +79,8 @@ fun DynamicTheme(themeViewModel: ThemeViewModel) {
         MyApp(
             userModel = userViewModel,
             themeViewModel = themeViewModel,
-            searchHistoryViewModel = searchHistoryViewModel
+            searchHistoryViewModel = searchHistoryViewModel,
+            eventsViewModel = eventViewModel,
         )
     }
 }

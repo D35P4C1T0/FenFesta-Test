@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -16,11 +15,13 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -29,6 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -44,6 +46,7 @@ import com.example.logintest.data.viewmodel.EventViewModel
 import com.example.logintest.model.EventModel
 import com.example.logintest.ui.theme.Selection
 import com.example.logintest.view.components.EventList
+import com.example.logintest.view.utils.LocalFirstRenderTracker
 import com.kizitonwose.calendar.compose.CalendarState
 import com.kizitonwose.calendar.compose.HorizontalCalendar
 import com.kizitonwose.calendar.compose.rememberCalendarState
@@ -54,32 +57,43 @@ import com.kizitonwose.calendar.core.OutDateStyle
 import com.kizitonwose.calendar.core.daysOfWeek
 import com.kizitonwose.calendar.core.nextMonth
 import com.kizitonwose.calendar.core.previousMonth
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.YearMonth
 import java.util.Locale
 
-//private val events = EventGenerator.generateEvents().groupBy { it.date.toLocalDate() }
-private val inActiveTextColor = Color(0xFFD3D3D3)
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Calendar(
     modifier: Modifier,
     viewModel: EventViewModel = viewModel(),
     onEventClick: (EventModel) -> Unit,
 ) {
+    var isRefreshing by remember { mutableStateOf(false) }
+    val refreshState = rememberPullToRefreshState()
+
+    val firstRenderTracker = LocalFirstRenderTracker.current
+    val isFirstRender by firstRenderTracker.isFirstRender
+
     val currentMonth = remember { YearMonth.now() }
     val startMonth = remember { currentMonth.minusMonths(500) }
     val endMonth = remember { currentMonth.plusMonths(500) }
     var selection by remember { mutableStateOf<CalendarDay?>(null) }
     val daysOfWeek = remember { daysOfWeek() }
 
-    val allEvents by viewModel.monthEvents.collectAsState()
+    val allEvents by viewModel.events.collectAsState() // all events
 
-    LaunchedEffect(currentMonth) {
-        viewModel.fetchEventsByMonth(currentMonth.monthValue)
+    LaunchedEffect(Unit) {
+        println("first launch allEvents: ${allEvents.size}")
+        if (isFirstRender) {
+            println("This is the first render of MyComponent")
+            viewModel.fetchEvents() // get all events at first launch
+            firstRenderTracker.markRendered()
+        }
     }
+
 
     // Derive eventsByDate from allEvents
     val eventsByDate by remember(allEvents) {
@@ -112,75 +126,92 @@ fun Calendar(
         viewModel.updateCurrentMonth(visibleMonth.yearMonth)
     }
 
-    Column(
-        modifier = modifier
-            .fillMaxHeight()
-            .padding(horizontal = 16.dp)
-            .verticalScroll(rememberScrollState()),
+    PullToRefreshBox(
+        modifier = modifier,
+        state = refreshState,
+        isRefreshing = isRefreshing,
+        onRefresh = {
+            isRefreshing = true
+            coroutineScope.launch {
+                delay(500)
+                viewModel.fetchEvents()
+                isRefreshing = false
+            }
+        },
     ) {
-        Box(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxHeight()
-                .border(2.dp, MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.medium),
-            contentAlignment = Alignment.TopCenter
+                .padding(horizontal = 16.dp),
         ) {
-            SimpleCalendarTitle(
-                modifier = Modifier.padding(8.dp),
-                currentMonth = visibleMonth.yearMonth,
-                goToPrevious = {
-                    coroutineScope.launch {
-                        val newMonth = state.firstVisibleMonth.yearMonth.previousMonth
-                        state.animateScrollToMonth(newMonth)
-                        viewModel.updateCurrentMonth(newMonth)
-                    }
-                },
-                goToNext = {
-                    coroutineScope.launch {
-                        val newMonth = state.firstVisibleMonth.yearMonth.nextMonth
-                        state.animateScrollToMonth(newMonth)
-                        viewModel.updateCurrentMonth(newMonth)
-                    }
-                },
-            )
-            HorizontalCalendar(
-                modifier = Modifier
-                    .padding(top = 45.dp)
-                    .wrapContentWidth(),
-                state = state,
-                dayContent = { day ->
-                    val eventsNumber = if (day.position == DayPosition.MonthDate) {
-                        eventsByDate[day.date]?.size ?: 0
-                    } else {
-                        0
-                    }
-
-                    Day(
-                        day = day,
-                        isSelected = selection == day,
-                        eventsNumber = eventsNumber,
-                    ) { clicked ->
-                        selection = clicked
-                    }
-                },
-                monthHeader = {
-                    MonthHeader(
-                        modifier = Modifier.padding(vertical = 8.dp),
-                        daysOfWeek = daysOfWeek,
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .border(
+                            2.dp,
+                            MaterialTheme.colorScheme.surfaceVariant,
+                            MaterialTheme.shapes.medium
+                        ),
+                    contentAlignment = Alignment.TopCenter
+                ) {
+                    SimpleCalendarTitle(
+                        modifier = Modifier.padding(8.dp),
+                        currentMonth = visibleMonth.yearMonth,
+                        goToPrevious = {
+                            coroutineScope.launch {
+                                val newMonth = state.firstVisibleMonth.yearMonth.previousMonth
+                                state.animateScrollToMonth(newMonth)
+                                viewModel.updateCurrentMonth(newMonth)
+                            }
+                        },
+                        goToNext = {
+                            coroutineScope.launch {
+                                val newMonth = state.firstVisibleMonth.yearMonth.nextMonth
+                                state.animateScrollToMonth(newMonth)
+                                viewModel.updateCurrentMonth(newMonth)
+                            }
+                        },
                     )
-                },
-            )
+                    HorizontalCalendar(
+                        modifier = Modifier
+                            .padding(top = 45.dp)
+                            .wrapContentWidth(),
+                        state = state,
+                        dayContent = { day ->
+                            val eventsNumber = if (day.position == DayPosition.MonthDate) {
+                                eventsByDate[day.date]?.size ?: 0
+                            } else {
+                                0
+                            }
+
+                            Day(
+                                day = day,
+                                isSelected = selection == day,
+                                eventsNumber = eventsNumber,
+                            ) { clicked ->
+                                selection = clicked
+                            }
+                        },
+                        monthHeader = {
+                            MonthHeader(
+                                modifier = Modifier.padding(vertical = 8.dp),
+                                daysOfWeek = daysOfWeek,
+                            )
+                        },
+                    )
+                }
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(8.dp))
+                EventList(
+                    modifier = Modifier.fillMaxWidth(),
+                    events = eventsInSelectedDate.value,
+                    onEventClick = onEventClick
+                )
+            }
         }
-//        LazyColumn(modifier = Modifier.fillMaxWidth()) {
-//            items(items = eventsInSelectedDate.value) { flight ->
-//                EventInformation(flight)
-//            }
-//        }
-        Spacer(modifier = Modifier.height(8.dp))
-        EventList(
-            modifier = Modifier.fillMaxWidth(),
-            events = eventsInSelectedDate.value,
-            onEventClick = onEventClick
-        )
     }
 }
 

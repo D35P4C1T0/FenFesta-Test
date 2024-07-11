@@ -51,8 +51,8 @@ fun DeleteAccountContent(modifier: Modifier = Modifier, viewModel: UserViewModel
             value = confirmationText,
             onValueChange = { confirmationText = it },
             label = { Text("Inserisci la tua email per confermare") },
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = Color.White // Cambia il colore di sfondo qui
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.White // Cambia il colore di sfondo qui
             ),
             modifier = Modifier.fillMaxWidth(),
             singleLine = true
