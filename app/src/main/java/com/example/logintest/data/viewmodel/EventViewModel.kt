@@ -5,9 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.logintest.data.remote.ApiService
 import com.example.logintest.data.remote.EventModelListAdapter
 import com.example.logintest.data.remote.LocalTimeAdapter
-import com.example.logintest.data.remote.RetrofitClient
 import com.example.logintest.model.EventModel
-import com.squareup.moshi.FromJson
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,9 +18,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
-import java.time.LocalDateTime
 import java.time.YearMonth
-import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
 
 class EventViewModel : ViewModel() {
@@ -56,7 +52,7 @@ class EventViewModel : ViewModel() {
         }
 
         val okHttpClient = OkHttpClient.Builder()
-            .addInterceptor(loggingInterceptor)
+//            .addInterceptor(loggingInterceptor)
             .connectTimeout(15, TimeUnit.SECONDS)
             .readTimeout(15, TimeUnit.SECONDS)
             .build()
@@ -74,12 +70,8 @@ class EventViewModel : ViewModel() {
     fun fetchEvents() {
         viewModelScope.launch {
             try {
-                println("Fetching events...")
                 val response = apiService.getEvents()
-                println("Raw response: $response")
                 _events.value = response
-                println("Fetched ${response.size} events")
-                println("First event: ${response.firstOrNull()}")
             } catch (e: Exception) {
                 println("Error fetching events: ${e.message}")
                 e.printStackTrace()
@@ -92,10 +84,8 @@ class EventViewModel : ViewModel() {
     fun fetchEventById(id: Int) {
         viewModelScope.launch {
             try {
-                println("Fetching event with id $id...")
                 val fetchedEvent = apiService.getEvent(id)
                 _selectedEvent.value = fetchedEvent
-                println("Fetched event: $fetchedEvent")
             } catch (e: Exception) {
                 println("Error fetching event with id $id: ${e.message}")
                 e.printStackTrace()
@@ -108,11 +98,8 @@ class EventViewModel : ViewModel() {
     fun fetchEventsByMonth(month: Int) {
         viewModelScope.launch {
             try {
-                println("Fetching events for month $month...")
                 val fetchedEvents = apiService.getEventsByMonth(month)
                 _monthEvents.value = fetchedEvents
-                println("Fetched ${fetchedEvents.size} events for month $month")
-                println("First event of the month: ${fetchedEvents.firstOrNull()}")
             } catch (e: Exception) {
                 println("Error fetching events for month $month: ${e.message}")
                 e.printStackTrace()
@@ -130,10 +117,8 @@ class EventViewModel : ViewModel() {
     fun searchEvents(keyword: String) {
         viewModelScope.launch {
             try {
-                println("Searching events with keyword: $keyword")
                 val results = apiService.searchEvents(keyword)
                 _searchResults.value = results
-                println("Found ${results.size} events matching the keyword")
             } catch (e: Exception) {
                 println("Error searching events: ${e.message}")
                 e.printStackTrace()

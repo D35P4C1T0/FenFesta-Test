@@ -88,7 +88,7 @@ fun AccountInfoContent(user: UserModel, modifier: Modifier) {
 
     Column(
         modifier = modifier
-            .padding(16.dp)
+            .padding(32.dp)
             .verticalScroll(rememberScrollState(), enabled = true),
         horizontalAlignment = Alignment.CenterHorizontally,
 

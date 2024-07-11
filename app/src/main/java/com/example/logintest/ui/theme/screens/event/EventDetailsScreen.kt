@@ -1,5 +1,8 @@
 package com.example.logintest.ui.theme.screens.event
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,56 +33,58 @@ import java.time.format.DateTimeFormatter
 
 @Composable
 fun EventDetailsScreen(modifier: Modifier, event: EventModel, onBackPress: () -> Unit) {
-    val spacerHeight = 16.dp
-    Box(modifier = Modifier.fillMaxSize()) {
-        // Background color based on event color
-        Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(28.dp)
-        ) {
-            // Event description
-            Text(
-                text = "Description",
-                style = MaterialTheme.typography.headlineSmall,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            Text(text = event.description)
 
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Event details
-            EventDetailItem(
-                icon = Icons.Default.DateRange,
-                label = "Date",
-                value = event.date.format(DateTimeFormatter.ofPattern("MMMM d, yyyy 'at' h:mm a"))
-            )
-            EventDetailItem(
-                icon = Icons.Default.LocationOn,
-                label = "Location",
-                value = event.location
-            )
-            EventDetailItem(
-                icon = Icons.Default.Person,
-                label = "Capacity",
-                value = "${event.capacity_left}/${event.capacity} spots available"
-            )
-            EventDetailItem(
-                icon = Icons.Default.Tag,
-                label = "Tags",
-                value = event.tags
-            )
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            // Action button
-            Button(
-                onClick = { /* TODO: Implement join/leave event logic */ },
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+    AnimatedVisibility(visible = true, enter = fadeIn(), exit = fadeOut()) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            // Background color based on event color
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(28.dp)
             ) {
-                Text("Join Event")
+                // Event description
+                Text(
+                    text = "Description",
+                    style = MaterialTheme.typography.headlineSmall,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                Text(text = event.description)
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Event details
+                EventDetailItem(
+                    icon = Icons.Default.DateRange,
+                    label = "Date",
+                    value = event.date.format(DateTimeFormatter.ofPattern("MMMM d, yyyy 'at' h:mm a"))
+                )
+                EventDetailItem(
+                    icon = Icons.Default.LocationOn,
+                    label = "Location",
+                    value = event.location
+                )
+                EventDetailItem(
+                    icon = Icons.Default.Person,
+                    label = "Capacity",
+                    value = "${event.capacity_left}/${event.capacity} spots available"
+                )
+                EventDetailItem(
+                    icon = Icons.Default.Tag,
+                    label = "Tags",
+                    value = event.tags
+                )
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                // Action button
+                Button(
+                    onClick = { /* TODO: Implement join/leave event logic */ },
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                ) {
+                    Text("Join Event")
+                }
             }
         }
     }

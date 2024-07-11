@@ -2,12 +2,14 @@ package com.example.logintest.ui.theme.screens.calendar
 
 // colors
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -65,7 +67,7 @@ private val inActiveTextColor = Color(0xFFD3D3D3)
 fun Calendar(
     modifier: Modifier,
     viewModel: EventViewModel = viewModel(),
-    onEventClick: (EventModel) -> Unit
+    onEventClick: (EventModel) -> Unit,
 ) {
     val currentMonth = remember { YearMonth.now() }
     val startMonth = remember { currentMonth.minusMonths(500) }
@@ -76,7 +78,6 @@ fun Calendar(
     val allEvents by viewModel.monthEvents.collectAsState()
 
     LaunchedEffect(currentMonth) {
-        println(currentMonth.monthValue)
         viewModel.fetchEventsByMonth(currentMonth.monthValue)
     }
 
@@ -113,59 +114,73 @@ fun Calendar(
 
     Column(
         modifier = modifier
+            .fillMaxHeight()
+            .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState()),
     ) {
-        SimpleCalendarTitle(
-            modifier = Modifier,
-            currentMonth = visibleMonth.yearMonth,
-            goToPrevious = {
-                coroutineScope.launch {
-                    val newMonth = state.firstVisibleMonth.yearMonth.previousMonth
-                    state.animateScrollToMonth(newMonth)
-                    viewModel.updateCurrentMonth(newMonth)
-                }
-            },
-            goToNext = {
-                coroutineScope.launch {
-                    val newMonth = state.firstVisibleMonth.yearMonth.nextMonth
-                    state.animateScrollToMonth(newMonth)
-                    viewModel.updateCurrentMonth(newMonth)
-                }
-            },
-        )
-        HorizontalCalendar(
-            modifier = Modifier.wrapContentWidth(),
-            state = state,
-            dayContent = { day ->
-                val eventsNumber = if (day.position == DayPosition.MonthDate) {
-                    eventsByDate[day.date]?.size ?: 0
-                } else {
-                    0
-                }
+        Box(
+            modifier = Modifier
+                .fillMaxHeight()
+                .border(2.dp, MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.medium),
+            contentAlignment = Alignment.TopCenter
+        ) {
+            SimpleCalendarTitle(
+                modifier = Modifier.padding(8.dp),
+                currentMonth = visibleMonth.yearMonth,
+                goToPrevious = {
+                    coroutineScope.launch {
+                        val newMonth = state.firstVisibleMonth.yearMonth.previousMonth
+                        state.animateScrollToMonth(newMonth)
+                        viewModel.updateCurrentMonth(newMonth)
+                    }
+                },
+                goToNext = {
+                    coroutineScope.launch {
+                        val newMonth = state.firstVisibleMonth.yearMonth.nextMonth
+                        state.animateScrollToMonth(newMonth)
+                        viewModel.updateCurrentMonth(newMonth)
+                    }
+                },
+            )
+            HorizontalCalendar(
+                modifier = Modifier
+                    .padding(top = 45.dp)
+                    .wrapContentWidth(),
+                state = state,
+                dayContent = { day ->
+                    val eventsNumber = if (day.position == DayPosition.MonthDate) {
+                        eventsByDate[day.date]?.size ?: 0
+                    } else {
+                        0
+                    }
 
-                Day(
-                    day = day,
-                    isSelected = selection == day,
-                    eventsNumber = eventsNumber,
-                ) { clicked ->
-                    selection = clicked
-                }
-            },
-            monthHeader = {
-                MonthHeader(
-                    modifier = Modifier.padding(vertical = 8.dp),
-                    daysOfWeek = daysOfWeek,
-                )
-            },
-        )
+                    Day(
+                        day = day,
+                        isSelected = selection == day,
+                        eventsNumber = eventsNumber,
+                    ) { clicked ->
+                        selection = clicked
+                    }
+                },
+                monthHeader = {
+                    MonthHeader(
+                        modifier = Modifier.padding(vertical = 8.dp),
+                        daysOfWeek = daysOfWeek,
+                    )
+                },
+            )
+        }
 //        LazyColumn(modifier = Modifier.fillMaxWidth()) {
 //            items(items = eventsInSelectedDate.value) { flight ->
 //                EventInformation(flight)
 //            }
 //        }
-        Spacer(modifier = Modifier.height(16.dp))
-        println("Events in selected date: ${eventsInSelectedDate.value}")
-        EventList(modifier = Modifier.fillMaxWidth(), events = eventsInSelectedDate.value, onEventClick = onEventClick)
+        Spacer(modifier = Modifier.height(8.dp))
+        EventList(
+            modifier = Modifier.fillMaxWidth(),
+            events = eventsInSelectedDate.value,
+            onEventClick = onEventClick
+        )
     }
 }
 

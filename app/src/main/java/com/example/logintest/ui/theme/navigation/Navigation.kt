@@ -163,10 +163,12 @@ fun MyApp(
                         }
                     }) {
                     currentScreen = Screen.Home
-                    Calendar(modifier = Modifier.padding(innerPadding), onEventClick = { event ->
-                        navController.navigate("eventDetails/${event.id}")
-                    })
+                    Calendar(modifier = Modifier.padding(innerPadding),
+                        onEventClick = { event ->
+                            navController.navigate("eventDetails/${event.id}")
+                        })
                 }
+
 
                 composable(
                     "eventDetails/{eventId}",

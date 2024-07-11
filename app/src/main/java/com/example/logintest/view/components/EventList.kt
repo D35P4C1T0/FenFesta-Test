@@ -2,20 +2,18 @@ package com.example.logintest.view.components
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.outlined.Grade
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -24,38 +22,33 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.wear.compose.material.ContentAlpha
 import com.example.logintest.model.EventModel
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EventList(
-    modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(0.dp),
+    modifier: Modifier = Modifier.fillMaxHeight(),
     events: List<EventModel>,
     onEventClick: (EventModel) -> Unit,
 ) {
 //    val events = EventGenerator.generateEvents() // use dummy data
     Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(2.dp),
+        modifier = modifier.padding(top = 6.dp),
+        verticalArrangement = Arrangement.spacedBy(3.dp),
     ) {
         events.forEach { event ->
-            ExpandableCard(
+            EventCard(
                 event = event,
                 onEventClick = onEventClick,
             )
@@ -66,15 +59,12 @@ fun EventList(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExpandableCard(
+fun EventCard(
     event: EventModel,
-    titleFontSize: TextUnit = MaterialTheme.typography.headlineSmall.fontSize.times(0.85f),
+    titleFontSize: TextUnit = MaterialTheme.typography.headlineSmall.fontSize.times(0.70f),
     titleFontWeight: FontWeight = FontWeight.Bold,
-    descriptionFontSize: TextUnit = MaterialTheme.typography.bodyLarge.fontSize,
-    descriptionFontWeight: FontWeight = FontWeight.Normal,
-    descriptionMaxLines: Int = 4,
-    shape: Shape = MaterialTheme.shapes.extraLarge,
-    padding: Dp = 14.dp,
+    shape: Shape = MaterialTheme.shapes.medium,
+    padding: Dp = 16.dp,
     onEventClick: (EventModel) -> Unit,
 ) {
 
@@ -82,23 +72,30 @@ fun ExpandableCard(
     val description = event.description
     val date = event.date
     val location = event.location
+    val startTime = event.date.toLocalTime()
+        .format(DateTimeFormatter.ofPattern("HH:mm"))
+        .toString()
+    val endTime = event.date.toLocalTime()
+        .format(DateTimeFormatter.ofPattern("HH:mm"))
+        .toString()
 
-    var expandedState by remember { mutableStateOf(false) }
-    val rotationState by animateFloatAsState(
-        targetValue = if (expandedState) 180f else 0f, label = ""
-    )
-
-    Card(modifier = Modifier
-        .fillMaxWidth()
-        .animateContentSize(
-            animationSpec = tween(
-                durationMillis = 300, easing = LinearOutSlowInEasing
-            )
-        ), shape = shape, colors = CardDefaults.cardColors(
-        containerColor = MaterialTheme.colorScheme.primary
-    ), onClick = {
-        expandedState = !expandedState
-    }) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .animateContentSize(
+                animationSpec = tween(
+                    durationMillis = 300, easing = LinearOutSlowInEasing
+                )
+            ),
+        shape = shape,
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primary
+        ),
+        elevation = CardDefaults.cardElevation(4.dp),
+        onClick = {
+            onEventClick(event)
+        }
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -107,36 +104,15 @@ fun ExpandableCard(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
+
                 Text(
-                    modifier = Modifier.weight(6f),
-                    text = title,
+                    text = abbreviatedDate(date),
                     fontSize = titleFontSize,
                     fontWeight = titleFontWeight,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    textAlign = TextAlign.Center
                 )
-                IconButton(modifier = Modifier
-                    .weight(1f)
-                    .alpha(ContentAlpha.medium)
-                    .rotate(rotationState),
-                    onClick = {
-                        expandedState = !expandedState
-                    }) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowDropDown,
-                        contentDescription = "Drop-Down Arrow"
-                    )
-                }
 
-                // open event page in details
-                IconButton(modifier = Modifier.weight(1f), onClick = {
-                    onEventClick(event)
-                }) {
-                    Icon(
-                        imageVector = Icons.Outlined.Info,
-                        contentDescription = "Open Event Page",
-                    )
-                }
+                Spacer(modifier = Modifier.weight(0.55f))
 
                 // add to favorites button, allign far right
                 IconButton(modifier = Modifier.weight(1f), onClick = {
@@ -148,32 +124,22 @@ fun ExpandableCard(
                     )
                 }
 
-            }
-            if (expandedState) {
-                // text with description and date and location
                 Text(
-                    text = location,
-                    fontSize = descriptionFontSize,
-                    fontWeight = descriptionFontWeight,
-                    maxLines = descriptionMaxLines,
+                    modifier = Modifier.weight(6f),
+                    textAlign = TextAlign.End,
+                    text = "$title - $location\n$startTime-$endTime",
+                    fontSize = titleFontSize,
+                    fontWeight = titleFontWeight,
+                    maxLines = 2,
                     overflow = TextOverflow.Ellipsis
-                )
-                Text(
-                    text = date.toString(),
-                    fontSize = descriptionFontSize,
-                    fontWeight = descriptionFontWeight,
-                    maxLines = descriptionMaxLines,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Text(
-                    text = description,
-                    fontSize = descriptionFontSize,
-                    fontWeight = descriptionFontWeight,
-                    maxLines = descriptionMaxLines,
-                    overflow = TextOverflow.Ellipsis
-                )
 
+                )
             }
         }
     }
+}
+
+fun abbreviatedDate(dateTime: LocalDateTime): String {
+    val formatter = DateTimeFormatter.ofPattern("d\nMMM")
+    return dateTime.format(formatter).uppercase()
 }

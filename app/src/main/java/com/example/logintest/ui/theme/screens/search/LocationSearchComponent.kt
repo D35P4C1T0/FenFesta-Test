@@ -116,7 +116,6 @@ fun SearchBarWithResultsScreen(
             ) {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                 ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -151,13 +150,12 @@ fun SearchBarWithResultsScreen(
                             }
                         }
                     }
-                    MiniMap(
-                        modifier = Modifier.clip(MaterialTheme.shapes.medium).padding(16.dp).border(4.dp, MaterialTheme.colorScheme.surface, MaterialTheme.shapes.medium),
-                        mapViewportState = mapViewportState,
-                        locationViewModel = locationViewModel
-                    )
-
                 }
+                MiniMap(
+                    modifier = Modifier.clip(MaterialTheme.shapes.medium).padding(16.dp).border(4.dp, MaterialTheme.colorScheme.surface, MaterialTheme.shapes.medium),
+                    mapViewportState = mapViewportState,
+                    locationViewModel = locationViewModel
+                )
             }
         }
     }

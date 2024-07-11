@@ -48,7 +48,7 @@ fun SimpleCalendarTitle(
             modifier = Modifier
                 .weight(1f)
                 .testTag("MonthTitle"),
-            text = currentMonth.toString(),
+            text = "${currentMonth.month.name} ${currentMonth.year}",
             fontSize = 22.sp,
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Medium,

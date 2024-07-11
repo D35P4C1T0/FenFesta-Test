@@ -73,7 +73,7 @@ fun MapScreen(
 
     AnimatedVisibility(visible = true, enter = fadeIn(), exit = fadeOut()) {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = modifier.fillMaxSize(),
         ) {
             val context = LocalContext.current
             MapboxMap(
@@ -87,7 +87,8 @@ fun MapScreen(
                 mapViewportState = mapViewportState,
                 style = {
                     MapStyle(style = Style.MAPBOX_STREETS)
-                }
+                },
+                scaleBar = {  }, // no scale bar
             )
             {
 

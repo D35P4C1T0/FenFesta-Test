@@ -304,6 +304,7 @@ interface ApiService {
     suspend fun getProfile(): Response<ProfileInfoResponse>
 }
 
+// adds token to requests if present
 class AuthInterceptor(private val userPreferences: DataStoreUserPreference) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
         val originalRequest = chain.request()
