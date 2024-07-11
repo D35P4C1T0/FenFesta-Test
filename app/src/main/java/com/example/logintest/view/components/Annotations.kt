@@ -62,7 +62,7 @@ private fun toAnnotations(eventList: List<EventModel>, icon: Bitmap): List<Point
     }
 }
 
-private fun getBitmapFromVectorDrawable(context: Context, drawableId: Int): Bitmap {
+fun getBitmapFromVectorDrawable(context: Context, drawableId: Int): Bitmap {
     val drawable = ContextCompat.getDrawable(context, drawableId)
     val bitmap = Bitmap.createBitmap(
         drawable!!.intrinsicWidth,
