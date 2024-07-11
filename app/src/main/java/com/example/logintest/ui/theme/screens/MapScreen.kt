@@ -10,7 +10,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -24,6 +23,7 @@ import androidx.navigation.NavController
 import com.example.logintest.data.location.LocationService
 import com.example.logintest.data.viewmodel.EventViewModel
 import com.example.logintest.view.components.Annotations
+import com.example.logintest.view.utils.FirstLaunch
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapboxExperimental
 import com.mapbox.maps.Style
@@ -45,18 +45,11 @@ fun MapScreen(
     modifier: Modifier = Modifier,
     mapViewportState: MapViewportState,
     viewModel: EventViewModel = viewModel(),
+    isFirstLaunch: FirstLaunch,
     navController: NavController,
 ) {
 
     val eventsData by viewModel.events.collectAsState()
-
-    val isFirstTime = remember { mutableStateOf(true) }
-    // Dispose the isFirstTime value when the composable is disposed
-    DisposableEffect(Unit) {
-        onDispose {
-            isFirstTime.value = false
-        }
-    }
 
     var relaunch by remember {
         mutableStateOf(false)
@@ -92,10 +85,9 @@ fun MapScreen(
                 style = {
                     MapStyle(style = Style.MAPBOX_STREETS)
                 },
-                scaleBar = { }, // no scale bar
+//                scaleBar = { }, // no scale bar
             )
             {
-
                 LaunchedEffect(Unit) {
                     viewModel.fetchEvents()
                 }
@@ -119,7 +111,7 @@ fun MapScreen(
                 try {
                     val location = LocationService().getCurrentLocation(context)
                     println("Location: $location")
-                    if (isFirstTime.value) {
+                    if (isFirstLaunch.isFirstLaunch) { // working on first time launch
                         mapViewportState.flyTo(
                             cameraOptions = CameraOptions.Builder()
                                 .center(location)
@@ -131,7 +123,7 @@ fun MapScreen(
                                 )
                             },
                         )
-                        isFirstTime.value = false
+                        isFirstLaunch.toggleFirstLaunch()
                     }
 
                 } catch (e: LocationService.LocationServiceException) {

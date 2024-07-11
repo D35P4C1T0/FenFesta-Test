@@ -30,7 +30,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -46,7 +45,6 @@ import com.example.logintest.data.viewmodel.EventViewModel
 import com.example.logintest.model.EventModel
 import com.example.logintest.ui.theme.Selection
 import com.example.logintest.view.components.EventList
-import com.example.logintest.view.utils.LocalFirstRenderTracker
 import com.kizitonwose.calendar.compose.CalendarState
 import com.kizitonwose.calendar.compose.HorizontalCalendar
 import com.kizitonwose.calendar.compose.rememberCalendarState
@@ -74,9 +72,6 @@ fun Calendar(
     var isRefreshing by remember { mutableStateOf(false) }
     val refreshState = rememberPullToRefreshState()
 
-    val firstRenderTracker = LocalFirstRenderTracker.current
-    val isFirstRender by firstRenderTracker.isFirstRender
-
     val currentMonth = remember { YearMonth.now() }
     val startMonth = remember { currentMonth.minusMonths(500) }
     val endMonth = remember { currentMonth.plusMonths(500) }
@@ -87,11 +82,7 @@ fun Calendar(
 
     LaunchedEffect(Unit) {
         println("first launch allEvents: ${allEvents.size}")
-        if (isFirstRender) {
-            println("This is the first render of MyComponent")
-            viewModel.fetchEvents() // get all events at first launch
-            firstRenderTracker.markRendered()
-        }
+        viewModel.fetchEvents() // get all events at first launch
     }
 
 

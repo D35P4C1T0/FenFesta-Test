@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 
@@ -52,7 +53,8 @@ fun BottomNavigationBar(navController: NavController) {
     )
 
     NavigationBar(
-        contentColor = MaterialTheme.colorScheme.primary,
+        containerColor = MaterialTheme.colorScheme.surface,
+        tonalElevation = 8.dp,
     ) {
         items.forEach { item ->
             NavigationBarItem(
@@ -65,9 +67,9 @@ fun BottomNavigationBar(navController: NavController) {
                     )
                 },
                 colors = NavigationBarItemDefaults.colors(
-                    unselectedIconColor = MaterialTheme.colorScheme.outline,
-                    selectedIconColor = MaterialTheme.colorScheme.onPrimary,
-                    indicatorColor = MaterialTheme.colorScheme.primary
+                    unselectedIconColor = Color.Gray,
+                    selectedIconColor = Color.White,
+                    indicatorColor = MaterialTheme.colorScheme.primary,
                 ),
                 label = {
                     Text(item.title)

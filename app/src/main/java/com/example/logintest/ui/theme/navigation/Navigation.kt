@@ -19,7 +19,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -66,8 +65,7 @@ import com.example.logintest.ui.utils.NavAnimations.exitTransition
 import com.example.logintest.ui.utils.NavAnimations.popEnterTransition
 import com.example.logintest.ui.utils.NavAnimations.popExitTransition
 import com.example.logintest.view.components.BottomNavigationBar
-import com.example.logintest.view.utils.FirstRenderTracker
-import com.example.logintest.view.utils.LocalFirstRenderTracker
+import com.example.logintest.view.utils.FirstLaunch
 import com.mapbox.maps.MapboxExperimental
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
 
@@ -87,7 +85,8 @@ fun MyApp(
 
     val navController = rememberNavController()
     val mapViewportState = rememberMapViewportState {}
-    val firstRenderTracker = remember { FirstRenderTracker() }
+
+    var firstLaunch by remember { mutableStateOf(FirstLaunch) }
 
     val locationViewModel = viewModel<LocationViewModel>()
 
@@ -97,223 +96,223 @@ fun MyApp(
         mutableStateOf(Screen.Home)
     }
 
-    CompositionLocalProvider(LocalFirstRenderTracker provides firstRenderTracker) {
-        Scaffold(
-            modifier = Modifier.fillMaxSize(),
-            topBar = {
-                TopAppBarHome(
-                    navController = navController,
-                    currentScreen = currentScreen
-                )
-            },
-            bottomBar = {
-                when (currentScreen) {
-                    Screen.Home -> BottomNavigationBar(navController = navController)
-                    Screen.Settings -> {}
-                }
-            },
-            floatingActionButton = {
-                if (currentScreen != Screen.Settings) {
-                    FloatingActionButton(
-                        onClick = { navController.navigate("create_event") },
-                        containerColor = MaterialTheme.colorScheme.primary // Verde
-                    ) {
-                        Icon(imageVector = Icons.Default.Add, contentDescription = "Create Event")
-                    }
-                }
-            },
-            content = { innerPadding ->
-                NavHost(
-                    navController = navController,
-                    startDestination = "mapbox",
-                    enterTransition = { enterTransition },
-                    exitTransition = { exitTransition },
-                    popEnterTransition = { popEnterTransition },
-                    popExitTransition = { popExitTransition }
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        topBar = {
+            TopAppBarHome(
+                navController = navController,
+                currentScreen = currentScreen
+            )
+        },
+        bottomBar = {
+            when (currentScreen) {
+                Screen.Home -> BottomNavigationBar(navController = navController)
+                Screen.Settings -> {}
+            }
+        },
+        floatingActionButton = {
+            if (currentScreen != Screen.Settings) {
+                FloatingActionButton(
+                    onClick = { navController.navigate("create_event") },
+                    containerColor = MaterialTheme.colorScheme.primary // Verde
                 ) {
-                    composable(
-                        route = "mapbox",
-                        enterTransition = {
-                            when (initialState.destination.route) {
-                                "settings" -> slideInHorizontally(initialOffsetX = { it })
-                                "calendar" -> slideInHorizontally(initialOffsetX = { -it })
-                                else -> null
-                            }
-                        },
-                        exitTransition = {
-                            when (targetState.destination.route) {
-                                "settings" -> slideOutHorizontally(targetOffsetX = { it })
-                                "calendar" -> slideOutHorizontally(targetOffsetX = { -it })
-                                else -> null
-                            }
-                        }) {
-                        currentScreen = Screen.Home
-                        MapScreen(
-                            modifier = Modifier.padding(innerPadding),
-                            mapViewportState,
-                            viewModel = eventsViewModel,
-                            navController = navController
-                        )
-                    }
-                    composable(
-                        route = "calendar",
-                        enterTransition = {
-                            when (initialState.destination.route) {
-                                "settings", "mapbox" -> slideInHorizontally(initialOffsetX = { it })
-                                else -> null
-                            }
-                        },
-                        exitTransition = {
-                            when (targetState.destination.route) {
-                                "settings", "mapbox" -> slideOutHorizontally(targetOffsetX = { it })
-                                else -> null
-                            }
-                        }) {
-                        currentScreen = Screen.Home
-                        Calendar(modifier = Modifier.padding(innerPadding),
-                            onEventClick = { event ->
-                                navController.navigate("eventDetails/${event.id}")
-                            }
-                        )
-                    }
-
-
-                    composable(
-                        "eventDetails/{eventId}",
-                        arguments = listOf(navArgument("eventId") { type = NavType.IntType })
-                    ) { backStackEntry ->
-
-                        currentScreen = Screen.Settings
-
-                        val eventId = backStackEntry.arguments?.getInt("eventId")
-                        val viewModel: EventViewModel = viewModel()
-                        val event by viewModel.selectedEvent.collectAsState()
-
-                        LaunchedEffect(eventId) {
-                            eventId?.let { viewModel.fetchEventById(it) }
-                        }
-
-                        event?.let {
-                            EventDetailsScreen(
-                                modifier = Modifier.padding(innerPadding),
-                                event = it,
-                                onBackPress = { navController.popBackStack() }
-                            )
-                        }
-                    }
-                    composable(
-                        route = "settings",
-                        enterTransition = {
-                            when (initialState.destination.route) {
-                                "mapbox", "calendar" -> slideInHorizontally(initialOffsetX = { -it })
-                                else -> null
-                            }
-                        },
-                        exitTransition = {
-                            when (targetState.destination.route) {
-                                "mapbox", "calendar" -> slideOutHorizontally(targetOffsetX = { -it })
-                                else -> null
-                            }
-                        }
-                    ) {
-                        currentScreen = Screen.Settings
-                        SettingsScreen(
-                            modifier = Modifier.padding(innerPadding),
-                            navController = navController,
-                            userViewModel = userModel,
-                        )
-                    }
-                    composable("account_info") {
-                        AccountInfoScreen(Modifier.padding(innerPadding), userModel, navController)
-                    }
-                    composable("change_password") {
-                        ChangePasswordScreen(
-                            Modifier.padding(innerPadding),
-                            navController,
-                            userModel
-                        )
-                    }
-                    composable("delete_account") {
-                        DeleteAccountScreen(
-                            Modifier.padding(innerPadding),
-                            navController,
-                            userModel
-                        )
-                    }
-                    composable("manage_subscription") {
-                        ManageSubscriptionScreen(
-                            Modifier.padding(innerPadding),
-                            navController,
-                            userModel
-                        )
-                    }
-                    composable("light_dark_mode") {
-                        ThemeSelector(
-                            modifier = Modifier.padding(innerPadding),
-                            currentTheme = themeOption,
-                            onThemeSelected = { themeViewModel.setThemeOption(it) }
-                        )
-                    }
-                    composable("login") {
-                        LoginPage(
-                            Modifier.padding(innerPadding),
-                            userViewModel = userModel,
-                            onLoginSuccess = { println("Login success") },
-                            onNavigateToRegister = { navController.navigate("register") },
-                            goBackToHome = { navController.navigate("mapbox") }
-                        )
-                    }
-
-                    composable("register") {
-                        RegistrationScreen(
-                            userModel,
-                            onRegistrationSuccess = { println("Registration success") },
-                            onNavigateToLogin = { navController.navigate("login") }
-                        )
-                    }
-
-                    composable("logout") {
-                        LogoutScreen(Modifier.padding(innerPadding), navController, userModel)
-                    }
-                    composable("other") {
-                        OtherScreen(Modifier.padding(innerPadding), navController)
-                    }
-                    composable("create_event") {
-                        currentScreen = Screen.Settings
-                        CreateEventScreen(navController, Modifier.padding(innerPadding))
-                    }
-                    composable("app_info") {
-                        AppInfoScreen(Modifier.padding(innerPadding), navController)
-                    }
-                    composable("support") {
-                        SupportScreen(Modifier.padding(innerPadding), navController)
-                    }
-                    composable("share_app") {
-                        ShareAppScreen(Modifier.padding(innerPadding), navController)
-                    }
-                    composable("search_page") {
-                        currentScreen = Screen.Settings
-                        SearchScreen(
-                            Modifier.padding(innerPadding),
-                            eventsViewModel,
-                            searchHistoryViewModel,
-                            onEventClick = { event ->
-                                navController.navigate("eventDetails/${event.id}")
-                            })
-                    }
-
-                    composable("search_address") {
-                        currentScreen = Screen.Settings
-                        SearchBarWithResultsScreen(
-                            Modifier.padding(innerPadding),
-                            locationViewModel,
-                            onLocationConfirmed = {})
-                    }
+                    Icon(imageVector = Icons.Default.Add, contentDescription = "Create Event")
                 }
             }
-        )
-    }
+        },
+        content = { innerPadding ->
+            NavHost(
+                navController = navController,
+                startDestination = "mapbox",
+                enterTransition = { enterTransition },
+                exitTransition = { exitTransition },
+                popEnterTransition = { popEnterTransition },
+                popExitTransition = { popExitTransition }
+            ) {
+                composable(
+                    route = "mapbox",
+                    enterTransition = {
+                        when (initialState.destination.route) {
+                            "settings" -> slideInHorizontally(initialOffsetX = { it })
+                            "calendar" -> slideInHorizontally(initialOffsetX = { -it })
+                            else -> null
+                        }
+                    },
+                    exitTransition = {
+                        when (targetState.destination.route) {
+                            "settings" -> slideOutHorizontally(targetOffsetX = { it })
+                            "calendar" -> slideOutHorizontally(targetOffsetX = { -it })
+                            else -> null
+                        }
+                    }) {
+                    currentScreen = Screen.Home
+                    MapScreen(
+                        modifier = Modifier.padding(innerPadding),
+                        mapViewportState,
+                        viewModel = eventsViewModel,
+                        navController = navController,
+                        isFirstLaunch = firstLaunch
+                    )
+                }
+                composable(
+                    route = "calendar",
+                    enterTransition = {
+                        when (initialState.destination.route) {
+                            "settings", "mapbox" -> slideInHorizontally(initialOffsetX = { it })
+                            else -> null
+                        }
+                    },
+                    exitTransition = {
+                        when (targetState.destination.route) {
+                            "settings", "mapbox" -> slideOutHorizontally(targetOffsetX = { it })
+                            else -> null
+                        }
+                    }) {
+                    currentScreen = Screen.Home
+                    Calendar(modifier = Modifier.padding(innerPadding),
+                        onEventClick = { event ->
+                            navController.navigate("eventDetails/${event.id}")
+                        }
+                    )
+                }
+
+
+                composable(
+                    "eventDetails/{eventId}",
+                    arguments = listOf(navArgument("eventId") { type = NavType.IntType })
+                ) { backStackEntry ->
+
+                    currentScreen = Screen.Settings
+
+                    val eventId = backStackEntry.arguments?.getInt("eventId")
+                    val viewModel: EventViewModel = viewModel()
+                    val event by viewModel.selectedEvent.collectAsState()
+
+                    LaunchedEffect(eventId) {
+                        eventId?.let { viewModel.fetchEventById(it) }
+                    }
+
+                    event?.let {
+                        EventDetailsScreen(
+                            modifier = Modifier.padding(innerPadding),
+                            event = it,
+                            onBackPress = { navController.popBackStack() }
+                        )
+                    }
+                }
+                composable(
+                    route = "settings",
+                    enterTransition = {
+                        when (initialState.destination.route) {
+                            "mapbox", "calendar" -> slideInHorizontally(initialOffsetX = { -it })
+                            else -> null
+                        }
+                    },
+                    exitTransition = {
+                        when (targetState.destination.route) {
+                            "mapbox", "calendar" -> slideOutHorizontally(targetOffsetX = { -it })
+                            else -> null
+                        }
+                    }
+                ) {
+                    currentScreen = Screen.Settings
+                    SettingsScreen(
+                        modifier = Modifier.padding(innerPadding),
+                        navController = navController,
+                        userViewModel = userModel,
+                    )
+                }
+                composable("account_info") {
+                    AccountInfoScreen(Modifier.padding(innerPadding), userModel, navController)
+                }
+                composable("change_password") {
+                    ChangePasswordScreen(
+                        Modifier.padding(innerPadding),
+                        navController,
+                        userModel
+                    )
+                }
+                composable("delete_account") {
+                    DeleteAccountScreen(
+                        Modifier.padding(innerPadding),
+                        navController,
+                        userModel
+                    )
+                }
+                composable("manage_subscription") {
+                    ManageSubscriptionScreen(
+                        Modifier.padding(innerPadding),
+                        navController,
+                        userModel
+                    )
+                }
+                composable("light_dark_mode") {
+                    ThemeSelector(
+                        modifier = Modifier.padding(innerPadding),
+                        currentTheme = themeOption,
+                        onThemeSelected = { themeViewModel.setThemeOption(it) }
+                    )
+                }
+                composable("login") {
+                    LoginPage(
+                        Modifier.padding(innerPadding),
+                        userViewModel = userModel,
+                        onLoginSuccess = { println("Login success") },
+                        onNavigateToRegister = { navController.navigate("register") },
+                        goBackToHome = { navController.navigate("mapbox") }
+                    )
+                }
+
+                composable("register") {
+                    RegistrationScreen(
+                        userModel,
+                        onRegistrationSuccess = { println("Registration success") },
+                        onNavigateToLogin = { navController.navigate("login") }
+                    )
+                }
+
+                composable("logout") {
+                    LogoutScreen(Modifier.padding(innerPadding), navController, userModel)
+                }
+                composable("other") {
+                    OtherScreen(Modifier.padding(innerPadding), navController)
+                }
+                composable("create_event") {
+                    currentScreen = Screen.Settings
+                    CreateEventScreen(navController, Modifier.padding(innerPadding))
+                }
+                composable("app_info") {
+                    AppInfoScreen(Modifier.padding(innerPadding), navController)
+                }
+                composable("support") {
+                    SupportScreen(Modifier.padding(innerPadding), navController)
+                }
+                composable("share_app") {
+                    ShareAppScreen(Modifier.padding(innerPadding), navController)
+                }
+                composable("search_page") {
+                    currentScreen = Screen.Settings
+                    SearchScreen(
+                        Modifier.padding(innerPadding),
+                        eventsViewModel,
+                        searchHistoryViewModel,
+                        onEventClick = { event ->
+                            navController.navigate("eventDetails/${event.id}")
+                        })
+                }
+
+                composable("search_address") {
+                    currentScreen = Screen.Settings
+                    SearchBarWithResultsScreen(
+                        Modifier.padding(innerPadding),
+                        locationViewModel,
+                        onLocationConfirmed = {})
+                }
+            }
+        }
+    )
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
