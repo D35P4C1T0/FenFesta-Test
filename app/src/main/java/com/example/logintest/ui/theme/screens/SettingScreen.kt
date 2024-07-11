@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -64,7 +65,8 @@ fun SettingsScreen(
     val commonSettings = listOf(
         Triple("Informazioni Account", Icons.Filled.AccountCircle, "account_info"),
         Triple("Light/Dark Mode", Icons.Filled.Build, "light_dark_mode"),
-        Triple("Altro", Icons.Filled.Menu, "other")
+        Triple("Altro", Icons.Filled.Menu, "other"),
+        Triple("Cerca Via", Icons.Filled.Search, "search_address"),
     ) + loginDependentSettings
 
 

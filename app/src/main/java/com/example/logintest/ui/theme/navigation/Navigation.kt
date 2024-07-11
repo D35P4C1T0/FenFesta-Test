@@ -37,6 +37,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.logintest.R
 import com.example.logintest.data.viewmodel.EventViewModel
+import com.example.logintest.data.viewmodel.LocationViewModel
 import com.example.logintest.data.viewmodel.SearchHistoryViewModel
 import com.example.logintest.data.viewmodel.ThemeViewModel
 import com.example.logintest.data.viewmodel.UserViewModel
@@ -58,6 +59,7 @@ import com.example.logintest.ui.theme.screens.SupportScreen
 import com.example.logintest.ui.theme.screens.ThemeSelector
 import com.example.logintest.ui.theme.screens.calendar.Calendar
 import com.example.logintest.ui.theme.screens.event.EventDetailsScreen
+import com.example.logintest.ui.theme.screens.search.SearchBarWithResults
 import com.example.logintest.ui.utils.NavAnimations.enterTransition
 import com.example.logintest.ui.utils.NavAnimations.exitTransition
 import com.example.logintest.ui.utils.NavAnimations.popEnterTransition
@@ -83,7 +85,9 @@ fun MyApp(
     val navController = rememberNavController()
     val mapViewportState = rememberMapViewportState {}
     var firstLaunch by remember { mutableStateOf(FirstLaunch) }
+
     val eventsViewModel = viewModel<EventViewModel>()
+    val locationViewModel = viewModel<LocationViewModel>()
 
     val themeOption by themeViewModel.themeOption.collectAsState()
 
@@ -278,6 +282,14 @@ fun MyApp(
                         onEventClick = { event ->
                             navController.navigate("eventDetails/${event.id}")
                         })
+                }
+
+                composable("search_address") {
+                    currentScreen = Screen.Settings
+                    SearchBarWithResults(
+                        Modifier.padding(innerPadding),
+                        locationViewModel,
+                        onLocationConfirmed = {})
                 }
             }
         }
