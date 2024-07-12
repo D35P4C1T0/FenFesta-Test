@@ -25,7 +25,7 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyDatePicker(modifier: Modifier) {
+fun MyDatePicker(modifier: Modifier, onDateSelected: (String) -> Unit) {
     var showDatePicker by remember { mutableStateOf(false) }
     var selectedDate by remember { mutableStateOf<Long?>(null) }
     var formattedDate by remember { mutableStateOf("") }
@@ -37,6 +37,7 @@ fun MyDatePicker(modifier: Modifier) {
         val date = Date(it)
         val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         formattedDate = format.format(date)
+        onDateSelected(formattedDate)
     }
 
     if (showDatePicker) {

@@ -1,5 +1,6 @@
 package com.example.logintest.ui.theme.navigation
 
+import android.widget.Toast
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.Image
@@ -26,6 +27,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -94,6 +96,8 @@ fun MyApp(
     val eventsList by eventsViewModel.events.collectAsState()
 
     val loginState by userModel.loginState.collectAsState()
+
+    val context = LocalContext.current
 
     var currentScreen by remember { mutableStateOf(Screen.Home) }
 
@@ -300,7 +304,10 @@ fun MyApp(
                 composable("register") {
                     RegistrationScreen(
                         userModel,
-                        onRegistrationSuccess = { navController.navigateWithDefaultOptions("mapbox") },
+                        onRegistrationSuccess = {
+                            Toast.makeText(context, "Account creato", Toast.LENGTH_SHORT).show()
+                            navController.navigateWithDefaultOptions("login")
+                        },
                         onNavigateToLogin = { navController.navigateWithDefaultOptions("login") }
                     )
                 }
