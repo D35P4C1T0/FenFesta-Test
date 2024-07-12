@@ -31,7 +31,6 @@ import com.mapbox.maps.extension.localization.localizeLabels
 import com.mapbox.maps.plugin.PuckBearing
 import com.mapbox.maps.plugin.animation.camera
 import com.mapbox.maps.plugin.locationcomponent.createDefault2DPuck
-import com.mapbox.maps.plugin.locationcomponent.generated.LocationComponentSettings
 import com.mapbox.maps.plugin.locationcomponent.location
 import java.util.Locale
 
@@ -48,26 +47,20 @@ fun MiniMap(
 
     AnimatedVisibility(visible = true, enter = fadeIn(), exit = fadeOut()) {
         Box(
-            modifier = modifier.clip(shape = MaterialTheme.shapes.medium)
+            modifier = modifier
+                .clip(shape = MaterialTheme.shapes.medium)
                 .fillMaxWidth(),
             contentAlignment = Alignment.CenterStart
         ) {
 //            val context = LocalContext.current
             MapboxMap(
                 Modifier.fillMaxSize(),
-                locationComponentSettings = LocationComponentSettings
-                    .Builder(createDefault2DPuck(withBearing = true))
-//                    .setEnabled(true)
-//                    .setPuckBearingEnabled(true)
-//                    .setPuckBearing(PuckBearing.HEADING)
-                    .build(),
                 mapViewportState = mapViewportState,
                 style = {
                     MapStyle(style = Style.MAPBOX_STREETS)
                 }
             )
             {
-
                 locationData?.let {
                     PointAnnotation(
                         point = Point.fromLngLat(

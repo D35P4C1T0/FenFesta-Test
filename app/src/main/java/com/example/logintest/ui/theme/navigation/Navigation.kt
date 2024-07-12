@@ -34,6 +34,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.logintest.R
@@ -81,10 +82,11 @@ fun MyApp(
     userModel: UserViewModel,
     themeViewModel: ThemeViewModel,
     eventsViewModel: EventViewModel,
-    searchHistoryViewModel: SearchHistoryViewModel
+    searchHistoryViewModel: SearchHistoryViewModel,
 ) {
 
 //    Log.d("Compose", "Nav is recomposing")
+
     val navController = rememberNavController()
     val mapViewportState = rememberMapViewportState {}
     var firstLaunch by remember { mutableStateOf(FirstLaunch) }

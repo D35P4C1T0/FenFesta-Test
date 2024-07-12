@@ -58,6 +58,7 @@ android {
 }
 
 var composeVersion = "1.6.8"
+var mapboxVersion = "11.5.0"
 
 dependencies {
 
@@ -95,11 +96,11 @@ dependencies {
     implementation(libs.androidx.material.icons.extended.android)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
-    implementation("com.mapbox.maps:android:11.3.1")
+    implementation("com.mapbox.maps:android:$mapboxVersion")
     // If you're using compose also add the compose extension
-    implementation("com.mapbox.extension:maps-compose:11.3.1")
+    implementation("com.mapbox.extension:maps-compose:$mapboxVersion")
     implementation("com.google.android.gms:play-services-location:21.2.0")
-    implementation("com.mapbox.plugin:maps-annotation:11.3.1")
+    implementation("com.mapbox.plugin:maps-annotation:$mapboxVersion")
     implementation("androidx.datastore:datastore-preferences:1.1.1")
     // The compose calendar library
     implementation("com.kizitonwose.calendar:compose:2.6.0-beta02")

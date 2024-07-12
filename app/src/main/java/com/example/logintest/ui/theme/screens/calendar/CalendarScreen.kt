@@ -1,6 +1,7 @@
 package com.example.logintest.ui.theme.screens.calendar
 
 // colors
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -88,7 +89,7 @@ fun Calendar(
     val allEvents by viewModel.events.collectAsState() // all events
 
     LaunchedEffect(42) {
-        println("first launch allEvents: ${allEvents.size}")
+        Log.d("EventView", "first calendar LaunchedEffect")
         viewModel.fetchEvents() // get all events at first launch
     }
 

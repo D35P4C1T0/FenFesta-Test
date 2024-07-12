@@ -45,6 +45,7 @@ fun MapScreen(
     viewModel: EventViewModel = viewModel(),
     isFirstLaunch: FirstLaunch,
     onMarkerClick: (String) -> Unit,
+//    updateEvents: () -> Unit,
 ) {
 
 //    Log.d("Compose", "Map is recomposing")
@@ -74,21 +75,13 @@ fun MapScreen(
         val context = LocalContext.current
         MapboxMap(
             Modifier.fillMaxSize(),
-            locationComponentSettings = LocationComponentSettings
-                .Builder(createDefault2DPuck(withBearing = true))
-                .setEnabled(true)
-                .setPuckBearingEnabled(true)
-                .setPuckBearing(PuckBearing.HEADING)
-                .build(),
             mapViewportState = mapViewportState,
-            style = {
-                MapStyle(style = Style.MAPBOX_STREETS)
-            },
+            style = { MapStyle(style = Style.MAPBOX_STREETS) },
             scaleBar = { }, // no scale bar
         )
         {
-            LaunchedEffect(key1 = 42) {
-                viewModel.fetchEvents()
+            LaunchedEffect(key1 = isFirstLaunch) {
+//                viewModel.fetchEvents()
             }
 
             Annotations(eventList = eventsData, onClick = onMarkerClick)

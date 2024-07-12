@@ -70,6 +70,7 @@ fun DynamicTheme(themeViewModel: ThemeViewModel) {
     val searchHistoryViewModel: SearchHistoryViewModel =
         viewModel { SearchHistoryViewModel(searchHistoryDataStore) }
 
+
     AppTheme(darkTheme = darkTheme) {
         SystemUIController(isDarkTheme = darkTheme)
         MyApp(
