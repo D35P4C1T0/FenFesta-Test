@@ -20,6 +20,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.logintest.data.location.LocationService
 import com.example.logintest.data.viewmodel.EventViewModel
+import com.example.logintest.model.EventModel
 import com.example.logintest.view.components.Annotations
 import com.example.logintest.view.utils.FirstLaunch
 import com.mapbox.maps.CameraOptions
@@ -42,14 +43,13 @@ import java.util.Locale
 fun MapScreen(
     modifier: Modifier = Modifier,
     mapViewportState: MapViewportState,
-    viewModel: EventViewModel = viewModel(),
+    eventsList: List<EventModel>,
+    updateEvents: () -> Unit,
     isFirstLaunch: FirstLaunch,
     onMarkerClick: (String) -> Unit,
-//    updateEvents: () -> Unit,
 ) {
 
 //    Log.d("Compose", "Map is recomposing")
-    val eventsData by viewModel.events.collectAsState()
 
     var relaunch by remember {
         mutableStateOf(false)
@@ -84,7 +84,7 @@ fun MapScreen(
 //                viewModel.fetchEvents()
             }
 
-            Annotations(eventList = eventsData, onClick = onMarkerClick)
+            Annotations(eventList = eventsList, onClick = onMarkerClick)
             MapEffect(Unit) { mapView ->
                 // Use mapView to access all the Mapbox Maps APIs including plugins etc.
                 // For example, to enable debug mode:
@@ -101,6 +101,7 @@ fun MapScreen(
 
         LaunchedEffect(key1 = relaunch) {
             try {
+                updateEvents()
                 println("map relaunch called")
                 val location = LocationService().getCurrentLocation(context)
                 println("Location: $location")

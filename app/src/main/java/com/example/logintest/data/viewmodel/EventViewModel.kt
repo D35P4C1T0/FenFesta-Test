@@ -75,7 +75,7 @@ class EventViewModel : ViewModel() {
         Log.d("EventViewModel", "ViewModel cleared: ${this.hashCode()}")
     }
 
-    suspend fun fetchEvents() {
+    fun fetchEvents() {
         viewModelScope.launch {
             try {
                 val response = apiService.getEvents()
@@ -102,7 +102,7 @@ class EventViewModel : ViewModel() {
         }
     }
 
-    suspend fun fetchEventsByMonth(month: Int) {
+    fun fetchEventsByMonth(month: Int) {
         viewModelScope.launch {
             try {
                 val fetchedEvents = apiService.getEventsByMonth(month)
@@ -116,7 +116,7 @@ class EventViewModel : ViewModel() {
         }
     }
 
-    suspend fun updateCurrentMonth(yearMonth: YearMonth) {
+    fun updateCurrentMonth(yearMonth: YearMonth) {
         _currentMonth.value = yearMonth
         fetchEventsByMonth(yearMonth.monthValue)
     }

@@ -25,7 +25,6 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,16 +35,11 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModelStoreOwner
-import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.logintest.data.viewmodel.EventViewModel
 import com.example.logintest.model.EventModel
 import com.example.logintest.ui.theme.Selection
 import com.example.logintest.view.components.EventList
@@ -70,12 +64,10 @@ import java.util.Locale
 @Composable
 fun Calendar(
     modifier: Modifier,
-//    viewModel: EventViewModel = viewModel(),
-    viewModel: EventViewModel = viewModel(
-        viewModelStoreOwner = LocalViewModelStoreOwner.current
-            ?: LocalContext.current as ViewModelStoreOwner
-    ),
+    eventsList: List<EventModel>,
     onEventClick: (EventModel) -> Unit,
+    updateEvents: () -> Unit,
+    updateCurrentMonth: (YearMonth) -> Unit,
 ) {
 
 //    Log.d("Compose", "Cal is recomposing")
@@ -86,18 +78,17 @@ fun Calendar(
     val endMonth = remember { currentMonth.plusMonths(500) }
     var selection by remember { mutableStateOf<CalendarDay?>(null) }
     val daysOfWeek = remember { daysOfWeek() }
-    val allEvents by viewModel.events.collectAsState() // all events
 
     LaunchedEffect(42) {
         Log.d("EventView", "first calendar LaunchedEffect")
-        viewModel.fetchEvents() // get all events at first launch
+        updateEvents()
     }
 
 
     // Derive eventsByDate from allEvents
-    val eventsByDate by remember(allEvents) {
+    val eventsByDate by remember(eventsList) {
         derivedStateOf {
-            allEvents.groupBy { it.date.toLocalDate() }
+            eventsList.groupBy { it.date.toLocalDate() }
         }
     }
 
@@ -122,7 +113,8 @@ fun Calendar(
         // Clear selection if we scroll to a new month.
         selection = null
         // Update the current month and fetch new events
-        viewModel.updateCurrentMonth(visibleMonth.yearMonth)
+//        viewModel.updateCurrentMonth(visibleMonth.yearMonth)
+        updateCurrentMonth(visibleMonth.yearMonth)
     }
 
     PullToRefreshBox(
@@ -133,7 +125,7 @@ fun Calendar(
             isRefreshing = true
             coroutineScope.launch {
                 delay(500)
-                viewModel.fetchEvents()
+                updateEvents()
                 isRefreshing = false
             }
         },
@@ -161,14 +153,14 @@ fun Calendar(
                             coroutineScope.launch {
                                 val newMonth = state.firstVisibleMonth.yearMonth.previousMonth
                                 state.animateScrollToMonth(newMonth)
-                                viewModel.updateCurrentMonth(newMonth)
+                                updateCurrentMonth(newMonth)
                             }
                         },
                         goToNext = {
                             coroutineScope.launch {
                                 val newMonth = state.firstVisibleMonth.yearMonth.nextMonth
                                 state.animateScrollToMonth(newMonth)
-                                viewModel.updateCurrentMonth(newMonth)
+                                updateCurrentMonth(newMonth)
                             }
                         },
                     )

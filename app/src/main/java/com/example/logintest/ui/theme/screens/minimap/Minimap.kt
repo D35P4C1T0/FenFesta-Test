@@ -16,6 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import com.example.logintest.R
 import com.example.logintest.data.viewmodel.LocationViewModel
+import com.example.logintest.model.LocationModel
 import com.example.logintest.view.components.getBitmapFromVectorDrawable
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
@@ -39,11 +40,11 @@ import java.util.Locale
 fun MiniMap(
     modifier: Modifier,
     mapViewportState: MapViewportState,
-    locationViewModel: LocationViewModel,
+    locationData: LocationModel,
 ) {
 
     val context = LocalContext.current
-    val locationData by locationViewModel.locationData.collectAsState()
+//    val locationData by locationViewModel.locationData.collectAsState()
 
     AnimatedVisibility(visible = true, enter = fadeIn(), exit = fadeOut()) {
         Box(

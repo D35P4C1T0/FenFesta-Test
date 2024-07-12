@@ -10,22 +10,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -36,7 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.logintest.data.viewmodel.LocationViewModel
@@ -49,12 +42,13 @@ import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportS
 @Composable
 fun SearchBarWithResultsScreen(
     modifier: Modifier,
-    locationViewModel: LocationViewModel = viewModel(),
+    viewModel: LocationViewModel = viewModel(),
     onLocationConfirmed: (LocationModel) -> Unit
 ) {
     var searchText by remember { mutableStateOf("") }
-    var isSearchFocused by remember { mutableStateOf(false) }
-    val locationData by locationViewModel.locationData.collectAsState()
+    val keyboardController = LocalSoftwareKeyboardController.current
+    var isSearchBarFocused by remember { mutableStateOf(false) }
+    val locationData by viewModel.locationData.collectAsState()
 
     val mapViewportState = rememberMapViewportState {}
 
@@ -63,50 +57,21 @@ fun SearchBarWithResultsScreen(
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        OutlinedTextField(
-            value = searchText,
-            onValueChange = { searchText = it },
+        SearchBar(
             modifier = Modifier
                 .fillMaxWidth()
-                .onFocusChanged { isSearchFocused = it.isFocused },
-            placeholder = { Text("Enter address") },
-            leadingIcon = {
-                IconButton(onClick = {
-                    if (isSearchFocused) {
-                        // Handle back button action
-                        isSearchFocused = false
-                    }
-                }) {
-                    Icon(
-                        imageVector = if (isSearchFocused) Icons.AutoMirrored.Filled.ArrowBack else Icons.Default.Search,
-                        contentDescription = if (isSearchFocused) "Back" else "Search"
-                    )
-                }
+                .onFocusChanged {
+                    isSearchBarFocused = it.isFocused
+                },
+            perCharacterSearchAction = { searchText = it },
+            searchIMEAction = {
+                viewModel.getCoords(searchText)
+                keyboardController?.hide()
+                isSearchBarFocused = false
             },
-            trailingIcon = {
-                if (searchText.isNotEmpty()) {
-                    IconButton(onClick = { searchText = "" }) {
-                        Icon(Icons.Default.Clear, contentDescription = "Clear")
-                    }
-                }
-            },
-            singleLine = true,
-            colors = TextFieldDefaults.colors(
-                unfocusedIndicatorColor = MaterialTheme.colorScheme.surface,
-                focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                focusedContainerColor = MaterialTheme.colorScheme.surface,
-            ),
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-            keyboardActions = KeyboardActions(
-                onSearch = {
-                    // Perform search action here
-                    if (searchText.isNotBlank()) {
-                        locationViewModel.getCoords(searchText)
-                    }
-                }
-            ),
-            shape = MaterialTheme.shapes.medium
+            clearSearch = {},
+            addSearchToHistory = {},
+            unfocusBar = { isSearchBarFocused = false }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -167,7 +132,7 @@ fun SearchBarWithResultsScreen(
                                 MaterialTheme.shapes.medium
                             ),
                         mapViewportState = mapViewportState,
-                        locationViewModel = locationViewModel
+                        locationData = location
                     )
                 }
 

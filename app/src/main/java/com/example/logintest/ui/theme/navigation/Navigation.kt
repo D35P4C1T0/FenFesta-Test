@@ -34,7 +34,6 @@ import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.logintest.R
@@ -54,7 +53,7 @@ import com.example.logintest.ui.theme.screens.ManageSubscriptionScreen
 import com.example.logintest.ui.theme.screens.MapScreen
 import com.example.logintest.ui.theme.screens.OtherScreen
 import com.example.logintest.ui.theme.screens.RegistrationScreen
-import com.example.logintest.ui.theme.screens.SearchScreen
+import com.example.logintest.ui.theme.screens.search.EventSearchScreen
 import com.example.logintest.ui.theme.screens.SettingsScreen
 import com.example.logintest.ui.theme.screens.ShareAppScreen
 import com.example.logintest.ui.theme.screens.SupportScreen
@@ -92,6 +91,8 @@ fun MyApp(
     var firstLaunch by remember { mutableStateOf(FirstLaunch) }
     val locationViewModel = viewModel<LocationViewModel>()
     val themeOption by themeViewModel.themeOption.collectAsState()
+    val eventsList by eventsViewModel.events.collectAsState()
+
     var currentScreen by remember { mutableStateOf(Screen.Home) }
 
     Scaffold(
@@ -161,7 +162,8 @@ fun MyApp(
                     MapScreen(
                         modifier = Modifier.padding(innerPadding),
                         mapViewportState,
-                        viewModel = eventsViewModel,
+                        eventsList = eventsList,
+                        updateEvents = { eventsViewModel.fetchEvents() },
                         isFirstLaunch = firstLaunch,
                         onMarkerClick = { eventId ->
                             navController.navigateWithDefaultOptions("eventDetails/$eventId")
@@ -183,10 +185,14 @@ fun MyApp(
                         }
                     }) {
                     currentScreen = Screen.Home
-                    Calendar(modifier = Modifier.padding(innerPadding),
+                    Calendar(
+                        modifier = Modifier.padding(innerPadding),
+                        eventsList = eventsList,
                         onEventClick = { event ->
                             navController.navigateWithDefaultOptions("eventDetails/${event.id}")
-                        }
+                        },
+                        updateEvents = { eventsViewModel.fetchEvents() },
+                        updateCurrentMonth = { eventsViewModel.updateCurrentMonth(it) },
                     )
                 }
 
@@ -306,7 +312,7 @@ fun MyApp(
                 }
                 composable("search_page") {
                     currentScreen = Screen.Settings
-                    SearchScreen(
+                    EventSearchScreen(
                         Modifier.padding(innerPadding),
                         eventsViewModel,
                         searchHistoryViewModel,

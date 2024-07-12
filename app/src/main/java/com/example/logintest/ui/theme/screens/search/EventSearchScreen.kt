@@ -1,4 +1,4 @@
-package com.example.logintest.ui.theme.screens
+package com.example.logintest.ui.theme.screens.search
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
@@ -9,22 +9,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Divider
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -35,20 +29,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.example.logintest.data.viewmodel.EventViewModel
 import com.example.logintest.data.viewmodel.SearchHistoryViewModel
 import com.example.logintest.model.EventModel
 
 @Composable
-fun SearchScreen(
+fun EventSearchScreen(
     modifier: Modifier,
     viewModel: EventViewModel,
     searchHistoryViewModel: SearchHistoryViewModel,
     onEventClick: (EventModel) -> Unit,
 ) {
-    var searchQuery by remember { mutableStateOf("") }
     val searchResults by viewModel.searchResults.collectAsState()
     val searchHistory by searchHistoryViewModel.searchHistory.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -56,43 +48,23 @@ fun SearchScreen(
     var isHistoryExpanded by remember { mutableStateOf(true) }
 
     Column(modifier = modifier.padding(16.dp)) {
-        OutlinedTextField(
-            value = searchQuery,
-            placeholder = { Text("Cerca...") },
-            singleLine = true,
-            onValueChange = {
-                searchQuery = it
-                if (it.isNotEmpty()) {
-                    viewModel.searchEvents(it)
-                } else {
-                    viewModel.clearSearch()
-                }
-            },
+
+        SearchBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .onFocusChanged {
                     isSearchBarFocused = it.isFocused
                 },
-            leadingIcon = {
-                Icon(Icons.Default.Search, contentDescription = "Search")
+            perCharacterSearchAction = { viewModel.searchEvents(it) },
+            searchIMEAction = {
+                searchHistoryViewModel.addSearchQuery(it)
+                keyboardController?.hide()
+                isSearchBarFocused = false
+                viewModel.searchEvents(it)
             },
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-            keyboardActions = KeyboardActions(
-                onSearch = {
-                    if (searchQuery.isNotEmpty()) {
-                        searchHistoryViewModel.addSearchQuery(searchQuery)
-                        searchQuery = ""
-                        keyboardController?.hide()
-                        isSearchBarFocused = false
-                    }
-                }
-            ),
-            colors = TextFieldDefaults.colors(
-                unfocusedIndicatorColor = MaterialTheme.colorScheme.surface,
-                focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                focusedContainerColor = MaterialTheme.colorScheme.surface,
-            ),
+            clearSearch = { viewModel.clearSearch() },
+            addSearchToHistory = { searchHistoryViewModel.addSearchQuery(it) },
+            unfocusBar = { isSearchBarFocused = false }
         )
 
         if (isSearchBarFocused) {
@@ -117,7 +89,7 @@ fun SearchScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
-                                    searchQuery = query
+//                                    searchQuery = query
                                     viewModel.searchEvents(query)
                                     keyboardController?.hide()
                                     isSearchBarFocused = false
