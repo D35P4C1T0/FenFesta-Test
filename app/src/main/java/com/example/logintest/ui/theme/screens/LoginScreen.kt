@@ -160,7 +160,8 @@ fun LoginContent(
     when (loginState) {
         is LoginState.Loading -> CircularProgressIndicator(modifier = Modifier.padding(top = 16.dp))
         is LoginState.Error -> Text(
-            text = (loginState as LoginState.Error).message,
+//            text = (loginState as LoginState.Error).message,
+            text = "Credenziali non corrette o non esistenti. Riprova.",
             color = MaterialTheme.colorScheme.error,
             modifier = Modifier.padding(top = 16.dp)
         )
@@ -183,6 +184,7 @@ fun LoginResultDialog(
     onDismiss: () -> Unit,
 ) {
     AlertDialog(
+        containerColor = MaterialTheme.colorScheme.surface,
         onDismissRequest = onDismiss,
         title = {
             Text(

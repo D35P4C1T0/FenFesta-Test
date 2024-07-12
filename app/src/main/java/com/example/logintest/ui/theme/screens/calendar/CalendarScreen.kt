@@ -18,6 +18,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -136,7 +138,7 @@ fun Calendar(
                 .padding(horizontal = 16.dp),
         ) {
             item {
-                Box(
+                Card(
                     modifier = Modifier
                         .fillMaxHeight()
                         .border(
@@ -144,7 +146,11 @@ fun Calendar(
                             MaterialTheme.colorScheme.surfaceVariant,
                             MaterialTheme.shapes.medium
                         ),
-                    contentAlignment = Alignment.TopCenter
+                    colors = CardColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        contentColor = MaterialTheme.colorScheme.onSurface,
+                        disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant,)
                 ) {
                     SimpleCalendarTitle(
                         modifier = Modifier.padding(8.dp),
@@ -166,7 +172,7 @@ fun Calendar(
                     )
                     HorizontalCalendar(
                         modifier = Modifier
-                            .padding(top = 45.dp)
+//                            .padding(top = 45.dp)
                             .wrapContentWidth(),
                         state = state,
                         dayContent = { day ->

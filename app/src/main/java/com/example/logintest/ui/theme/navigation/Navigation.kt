@@ -39,6 +39,7 @@ import androidx.navigation.navArgument
 import com.example.logintest.R
 import com.example.logintest.data.viewmodel.EventViewModel
 import com.example.logintest.data.viewmodel.LocationViewModel
+import com.example.logintest.data.viewmodel.LoginState
 import com.example.logintest.data.viewmodel.SearchHistoryViewModel
 import com.example.logintest.data.viewmodel.ThemeViewModel
 import com.example.logintest.data.viewmodel.UserViewModel
@@ -69,7 +70,6 @@ import com.example.logintest.view.components.BottomNavigationBar
 import com.example.logintest.view.utils.FirstLaunch
 import com.mapbox.maps.MapboxExperimental
 import com.mapbox.maps.extension.compose.animation.viewport.MapViewportState
-import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
 
 enum class Screen {
     Home,
@@ -92,6 +92,8 @@ fun MyApp(
     val locationViewModel = viewModel<LocationViewModel>()
     val themeOption by themeViewModel.themeOption.collectAsState()
     val eventsList by eventsViewModel.events.collectAsState()
+
+    val loginState by userModel.loginState.collectAsState()
 
     var currentScreen by remember { mutableStateOf(Screen.Home) }
 
@@ -125,11 +127,23 @@ fun MyApp(
         },
         floatingActionButton = {
             if (currentScreen != Screen.Settings) {
-                FloatingActionButton(
-                    onClick = { navController.navigateWithDefaultOptions("create_event") },
-                    containerColor = MaterialTheme.colorScheme.primary // Verde
-                ) {
-                    Icon(imageVector = Icons.Default.Add, contentDescription = "Create Event")
+                when (loginState) {
+                    is LoginState.Success -> {
+                        FloatingActionButton(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            onClick = {
+                                navController.navigateWithDefaultOptions("create_event")
+                            },
+                            content = {
+                                Icon(
+                                    imageVector = Icons.Default.Add,
+                                    contentDescription = "Create Event"
+                                )
+                            }
+                        )
+                    }
+
+                    else -> {}
                 }
             }
         },

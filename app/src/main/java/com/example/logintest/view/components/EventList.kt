@@ -89,7 +89,7 @@ fun EventCard(
             ),
         shape = shape,
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primary
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
         ),
         elevation = CardDefaults.cardElevation(4.dp),
         onClick = {

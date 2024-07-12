@@ -54,14 +54,8 @@ fun SettingsScreen(
             Triple("Gestisci Abbonamento", Icons.Filled.MailOutline, "manage_subscription"),
             Triple("Logout", Icons.AutoMirrored.Filled.ExitToApp, "logout"),
         )
-
-        LoginState.Idle -> listOf(
-            Triple("Login", Icons.AutoMirrored.Filled.Login, "login"),
-        )
-
-        else -> emptyList()
+        else -> listOf( Triple("Login", Icons.AutoMirrored.Filled.Login, "login"))
     }
-
 
     val commonSettings = listOf(
         Triple("Informazioni Account", Icons.Filled.AccountCircle, "account_info"),

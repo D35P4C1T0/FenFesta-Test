@@ -27,9 +27,6 @@ import com.example.logintest.data.viewmodel.UserViewModelFactory
 import com.example.logintest.ui.theme.AppTheme
 import com.example.logintest.ui.theme.navigation.MyApp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.mapbox.maps.MapboxExperimental
-import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
-
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
@@ -38,13 +35,13 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.mapbox.maps.MapboxExperimental
+import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     private var mInterstitialAd: InterstitialAd? = null
-    private val themeViewModel: ThemeViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +54,11 @@ class MainActivity : ComponentActivity() {
         MobileAds.initialize(this) {}
 
         // Configurazione dispositivo di test
-        val testDeviceIds = listOf("f37807bd-4d48-482a-a145-d3bfc60ebfc2")
+        val testDeviceIds =
+            listOf(
+                "f37807bd-4d48-482a-a145-d3bfc60ebfc2",
+                "2f3c5547-a0ba-4d4c-9ba8-de61c42b61b7"
+            )
         val configuration = RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build()
         MobileAds.setRequestConfiguration(configuration)
 
@@ -73,15 +74,19 @@ class MainActivity : ComponentActivity() {
 
     private fun loadInterstitialAd() {
         val adRequest = AdRequest.Builder().build()
-        InterstitialAd.load(this, "ca-app-pub-3940256099942544/1033173712", adRequest, object : InterstitialAdLoadCallback() {
-            override fun onAdLoaded(interstitialAd: InterstitialAd) {
-                mInterstitialAd = interstitialAd
-            }
+        InterstitialAd.load(
+            this,
+            "ca-app-pub-3940256099942544/1033173712",
+            adRequest,
+            object : InterstitialAdLoadCallback() {
+                override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                    mInterstitialAd = interstitialAd
+                }
 
-            override fun onAdFailedToLoad(adError: LoadAdError) {
-                mInterstitialAd = null
-            }
-        })
+                override fun onAdFailedToLoad(adError: LoadAdError) {
+                    mInterstitialAd = null
+                }
+            })
     }
 
     fun showInterstitialAd(onAdDismissed: () -> Unit) {

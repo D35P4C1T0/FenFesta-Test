@@ -61,7 +61,7 @@ fun LogoutScreen(modifier: Modifier, navController: NavController, userViewModel
         when (logoutState) {
             is LogoutState.Success -> {
                 // Navigate to login screen after successful logout
-                navController.navigateWithDefaultOptions("login")
+                navController.navigateWithDefaultOptions("mapbox")
             }
 
             else -> {} // Handle other states if needed
