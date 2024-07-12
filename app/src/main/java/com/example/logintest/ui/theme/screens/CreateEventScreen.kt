@@ -19,12 +19,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,7 +31,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -40,9 +38,11 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.logintest.MainActivity
 import com.example.logintest.R
-import com.example.logintest.ui.theme.outlineDark
 import com.example.logintest.ui.theme.screens.pickers.MyDatePicker
 import com.example.logintest.ui.theme.screens.pickers.MyTimePicker
+import java.time.LocalDateTime
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,11 +53,19 @@ fun CreateEventScreen(
     val context = LocalContext.current
 
     var eventName by remember { mutableStateOf("") }
-    var eventTags by remember { mutableStateOf("") }
+    var eventTags by remember { mutableStateOf("") } // controllo se è una lista di tag
     var eventDescription by remember { mutableStateOf("") }
     var eventLocation by remember { mutableStateOf("") }
-    
-    
+    var eventDay by remember { mutableStateOf("") }
+    var eventTime by remember { mutableStateOf("") }
+
+    // LocalDateTime
+    var eventFullDate by remember { mutableStateOf(LocalDateTime.now()) }
+
+    //festa,bar,concerto,teatro,mostra,corso,conferenza,altro
+    // formato dataora: 2024-06-06T15:32:00Z
+    // formato dataora input: 13/07/2024 | 17:00
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -65,7 +73,7 @@ fun CreateEventScreen(
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        
+
         // Row 1: Event Name
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
@@ -81,10 +89,10 @@ fun CreateEventScreen(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Box(modifier = Modifier.weight(1f)) {
-                MyDatePicker(Modifier.fillMaxWidth())
+                MyDatePicker(Modifier.fillMaxWidth(), onDateSelected = { eventDay = it })
             }
             Box(modifier = Modifier.weight(1f)) {
-                MyTimePicker(Modifier.fillMaxWidth())
+                MyTimePicker(Modifier.fillMaxWidth(), onTimeSelected = { eventTime = it })
             }
         }
 
@@ -157,6 +165,10 @@ fun CreateEventScreen(
         ) {
             Button(
                 onClick = {
+
+                    eventFullDate = createLocalDateTime(eventDay, eventTime)
+
+                    println("data e ora: $eventDay | $eventTime")
                     // Mostra l'annuncio quando l'utente preme "Crea"
                     val activity = context as MainActivity
                     activity.showInterstitialAd {
@@ -164,6 +176,7 @@ fun CreateEventScreen(
                         Toast.makeText(context, "Evento creato", Toast.LENGTH_SHORT).show()
                         navController.popBackStack()
                     }
+                    // pusha utente dal view model
                 },
                 modifier = Modifier.size(150.dp, 50.dp)
             ) {
@@ -171,4 +184,24 @@ fun CreateEventScreen(
             }
         }
     }
+}
+
+fun createLocalDateTime(dateString: String, timeString: String): LocalDateTime {
+    // Define input formatters
+    val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+    val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+
+    // Parse the date and time
+    val date = LocalDateTime.parse(dateString, dateFormatter)
+    val time = LocalDateTime.parse(timeString, timeFormatter)
+
+    // Combine date and time
+    val combinedDateTime = date.withHour(time.hour).withMinute(time.minute)
+
+    // Format to the desired output
+    val outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
+    val formattedString = combinedDateTime.atOffset(ZoneOffset.UTC).format(outputFormatter)
+
+    // Parse the formatted string back to LocalDateTime
+    return LocalDateTime.parse(formattedString, outputFormatter)
 }

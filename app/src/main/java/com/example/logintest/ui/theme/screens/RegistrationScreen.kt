@@ -45,6 +45,7 @@ fun RegistrationScreen(
     val registrationState by viewModel.registrationState.collectAsState()
 
     LaunchedEffect(registrationState) {
+        println("Registration state: $registrationState") // "Registration state: Success
         if (registrationState is RegistrationState.Success) {
             onRegistrationSuccess()
         }

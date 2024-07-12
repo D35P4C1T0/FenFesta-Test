@@ -132,6 +132,16 @@ class UserViewModel(
         firstName: String,
         lastName: String
     ) {
+
+        /*
+        {
+          "username": "newuser",
+          "email": "newuser@example.com",
+          "password": "securepassword123",
+          "first_name": "New",
+          "last_name": "User"
+        }
+         */
         viewModelScope.launch {
             _registrationState.value = RegistrationState.Loading
             try {
@@ -264,8 +274,8 @@ data class RegistrationRequest(
     val email: String,
     val password: String,
     val username: String,
-    val firstName: String,
-    val lastName: String
+    @Json(name="first_name") val firstName: String,
+    @Json(name="last_name")val lastName: String
 )
 
 @JsonClass(generateAdapter = true)

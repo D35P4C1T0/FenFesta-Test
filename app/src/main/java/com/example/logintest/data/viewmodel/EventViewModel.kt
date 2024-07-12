@@ -138,6 +138,10 @@ class EventViewModel : ViewModel() {
         _searchResults.value = emptyList()
     }
 
+    fun createEvent(){
+
+    }
+
     interface ApiService {
         @GET("events") // Replace with your actual endpoint
         suspend fun getEvents(): List<EventModel>

@@ -23,7 +23,7 @@ import androidx.compose.ui.Modifier
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyTimePicker(modifier: Modifier) {
+fun MyTimePicker(modifier: Modifier, onTimeSelected: (String) -> Unit){
     var showTimePicker by remember { mutableStateOf(false) }
     var selectedHour by remember { mutableIntStateOf(0) }
     var selectedMinute by remember { mutableIntStateOf(0) }
@@ -38,6 +38,7 @@ fun MyTimePicker(modifier: Modifier) {
                     selectedHour = timePickerState.hour
                     selectedMinute = timePickerState.minute
                     showTimePicker = false
+                    onTimeSelected(String.format("%02d:%02d", selectedHour, selectedMinute))
                 }) {
                     Text("OK")
                 }
