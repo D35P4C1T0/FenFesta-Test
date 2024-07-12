@@ -16,13 +16,15 @@ import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -54,7 +56,7 @@ fun SearchScreen(
     var isHistoryExpanded by remember { mutableStateOf(true) }
 
     Column(modifier = modifier.padding(16.dp)) {
-        TextField(
+        OutlinedTextField(
             value = searchQuery,
             placeholder = { Text("Cerca...") },
             singleLine = true,
@@ -84,7 +86,13 @@ fun SearchScreen(
                         isSearchBarFocused = false
                     }
                 }
-            )
+            ),
+            colors = TextFieldDefaults.colors(
+                unfocusedIndicatorColor = MaterialTheme.colorScheme.surface,
+                focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                focusedContainerColor = MaterialTheme.colorScheme.surface,
+            ),
         )
 
         if (isSearchBarFocused) {
@@ -119,7 +127,7 @@ fun SearchScreen(
                         ) {
                             Text(query)
                         }
-                        Divider()
+                        HorizontalDivider()
                     }
                 }
             }
@@ -142,7 +150,7 @@ fun SearchScreen(
                         .clickable { onEventClick(event) }
                         .fillMaxWidth()
                 )
-                Divider()
+                HorizontalDivider()
             }
         }
     }

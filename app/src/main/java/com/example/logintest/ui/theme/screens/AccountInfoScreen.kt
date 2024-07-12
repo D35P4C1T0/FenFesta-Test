@@ -43,6 +43,7 @@ import com.example.logintest.R
 import com.example.logintest.data.viewmodel.LoginState
 import com.example.logintest.data.viewmodel.UserViewModel
 import com.example.logintest.model.UserModel
+import com.example.logintest.ui.theme.navigation.navigateWithDefaultOptions
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -71,8 +72,8 @@ fun AccountInfoScreen(
         is LoginState.Idle -> {
             EmptyAccountInfo(
                 modifier = modifier,
-                onCreateAccountClick = { navController.navigate("register") },
-                onLoginClick = { navController.navigate("login") }
+                onCreateAccountClick = { navController.navigateWithDefaultOptions("register") },
+                onLoginClick = { navController.navigateWithDefaultOptions("login") }
             )
         }
 

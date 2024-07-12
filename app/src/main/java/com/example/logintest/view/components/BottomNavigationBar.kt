@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.logintest.ui.theme.navigation.navigateWithDefaultOptions
 
 data class TabItem(
     val title: String,
@@ -79,11 +80,12 @@ fun BottomNavigationBar(navController: NavController) {
                 onClick = {
                     println("Navigating to ${item.route}, current route is $currentRoute")
                     if (currentRoute != item.route) {
-                        navController.navigate(item.route) {
-                            popUpTo(navController.graph.startDestinationId)
-                            launchSingleTop = true
-                            restoreState = true
-                        }
+//                        navController.navigate(item.route) {
+//                            popUpTo(navController.graph.startDestinationId)
+//                            launchSingleTop = true
+//                            restoreState = true
+//                        }
+                        navController.navigateWithDefaultOptions(item.route)
                     }
                 },
             )

@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.logintest.data.viewmodel.LogoutState
 import com.example.logintest.data.viewmodel.UserViewModel
+import com.example.logintest.ui.theme.navigation.navigateWithDefaultOptions
 
 @Composable
 fun LogoutScreen(modifier: Modifier, navController: NavController, userViewModel: UserViewModel) {
@@ -60,9 +61,7 @@ fun LogoutScreen(modifier: Modifier, navController: NavController, userViewModel
         when (logoutState) {
             is LogoutState.Success -> {
                 // Navigate to login screen after successful logout
-                navController.navigate("login") {
-                    popUpTo(navController.graph.startDestinationId) { inclusive = true }
-                }
+                navController.navigateWithDefaultOptions("login")
             }
 
             else -> {} // Handle other states if needed

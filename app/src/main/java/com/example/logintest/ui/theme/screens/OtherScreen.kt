@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.logintest.ui.theme.navigation.navigateWithDefaultOptions
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -41,7 +42,7 @@ fun OtherContent(modifier: Modifier = Modifier, navController: NavController) {
             .padding(16.dp)
     ) {
         items(options) { (label, icon, route) ->
-            OtherOptionItem(label = label, icon = icon, onClick = { navController.navigate(route) })
+            OtherOptionItem(label = label, icon = icon, onClick = { navController.navigateWithDefaultOptions(route) })
         }
     }
 }

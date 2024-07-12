@@ -1,6 +1,7 @@
 package com.example.logintest.data.viewmodel
 
 import android.util.Log
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

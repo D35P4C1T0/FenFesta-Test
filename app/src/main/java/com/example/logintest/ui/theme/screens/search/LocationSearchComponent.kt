@@ -23,8 +23,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -63,7 +63,7 @@ fun SearchBarWithResultsScreen(
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        TextField(
+        OutlinedTextField(
             value = searchText,
             onValueChange = { searchText = it },
             modifier = Modifier
@@ -93,7 +93,9 @@ fun SearchBarWithResultsScreen(
             singleLine = true,
             colors = TextFieldDefaults.colors(
                 unfocusedIndicatorColor = MaterialTheme.colorScheme.surface,
-                focusedIndicatorColor = MaterialTheme.colorScheme.primary
+                focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                focusedContainerColor = MaterialTheme.colorScheme.surface,
             ),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
             keyboardActions = KeyboardActions(
@@ -103,7 +105,8 @@ fun SearchBarWithResultsScreen(
                         locationViewModel.getCoords(searchText)
                     }
                 }
-            )
+            ),
+            shape = MaterialTheme.shapes.medium
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -115,6 +118,10 @@ fun SearchBarWithResultsScreen(
                     .fillMaxWidth()
             ) {
                 Card(
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        contentColor = MaterialTheme.colorScheme.onSurface
+                    ),
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     Row(
@@ -150,12 +157,20 @@ fun SearchBarWithResultsScreen(
                             }
                         }
                     }
+                    MiniMap(
+                        modifier = Modifier
+                            .clip(MaterialTheme.shapes.medium)
+                            .padding(16.dp)
+                            .border(
+                                4.dp,
+                                MaterialTheme.colorScheme.surface,
+                                MaterialTheme.shapes.medium
+                            ),
+                        mapViewportState = mapViewportState,
+                        locationViewModel = locationViewModel
+                    )
                 }
-                MiniMap(
-                    modifier = Modifier.clip(MaterialTheme.shapes.medium).padding(16.dp).border(4.dp, MaterialTheme.colorScheme.surface, MaterialTheme.shapes.medium),
-                    mapViewportState = mapViewportState,
-                    locationViewModel = locationViewModel
-                )
+
             }
         }
     }

@@ -22,7 +22,7 @@ import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
 fun Annotations(
     modifier: Modifier = Modifier,
     eventList: List<EventModel>,
-    navController: NavController
+    onClick: (String) -> Unit,
 ) {
     println("Adding annotations to the map... $eventList")
     val context = LocalContext.current
@@ -35,7 +35,9 @@ fun Annotations(
             // println("Annotation clicked: ${pointAnnotation.getData()?.asJsonObject?.get("id")}")
             // LOL it works
             val id = pointAnnotation.getData()?.asJsonObject?.get("id")?.asString
-            navController.navigate("eventDetails/${id}")
+            if (id != null) {
+                onClick(id)
+            }
             true
         })
 }

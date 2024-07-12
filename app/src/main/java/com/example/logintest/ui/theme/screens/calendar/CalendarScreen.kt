@@ -35,11 +35,14 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.logintest.data.viewmodel.EventViewModel
 import com.example.logintest.model.EventModel
@@ -66,21 +69,25 @@ import java.util.Locale
 @Composable
 fun Calendar(
     modifier: Modifier,
-    viewModel: EventViewModel = viewModel(),
+//    viewModel: EventViewModel = viewModel(),
+    viewModel: EventViewModel = viewModel(
+        viewModelStoreOwner = LocalViewModelStoreOwner.current
+            ?: LocalContext.current as ViewModelStoreOwner
+    ),
     onEventClick: (EventModel) -> Unit,
 ) {
+
+//    Log.d("Compose", "Cal is recomposing")
     var isRefreshing by remember { mutableStateOf(false) }
     val refreshState = rememberPullToRefreshState()
-
     val currentMonth = remember { YearMonth.now() }
     val startMonth = remember { currentMonth.minusMonths(500) }
     val endMonth = remember { currentMonth.plusMonths(500) }
     var selection by remember { mutableStateOf<CalendarDay?>(null) }
     val daysOfWeek = remember { daysOfWeek() }
-
     val allEvents by viewModel.events.collectAsState() // all events
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(42) {
         println("first launch allEvents: ${allEvents.size}")
         viewModel.fetchEvents() // get all events at first launch
     }

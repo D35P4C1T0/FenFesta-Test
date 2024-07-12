@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.logintest.data.viewmodel.LoginState
 import com.example.logintest.data.viewmodel.UserViewModel
+import com.example.logintest.ui.theme.navigation.navigateWithDefaultOptions
 
 @Composable
 fun SettingsScreen(
@@ -76,7 +77,7 @@ fun SettingsScreen(
             .padding(horizontal = 16.dp)
     ) {
         items(commonSettings) { (label, icon, route) ->
-            SettingItem(label = label, icon = icon, onClick = { navController.navigate(route) })
+            SettingItem(label = label, icon = icon, onClick = { navController.navigateWithDefaultOptions(route) })
         }
     }
 }

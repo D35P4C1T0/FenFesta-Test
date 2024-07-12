@@ -29,7 +29,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -83,25 +84,34 @@ fun MyApp(
     searchHistoryViewModel: SearchHistoryViewModel
 ) {
 
+//    Log.d("Compose", "Nav is recomposing")
     val navController = rememberNavController()
     val mapViewportState = rememberMapViewportState {}
-
     var firstLaunch by remember { mutableStateOf(FirstLaunch) }
-
     val locationViewModel = viewModel<LocationViewModel>()
-
     val themeOption by themeViewModel.themeOption.collectAsState()
-
-    var currentScreen by remember(navController) {
-        mutableStateOf(Screen.Home)
-    }
+    var currentScreen by remember { mutableStateOf(Screen.Home) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBarHome(
-                navController = navController,
-                currentScreen = currentScreen
+                currentScreen = currentScreen,
+                onSettingsClick = remember(navController) {
+                    {
+                        navController.navigateWithDefaultOptions(
+                            "settings"
+                        )
+                    }
+                },
+                onBackClick = remember(navController) { { navController.navigateUp() } },
+                onSearchClick = remember(navController) {
+                    {
+                        navController.navigateWithDefaultOptions(
+                            "search_page"
+                        )
+                    }
+                },
             )
         },
         bottomBar = {
@@ -113,7 +123,7 @@ fun MyApp(
         floatingActionButton = {
             if (currentScreen != Screen.Settings) {
                 FloatingActionButton(
-                    onClick = { navController.navigate("create_event") },
+                    onClick = { navController.navigateWithDefaultOptions("create_event") },
                     containerColor = MaterialTheme.colorScheme.primary // Verde
                 ) {
                     Icon(imageVector = Icons.Default.Add, contentDescription = "Create Event")
@@ -150,8 +160,10 @@ fun MyApp(
                         modifier = Modifier.padding(innerPadding),
                         mapViewportState,
                         viewModel = eventsViewModel,
-                        navController = navController,
-                        isFirstLaunch = firstLaunch
+                        isFirstLaunch = firstLaunch,
+                        onMarkerClick = { eventId ->
+                            navController.navigateWithDefaultOptions("eventDetails/$eventId")
+                        }
                     )
                 }
                 composable(
@@ -171,7 +183,7 @@ fun MyApp(
                     currentScreen = Screen.Home
                     Calendar(modifier = Modifier.padding(innerPadding),
                         onEventClick = { event ->
-                            navController.navigate("eventDetails/${event.id}")
+                            navController.navigateWithDefaultOptions("eventDetails/${event.id}")
                         }
                     )
                 }
@@ -258,8 +270,8 @@ fun MyApp(
                         Modifier.padding(innerPadding),
                         userViewModel = userModel,
                         onLoginSuccess = { println("Login success") },
-                        onNavigateToRegister = { navController.navigate("register") },
-                        goBackToHome = { navController.navigate("mapbox") }
+                        onNavigateToRegister = { navController.navigateWithDefaultOptions("register") },
+                        goBackToHome = { navController.navigateWithDefaultOptions("mapbox") }
                     )
                 }
 
@@ -267,7 +279,7 @@ fun MyApp(
                     RegistrationScreen(
                         userModel,
                         onRegistrationSuccess = { println("Registration success") },
-                        onNavigateToLogin = { navController.navigate("login") }
+                        onNavigateToLogin = { navController.navigateWithDefaultOptions("login") }
                     )
                 }
 
@@ -297,7 +309,7 @@ fun MyApp(
                         eventsViewModel,
                         searchHistoryViewModel,
                         onEventClick = { event ->
-                            navController.navigate("eventDetails/${event.id}")
+                            navController.navigateWithDefaultOptions("eventDetails/${event.id}")
                         })
                 }
 
@@ -318,7 +330,9 @@ fun MyApp(
 @Composable
 fun TopAppBarHome(
     currentScreen: Screen,
-    navController: NavHostController,
+    onSettingsClick: () -> Unit,
+    onBackClick: () -> Unit,
+    onSearchClick: () -> Unit,
 ) {
     CenterAlignedTopAppBar(
         title = {
@@ -331,7 +345,7 @@ fun TopAppBarHome(
         navigationIcon = @Composable {
             when (currentScreen) {
                 Screen.Home -> {
-                    IconButton(onClick = { navController.navigate("settings") }) {
+                    IconButton(onClick = onSettingsClick) {
                         Icon(
                             imageVector = Icons.Default.Settings,
                             contentDescription = "Settings"
@@ -340,7 +354,7 @@ fun TopAppBarHome(
                 }
 
                 Screen.Settings -> {
-                    IconButton(onClick = { navController.navigateUp() }) {
+                    IconButton(onClick = onBackClick) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back"
@@ -352,7 +366,7 @@ fun TopAppBarHome(
         actions = @Composable {
             when (currentScreen) {
                 Screen.Home -> {
-                    IconButton(onClick = { navController.navigate("search_page") }) {
+                    IconButton(onClick = onSearchClick) {
                         Icon(
                             imageVector = Icons.Default.Search,
                             contentDescription = "Settings"
@@ -364,4 +378,13 @@ fun TopAppBarHome(
             }
         }
     )
+}
+
+fun NavController.navigateWithDefaultOptions(route: String) {
+    val navOptions = NavOptions.Builder()
+        .setLaunchSingleTop(true)
+        .setRestoreState(true)
+        .build()
+
+    this.navigate(route, navOptions)
 }
