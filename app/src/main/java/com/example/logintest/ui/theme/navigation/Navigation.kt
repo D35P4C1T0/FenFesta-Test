@@ -300,7 +300,7 @@ fun MyApp(
                 composable("register") {
                     RegistrationScreen(
                         userModel,
-                        onRegistrationSuccess = { println("Registration success") },
+                        onRegistrationSuccess = { navController.navigateWithDefaultOptions("mapbox") },
                         onNavigateToLogin = { navController.navigateWithDefaultOptions("login") }
                     )
                 }
