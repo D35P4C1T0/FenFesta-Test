@@ -141,6 +141,14 @@ fun CreateEventScreen(
                     .weight(1f) // Match the height of the image box
             )
         }
+        // Row 6: capacity
+        OutlinedTextField(
+            value = eventTags,
+            onValueChange = { eventTags = it },
+            label = { Text("Capacità") },
+            modifier = Modifier.fillMaxWidth(),
+            maxLines = 1
+        )
 
         // Create Button
         Box(
