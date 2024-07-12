@@ -165,10 +165,15 @@ fun CreateEventScreen(
         ) {
             Button(
                 onClick = {
-
                     eventFullDate = createLocalDateTime(eventDay, eventTime)
-
+                    println("data e ora fulldate: $eventFullDate")
                     println("data e ora: $eventDay | $eventTime")
+
+                    if (eventName.isEmpty() || eventTags.isEmpty() || eventDescription.isEmpty() || eventLocation.isEmpty() || eventDay.isEmpty() || eventTime.isEmpty()) {
+                        Toast.makeText(context, "Compila tutti i campi", Toast.LENGTH_SHORT).show()
+                        return@Button
+                    }
+
                     // Mostra l'annuncio quando l'utente preme "Crea"
                     val activity = context as MainActivity
                     activity.showInterstitialAd {
