@@ -21,7 +21,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,7 +33,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.wear.compose.material.Text
 import coil.compose.rememberAsyncImagePainter
+import com.example.logintest.MainActivity
 import com.example.logintest.R
 import com.example.logintest.ui.theme.screens.pickers.MyDatePicker
 import com.example.logintest.ui.theme.screens.pickers.MyTimePicker
@@ -143,8 +145,13 @@ fun CreateEventScreen(
         ) {
             Button(
                 onClick = {
-                    Toast.makeText(context, "Evento creato", Toast.LENGTH_SHORT).show()
-                    navController.popBackStack()
+                    // Mostra l'annuncio quando l'utente preme "Crea"
+                    val activity = context as MainActivity
+                    activity.showInterstitialAd {
+                        // Codice da eseguire dopo che l'annuncio è stato chiuso
+                        Toast.makeText(context, "Evento creato", Toast.LENGTH_SHORT).show()
+                        navController.popBackStack()
+                    }
                 },
                 modifier = Modifier.size(150.dp, 50.dp)
             ) {
