@@ -53,13 +53,13 @@ import com.example.logintest.ui.theme.screens.ManageSubscriptionScreen
 import com.example.logintest.ui.theme.screens.MapScreen
 import com.example.logintest.ui.theme.screens.OtherScreen
 import com.example.logintest.ui.theme.screens.RegistrationScreen
-import com.example.logintest.ui.theme.screens.search.EventSearchScreen
 import com.example.logintest.ui.theme.screens.SettingsScreen
 import com.example.logintest.ui.theme.screens.ShareAppScreen
 import com.example.logintest.ui.theme.screens.SupportScreen
 import com.example.logintest.ui.theme.screens.ThemeSelector
 import com.example.logintest.ui.theme.screens.calendar.Calendar
 import com.example.logintest.ui.theme.screens.event.EventDetailsScreen
+import com.example.logintest.ui.theme.screens.search.EventSearchScreen
 import com.example.logintest.ui.theme.screens.search.SearchBarWithResultsScreen
 import com.example.logintest.ui.utils.NavAnimations.enterTransition
 import com.example.logintest.ui.utils.NavAnimations.exitTransition
@@ -68,6 +68,7 @@ import com.example.logintest.ui.utils.NavAnimations.popExitTransition
 import com.example.logintest.view.components.BottomNavigationBar
 import com.example.logintest.view.utils.FirstLaunch
 import com.mapbox.maps.MapboxExperimental
+import com.mapbox.maps.extension.compose.animation.viewport.MapViewportState
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
 
 enum class Screen {
@@ -82,12 +83,11 @@ fun MyApp(
     themeViewModel: ThemeViewModel,
     eventsViewModel: EventViewModel,
     searchHistoryViewModel: SearchHistoryViewModel,
+    mapViewportState: MapViewportState,
 ) {
 
 //    Log.d("Compose", "Nav is recomposing")
-
     val navController = rememberNavController()
-    val mapViewportState = rememberMapViewportState {}
     var firstLaunch by remember { mutableStateOf(FirstLaunch) }
     val locationViewModel = viewModel<LocationViewModel>()
     val themeOption by themeViewModel.themeOption.collectAsState()
@@ -161,7 +161,7 @@ fun MyApp(
                     currentScreen = Screen.Home
                     MapScreen(
                         modifier = Modifier.padding(innerPadding),
-                        mapViewportState,
+                        mapViewportState = mapViewportState,
                         eventsList = eventsList,
                         updateEvents = { eventsViewModel.fetchEvents() },
                         isFirstLaunch = firstLaunch,

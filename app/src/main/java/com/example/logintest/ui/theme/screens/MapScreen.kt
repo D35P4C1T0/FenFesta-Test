@@ -2,24 +2,19 @@ package com.example.logintest.ui.theme.screens
 
 
 import android.Manifest
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.example.logintest.data.location.LocationService
-import com.example.logintest.data.viewmodel.EventViewModel
 import com.example.logintest.model.EventModel
 import com.example.logintest.view.components.Annotations
 import com.example.logintest.view.utils.FirstLaunch
@@ -34,7 +29,6 @@ import com.mapbox.maps.extension.localization.localizeLabels
 import com.mapbox.maps.plugin.PuckBearing
 import com.mapbox.maps.plugin.animation.MapAnimationOptions
 import com.mapbox.maps.plugin.locationcomponent.createDefault2DPuck
-import com.mapbox.maps.plugin.locationcomponent.generated.LocationComponentSettings
 import com.mapbox.maps.plugin.locationcomponent.location
 import java.util.Locale
 
@@ -69,9 +63,8 @@ fun MapScreen(
     )
 
     //AnimatedVisibility(visible = true, enter = fadeIn(), exit = fadeOut()) {
-    Column(
-        modifier = modifier.fillMaxSize(),
-    ) {
+
+    Box(modifier = modifier.fillMaxSize()) {
         val context = LocalContext.current
         MapboxMap(
             Modifier.fillMaxSize(),
@@ -80,10 +73,6 @@ fun MapScreen(
             scaleBar = { }, // no scale bar
         )
         {
-            LaunchedEffect(key1 = isFirstLaunch) {
-//                viewModel.fetchEvents()
-            }
-
             Annotations(eventList = eventsList, onClick = onMarkerClick)
             MapEffect(Unit) { mapView ->
                 // Use mapView to access all the Mapbox Maps APIs including plugins etc.
@@ -99,13 +88,14 @@ fun MapScreen(
             }
         }
 
+
         LaunchedEffect(key1 = relaunch) {
             try {
-                updateEvents()
                 println("map relaunch called")
                 val location = LocationService().getCurrentLocation(context)
                 println("Location: $location")
                 if (isFirstLaunch.isFirstLaunch) { // working on first time launch
+                    updateEvents()
                     mapViewportState.flyTo(
                         cameraOptions = CameraOptions.Builder()
                             .center(location)
@@ -117,7 +107,7 @@ fun MapScreen(
                             )
                         },
                     )
-                    isFirstLaunch.toggleFirstLaunch()
+                    isFirstLaunch.isFirstLaunch = false
                 }
 
             } catch (e: LocationService.LocationServiceException) {
@@ -150,4 +140,5 @@ fun MapScreen(
         }
     }
 }
+
 //}

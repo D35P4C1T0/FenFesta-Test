@@ -27,6 +27,8 @@ import com.example.logintest.data.viewmodel.UserViewModelFactory
 import com.example.logintest.ui.theme.AppTheme
 import com.example.logintest.ui.theme.navigation.MyApp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.mapbox.maps.MapboxExperimental
+import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
 
 
 class MainActivity : ComponentActivity() {
@@ -45,6 +47,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(MapboxExperimental::class)
 @Composable
 fun DynamicTheme(themeViewModel: ThemeViewModel) {
     // Theme
@@ -70,6 +73,7 @@ fun DynamicTheme(themeViewModel: ThemeViewModel) {
     val searchHistoryViewModel: SearchHistoryViewModel =
         viewModel { SearchHistoryViewModel(searchHistoryDataStore) }
 
+    val mapViewportState = rememberMapViewportState()
 
     AppTheme(darkTheme = darkTheme) {
         SystemUIController(isDarkTheme = darkTheme)
@@ -78,6 +82,7 @@ fun DynamicTheme(themeViewModel: ThemeViewModel) {
             themeViewModel = themeViewModel,
             searchHistoryViewModel = searchHistoryViewModel,
             eventsViewModel = eventViewModel,
+            mapViewportState = mapViewportState,
         )
     }
 }
