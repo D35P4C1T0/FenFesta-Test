@@ -1,11 +1,7 @@
 package com.example.logintest.model
 
-import android.os.Parcel
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import android.os.Parcelable
 
 @JsonClass(generateAdapter = true)
 data class UserModel(

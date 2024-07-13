@@ -1,8 +1,10 @@
 package com.example.logintest.data.viewmodel
 
 import android.content.Context
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.logintest.R
 import com.example.logintest.data.settings.DataStoreUserPreference
 import com.example.logintest.model.UserModel
 import com.squareup.moshi.Json
@@ -41,6 +43,8 @@ class UserViewModel(
 
     private val apiService: ApiService
 
+    private val baseURL = context.getString(R.string.base_url)
+
     init {
         val okHttpClient = OkHttpClient.Builder()
             .connectTimeout(30, TimeUnit.SECONDS)
@@ -54,7 +58,7 @@ class UserViewModel(
             .build()
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://10.0.0.97:8000/")
+            .baseUrl(baseURL)
             .client(okHttpClient)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()

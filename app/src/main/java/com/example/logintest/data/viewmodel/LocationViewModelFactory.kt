@@ -4,13 +4,11 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
-class EventViewModelFactory(
-    private val context: Context
-) : ViewModelProvider.Factory {
+class LocationViewModelFactory(private val context: Context) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(EventViewModel::class.java)) {
+        if (modelClass.isAssignableFrom(LocationViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return EventViewModel(context) as T
+            return LocationViewModel(context) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

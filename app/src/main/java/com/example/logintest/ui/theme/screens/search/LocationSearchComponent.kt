@@ -43,7 +43,8 @@ import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportS
 fun SearchBarWithResultsScreen(
     modifier: Modifier,
     viewModel: LocationViewModel = viewModel(),
-    onLocationConfirmed: (LocationModel) -> Unit
+    onLocationConfirmed: (LocationModel) -> Unit,
+    goBackToPreviousPage: () -> Unit,
 ) {
     var searchText by remember { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -109,7 +110,10 @@ fun SearchBarWithResultsScreen(
                         Column {
                             IconButton(
                                 modifier = Modifier.size(55.dp),
-                                onClick = { onLocationConfirmed(location) },
+                                onClick = {
+                                    onLocationConfirmed(location)
+                                    goBackToPreviousPage()
+                                },
                                 colors = IconButtonDefaults.iconButtonColors(
                                     contentColor = MaterialTheme.colorScheme.onPrimary,
                                     containerColor = MaterialTheme.colorScheme.primary

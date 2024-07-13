@@ -9,7 +9,7 @@ data class EventModel(
     val creator: Int,
     val date: LocalDateTime,
     val description: String,
-    val id: Int,
+    val id: Int? = null,
     val location: String,
     val name: String,
     val lat: String,

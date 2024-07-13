@@ -1,10 +1,10 @@
 package com.example.logintest.data.viewmodel
 
+import android.content.Context
 import android.util.Log
-import androidx.compose.runtime.Stable
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.logintest.R
 import com.example.logintest.data.remote.ApiService
 import com.example.logintest.data.remote.EventModelListAdapter
 import com.example.logintest.data.remote.LocalTimeAdapter
@@ -24,7 +24,9 @@ import retrofit2.http.Query
 import java.time.YearMonth
 import java.util.concurrent.TimeUnit
 
-class EventViewModel : ViewModel() {
+class EventViewModel(
+    private val context: Context,
+) : ViewModel() {
 
     private val _events = MutableStateFlow<List<EventModel>>(emptyList())
     val events: StateFlow<List<EventModel>> = _events
@@ -43,6 +45,8 @@ class EventViewModel : ViewModel() {
 
     private val apiService: ApiService
 
+    private val baseURL = context.getString(R.string.base_url)
+
     init {
         Log.d("EventViewModel", "ViewModel created: ${this.hashCode()}")
         val moshi = Moshi.Builder()
@@ -51,9 +55,9 @@ class EventViewModel : ViewModel() {
             .add(KotlinJsonAdapterFactory())
             .build()
 
-        val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        }
+//        val loggingInterceptor = HttpLoggingInterceptor().apply {
+//            level = HttpLoggingInterceptor.Level.BODY
+//        }
 
         val okHttpClient = OkHttpClient.Builder()
 //            .addInterceptor(loggingInterceptor)
@@ -62,7 +66,7 @@ class EventViewModel : ViewModel() {
             .build()
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://10.0.0.97:8000/") // Replace with your actual base URL
+            .baseUrl(baseURL) // Replace with your actual base URL
             .client(okHttpClient)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
@@ -138,7 +142,21 @@ class EventViewModel : ViewModel() {
         _searchResults.value = emptyList()
     }
 
-    fun createEvent(){
+    /*
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    creator = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    date = models.DateTimeField()
+    location = models.CharField(max_length=100)
+    lat = models.DecimalField(max_digits=9, decimal_places=6)
+    lon = models.DecimalField(max_digits=9, decimal_places=6)
+    capacity = models.IntegerField()
+    capacity_left = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True) // AUTOMATICO
+    tags = models.CharField(max_length=200, blank=True)
+     */
+
+    fun createEvent(event: EventModel) {
 
     }
 

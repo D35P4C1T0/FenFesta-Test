@@ -64,6 +64,7 @@ import com.example.logintest.ui.theme.screens.calendar.Calendar
 import com.example.logintest.ui.theme.screens.event.EventDetailsScreen
 import com.example.logintest.ui.theme.screens.search.EventSearchScreen
 import com.example.logintest.ui.theme.screens.search.SearchBarWithResultsScreen
+import com.example.logintest.ui.utils.AdvLauncher
 import com.example.logintest.ui.utils.NavAnimations.enterTransition
 import com.example.logintest.ui.utils.NavAnimations.exitTransition
 import com.example.logintest.ui.utils.NavAnimations.popEnterTransition
@@ -86,18 +87,19 @@ fun MyApp(
     eventsViewModel: EventViewModel,
     searchHistoryViewModel: SearchHistoryViewModel,
     mapViewportState: MapViewportState,
+    locationViewModel: LocationViewModel,
 ) {
 
 //    Log.d("Compose", "Nav is recomposing")
+    val context = LocalContext.current
     val navController = rememberNavController()
     var firstLaunch by remember { mutableStateOf(FirstLaunch) }
-    val locationViewModel = viewModel<LocationViewModel>()
     val themeOption by themeViewModel.themeOption.collectAsState()
     val eventsList by eventsViewModel.events.collectAsState()
 
     val loginState by userModel.loginState.collectAsState()
 
-    val context = LocalContext.current
+    val userData by userModel.userData.collectAsState()
 
     var currentScreen by remember { mutableStateOf(Screen.Home) }
 
@@ -320,7 +322,21 @@ fun MyApp(
                 }
                 composable("create_event") {
                     currentScreen = Screen.Settings
-                    CreateEventScreen(navController, Modifier.padding(innerPadding))
+                    userData?.let {
+                        CreateEventScreen(
+                            creatorUser = userData!!,
+                            navController = navController,
+                            modifier = Modifier.padding(innerPadding),
+                            locationViewModel = locationViewModel,
+                            onCreateEvent = {
+                                eventsViewModel.createEvent(it)
+                                AdvLauncher.launch(
+                                    context = context,
+                                    onAdLaunched = { navController.popBackStack() }
+                                )
+                            }
+                        )
+                    }
                 }
                 composable("app_info") {
                     AppInfoScreen(Modifier.padding(innerPadding), navController)
@@ -347,7 +363,8 @@ fun MyApp(
                     SearchBarWithResultsScreen(
                         Modifier.padding(innerPadding),
                         locationViewModel,
-                        onLocationConfirmed = {})
+                        onLocationConfirmed = {},
+                        goBackToPreviousPage = { navController.popBackStack() })
                 }
             }
         }

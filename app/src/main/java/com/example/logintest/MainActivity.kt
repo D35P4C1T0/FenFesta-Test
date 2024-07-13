@@ -18,6 +18,8 @@ import com.example.logintest.data.settings.SearchHistoryDataStore
 import com.example.logintest.data.settings.ThemePreferences
 import com.example.logintest.data.viewmodel.EventViewModel
 import com.example.logintest.data.viewmodel.EventViewModelFactory
+import com.example.logintest.data.viewmodel.LocationViewModel
+import com.example.logintest.data.viewmodel.LocationViewModelFactory
 import com.example.logintest.data.viewmodel.SearchHistoryViewModel
 import com.example.logintest.data.viewmodel.ThemeOption
 import com.example.logintest.data.viewmodel.ThemeViewModel
@@ -129,7 +131,11 @@ fun DynamicTheme(themeViewModel: ThemeViewModel) {
     )
 
     val eventViewModel: EventViewModel = viewModel(
-        factory = EventViewModelFactory()
+        factory = EventViewModelFactory(context)
+    )
+
+    val locationViewModel: LocationViewModel = viewModel(
+        factory = LocationViewModelFactory(context)
     )
 
     val searchHistoryDataStore = remember { SearchHistoryDataStore(context) }
@@ -146,6 +152,7 @@ fun DynamicTheme(themeViewModel: ThemeViewModel) {
             searchHistoryViewModel = searchHistoryViewModel,
             eventsViewModel = eventViewModel,
             mapViewportState = mapViewportState,
+            locationViewModel = locationViewModel,
         )
     }
 }
