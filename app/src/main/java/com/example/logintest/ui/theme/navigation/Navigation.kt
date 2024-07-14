@@ -63,7 +63,7 @@ import com.example.logintest.ui.theme.screens.ThemeSelector
 import com.example.logintest.ui.theme.screens.calendar.Calendar
 import com.example.logintest.ui.theme.screens.event.EventDetailsScreen
 import com.example.logintest.ui.theme.screens.search.EventSearchScreen
-import com.example.logintest.ui.theme.screens.search.SearchBarWithResultsScreen
+import com.example.logintest.ui.theme.screens.search.LocationSearch
 import com.example.logintest.ui.utils.AdvLauncher
 import com.example.logintest.ui.utils.NavAnimations.enterTransition
 import com.example.logintest.ui.utils.NavAnimations.exitTransition
@@ -360,7 +360,7 @@ fun MyApp(
 
                 composable("search_address") {
                     currentScreen = Screen.Settings
-                    SearchBarWithResultsScreen(
+                    LocationSearch(
                         Modifier.padding(innerPadding),
                         locationViewModel,
                         onLocationConfirmed = {},

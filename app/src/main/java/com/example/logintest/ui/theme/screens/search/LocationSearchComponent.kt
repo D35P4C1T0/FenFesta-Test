@@ -40,7 +40,7 @@ import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportS
 
 @OptIn(MapboxExperimental::class)
 @Composable
-fun SearchBarWithResultsScreen(
+fun LocationSearch(
     modifier: Modifier,
     viewModel: LocationViewModel = viewModel(),
     onLocationConfirmed: (LocationModel) -> Unit,

@@ -127,11 +127,11 @@ fun DynamicTheme(themeViewModel: ThemeViewModel) {
     val context = LocalContext.current
     val userPreferences = remember { DataStoreUserPreference(context) }
     val userViewModel: UserViewModel = viewModel(
-        factory = UserViewModelFactory(userPreferences, context)
+        factory = UserViewModelFactory(userPreferences = userPreferences, context = context)
     )
 
     val eventViewModel: EventViewModel = viewModel(
-        factory = EventViewModelFactory(context)
+        factory = EventViewModelFactory(userPreferences = userPreferences, context = context)
     )
 
     val locationViewModel: LocationViewModel = viewModel(

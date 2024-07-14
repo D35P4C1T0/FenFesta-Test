@@ -4,10 +4,11 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.logintest.R
-import com.example.logintest.data.remote.ApiService
 import com.example.logintest.data.remote.EventModelListAdapter
 import com.example.logintest.data.remote.LocalTimeAdapter
+import com.example.logintest.data.settings.DataStoreUserPreference
 import com.example.logintest.model.EventModel
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -18,7 +19,9 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 import java.time.YearMonth
@@ -26,6 +29,7 @@ import java.util.concurrent.TimeUnit
 
 class EventViewModel(
     private val context: Context,
+    private val userPreferences: DataStoreUserPreference
 ) : ViewModel() {
 
     private val _events = MutableStateFlow<List<EventModel>>(emptyList())
@@ -55,12 +59,13 @@ class EventViewModel(
             .add(KotlinJsonAdapterFactory())
             .build()
 
-//        val loggingInterceptor = HttpLoggingInterceptor().apply {
-//            level = HttpLoggingInterceptor.Level.BODY
-//        }
+        val loggingInterceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
 
         val okHttpClient = OkHttpClient.Builder()
-//            .addInterceptor(loggingInterceptor)
+            .addInterceptor(loggingInterceptor)
+            .addInterceptor(AuthInterceptor(userPreferences))
             .connectTimeout(15, TimeUnit.SECONDS)
             .readTimeout(15, TimeUnit.SECONDS)
             .build()
@@ -142,6 +147,19 @@ class EventViewModel(
         _searchResults.value = emptyList()
     }
 
+    fun createEvent(event: EventModel) {
+        println("Asking to create event: $event")
+        viewModelScope.launch {
+            try {
+                val results = apiService.createEvent(event)
+                println("Event created result: $results")
+            } catch (e: Exception){
+                println("Error creating event: ${e.message}")
+                e.printStackTrace()
+            }
+        }
+    }
+
     /*
     name = models.CharField(max_length=100)
     description = models.TextField()
@@ -156,9 +174,7 @@ class EventViewModel(
     tags = models.CharField(max_length=200, blank=True)
      */
 
-    fun createEvent(event: EventModel) {
 
-    }
 
     interface ApiService {
         @GET("events") // Replace with your actual endpoint
@@ -172,5 +188,8 @@ class EventViewModel(
 
         @GET("events/search")
         suspend fun searchEvents(@Query("keyword") keyword: String): List<EventModel>
+
+        @POST("events/new")
+        suspend fun createEvent(@Body event: EventModel): EventModel
     }
 }

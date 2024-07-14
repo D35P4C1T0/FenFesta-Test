@@ -8,6 +8,6 @@ data class LocationModel(
     val city: String,
     ) {
     override fun toString(): String {
-        return "LocationModel(lat=$lat, lon=$lon, address='$address')"
+        return "$address, $streetNumber, $city"
     }
 }

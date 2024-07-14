@@ -1,7 +1,5 @@
 package com.example.logintest.ui.theme.screens
 
-//import android.app.DatePickerDialog
-
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -26,9 +24,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,19 +38,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
-import com.example.logintest.MainActivity
 import com.example.logintest.R
 import com.example.logintest.data.viewmodel.LocationViewModel
 import com.example.logintest.model.EventModel
+import com.example.logintest.model.LocationModel
 import com.example.logintest.model.UserModel
-import com.example.logintest.ui.theme.navigation.navigateWithDefaultOptions
 import com.example.logintest.ui.theme.screens.pickers.MyDatePicker
 import com.example.logintest.ui.theme.screens.pickers.MyTimePicker
+import com.example.logintest.ui.theme.screens.search.LocationSearch
+import com.example.logintest.view.utils.DateTimeHelper.createLocalDateTime
 import java.time.LocalDateTime
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,6 +62,7 @@ fun CreateEventScreen(
     locationViewModel: LocationViewModel,
     onCreateEvent: (EventModel) -> Unit,
 ) {
+    var showLocationPicker by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     var eventName by remember { mutableStateOf("") }
@@ -72,13 +72,7 @@ fun CreateEventScreen(
     var eventTime by remember { mutableStateOf("") }
     var eventCapacity by remember { mutableStateOf("") }
 
-    val eventLocation by locationViewModel.locationData.collectAsState()
-    // LocalDateTime
-    var eventFullDate by remember { mutableStateOf(LocalDateTime.now()) }
-
-    //festa,bar,concerto,teatro,mostra,corso,conferenza,altro
-    // formato dataora: 2024-06-06T15:32:00Z
-    // formato dataora input: 13/07/2024 | 17:00
+    var eventLocation by remember { mutableStateOf<LocationModel?>(null) }
 
     Column(
         modifier = modifier
@@ -152,12 +146,16 @@ fun CreateEventScreen(
         ) {
             Box(modifier = Modifier.weight(1f)) {
                 OutlinedTextField(
-                    value = eventLocation?.address ?: "",
+                    value = eventLocation?.toString() ?: "",
                     onValueChange = { /* Read-only, so no change handler */ },
                     readOnly = true,
                     label = { Text("Indirizzo") },
                     trailingIcon = {
-                        IconButton(onClick = { navController.navigateWithDefaultOptions("search_address") }) {
+                        IconButton(onClick = {
+                            showLocationPicker = true
+                            // navController.navigateWithDefaultOptions("search_address")
+                            // apri dialogo
+                        }) {
                             Icon(
                                 imageVector = Icons.Default.TravelExplore,
                                 contentDescription = "Select Location",
@@ -174,6 +172,18 @@ fun CreateEventScreen(
                     label = "Capacità"
                 )
             }
+        }
+
+        if (showLocationPicker) {
+            LocationPickerDialog(
+                viewModel = locationViewModel,
+                onDismiss = { showLocationPicker = false },
+                onLocationSelected = { it ->
+                    eventLocation = it
+                    showLocationPicker = false
+                    println("location confirmed: $eventLocation")
+                }
+            )
         }
 
         // Row 5: Image and Location
@@ -211,59 +221,35 @@ fun CreateEventScreen(
         ) {
             Button(
                 onClick = {
-                    /*
-                    Backend
-                    name = models.CharField(max_length=100)
-                    description = models.TextField()
-                    creator = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-                    date = models.DateTimeField()
-                    location = models.CharField(max_length=100)
-                    lat = models.DecimalField(max_digits=9, decimal_places=6)
-                    lon = models.DecimalField(max_digits=9, decimal_places=6)
-                    capacity = models.IntegerField()
-                    capacity_left = models.IntegerField()
-                    created_at = models.DateTimeField(auto_now_add=True)
-                    tags = models.CharField(max_length=200, blank=True)
-
-                    App's Model
-                    val capacity: Int,
-                    val capacity_left: Int,
-                    val created_at: String,
-                    val creator: Int,
-                    val date: LocalDateTime,
-                    val description: String,
-                    val id: Int,
-                    val location: String,
-                    val name: String,
-                    val lat: String,
-                    val lon: String,
-                    val tags: String,
-                    */
-
-
-                    // check if all fields are filled
-                    // ...
-
-                    if (eventName.isEmpty() || eventTags.isEmpty() || eventDescription.isEmpty() || eventDay.isEmpty() || eventTime.isEmpty()) {
+                    if (eventName.isEmpty()
+                        || eventTags.isEmpty()
+                        || eventDescription.isEmpty()
+                        || eventDay.isEmpty()
+                        || eventTime.isEmpty()
+                        || eventCapacity.isEmpty()
+//                        ||
+                    ) {
                         Toast.makeText(context, "Compila tutti i campi", Toast.LENGTH_SHORT).show()
                         return@Button
                     }
 
-                    val newEvent = EventModel(
-                        name = eventName,
-                        description = eventDescription,
-                        creator = creatorUser.id,
-                        date = createLocalDateTime(eventDay, eventTime),
-                        location = eventLocation?.address ?: "",
-                        lat = eventLocation?.lat.toString(),
-                        lon = eventLocation?.lon.toString(),
-                        capacity = eventCapacity.toIntOrNull() ?: 0,
-                        capacity_left = eventCapacity.toIntOrNull() ?: 0,
-                        tags = eventTags,
-                        created_at = LocalDateTime.now().toString(),
-                    )
-
-                    onCreateEvent(newEvent) // spara in su l'eventp
+                    eventLocation?.let {
+                        val newEvent = EventModel(
+                            name = eventName,
+                            description = eventDescription,
+                            creator = creatorUser.id,
+                            date = createLocalDateTime(eventDay, eventTime),
+                            location = eventLocation!!.address,
+                            lat = eventLocation!!.lat.toString(),
+                            lon = eventLocation!!.lon.toString(),
+                            capacity = eventCapacity.toIntOrNull() ?: 0,
+                            capacity_left = eventCapacity.toIntOrNull() ?: 0,
+                            tags = eventTags,
+                            created_at = LocalDateTime.now().toString(),
+                        )
+                        println("new event: $newEvent")
+                        onCreateEvent(newEvent) // spara in su l'eventp
+                    }
                 },
                 modifier = Modifier.size(150.dp, 50.dp)
             ) {
@@ -334,22 +320,30 @@ fun IntegerOutlinedTextField(
     )
 }
 
-fun createLocalDateTime(dateString: String, timeString: String): LocalDateTime {
-    // Define input formatters
-    val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-    val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
-
-    // Parse the date and time
-    val date = LocalDateTime.parse(dateString, dateFormatter)
-    val time = LocalDateTime.parse(timeString, timeFormatter)
-
-    // Combine date and time
-    val combinedDateTime = date.withHour(time.hour).withMinute(time.minute)
-
-    // Format to the desired output
-    val outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
-    val formattedString = combinedDateTime.atOffset(ZoneOffset.UTC).format(outputFormatter)
-
-    // Parse the formatted string back to LocalDateTime
-    return LocalDateTime.parse(formattedString, outputFormatter)
+@Composable
+fun LocationPickerDialog(
+    viewModel: LocationViewModel,
+    onDismiss: () -> Unit,
+    onLocationSelected: (LocationModel) -> Unit
+) {
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(
+            dismissOnBackPress = true,
+            dismissOnClickOutside = false,
+            usePlatformDefaultWidth = false // This allows the dialog to be full-width
+        )
+    ) {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            LocationSearch(
+                modifier = Modifier.fillMaxWidth(),
+                viewModel = viewModel,
+                onLocationConfirmed = onLocationSelected,
+                goBackToPreviousPage = onDismiss
+            )
+        }
+    }
 }
