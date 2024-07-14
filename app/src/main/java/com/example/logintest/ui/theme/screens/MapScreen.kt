@@ -62,10 +62,11 @@ fun MapScreen(
         }
     )
 
+    val context = LocalContext.current
+
     //AnimatedVisibility(visible = true, enter = fadeIn(), exit = fadeOut()) {
 
     Box(modifier = modifier.fillMaxSize()) {
-        val context = LocalContext.current
         MapboxMap(
             Modifier.fillMaxSize(),
             mapViewportState = mapViewportState,

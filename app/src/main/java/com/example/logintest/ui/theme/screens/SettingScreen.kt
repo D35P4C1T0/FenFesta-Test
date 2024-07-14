@@ -61,7 +61,7 @@ fun SettingsScreen(
         Triple("Informazioni Account", Icons.Filled.AccountCircle, "account_info"),
         Triple("Light/Dark Mode", Icons.Filled.Build, "light_dark_mode"),
         Triple("Altro", Icons.Filled.Menu, "other"),
-        Triple("Cerca Via", Icons.Filled.Search, "search_address"),
+//        Triple("Cerca Via", Icons.Filled.Search, "search_address"),
     ) + loginDependentSettings
 
 

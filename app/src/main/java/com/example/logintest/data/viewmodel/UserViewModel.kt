@@ -1,7 +1,6 @@
 package com.example.logintest.data.viewmodel
 
 import android.content.Context
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.logintest.R
@@ -40,6 +39,10 @@ class UserViewModel(
 
     private val _registrationState = MutableStateFlow<RegistrationState>(RegistrationState.Idle)
     val registrationState: StateFlow<RegistrationState> = _registrationState
+
+    private val _passwordChangeState =
+        MutableStateFlow<PasswordChangeState>(PasswordChangeState.Initial)
+    val passwordChangeState: StateFlow<PasswordChangeState> = _passwordChangeState
 
     private val apiService: ApiService
 
@@ -87,6 +90,31 @@ class UserViewModel(
             true,
             "https://static.nexilia.it/mangaforever/2022/08/af9011e585d0772b2332ab7d16985672-1280x720.jpg"
         )
+    }
+
+    fun changePassword(oldPassword: String, newPassword: String, confirmPassword: String) {
+        viewModelScope.launch {
+            _passwordChangeState.value = PasswordChangeState.Loading
+            try {
+                val response = apiService.changePassword(
+                    ChangePasswordRequest(
+                        oldPassword,
+                        newPassword,
+                        confirmPassword
+                    )
+                )
+                if (response.isSuccessful) {
+                    _passwordChangeState.value =
+                        PasswordChangeState.Success("Password changed successfully")
+                } else {
+                    _passwordChangeState.value =
+                        PasswordChangeState.Error("Password change failed: ${response.message()}")
+                }
+            } catch (e: Exception) {
+                _passwordChangeState.value =
+                    PasswordChangeState.Error("Password change failed: ${e.message}")
+            }
+        }
     }
 
     fun login(email: String, password: String) {
@@ -212,6 +240,10 @@ class UserViewModel(
         }
     }
 
+    fun clearPasswordChangeState() {
+        _passwordChangeState.value = PasswordChangeState.Initial
+    }
+
     fun profileInfo() {
         viewModelScope.launch {
             try {
@@ -260,6 +292,13 @@ sealed class LogoutState {
     data class Error(val message: String) : LogoutState()
 }
 
+sealed class PasswordChangeState {
+    data object Initial : PasswordChangeState()
+    data object Loading : PasswordChangeState()
+    data class Success(val message: String) : PasswordChangeState()
+    data class Error(val message: String) : PasswordChangeState()
+}
+
 @JsonClass(generateAdapter = true)
 data class AuthResponse(
     @Json(name = "access") val accessToken: String,
@@ -278,8 +317,8 @@ data class RegistrationRequest(
     val email: String,
     val password: String,
     val username: String,
-    @Json(name="first_name") val firstName: String,
-    @Json(name="last_name")val lastName: String
+    @Json(name = "first_name") val firstName: String,
+    @Json(name = "last_name") val lastName: String
 )
 
 @JsonClass(generateAdapter = true)
@@ -302,6 +341,13 @@ data class LogoutRequest(
 )
 
 @JsonClass(generateAdapter = true)
+data class ChangePasswordRequest(
+    @Json(name = "old_password") val oldPassword: String,
+    @Json(name = "new_password") val newPassword: String,
+    @Json(name = "confirm_password") val confirmationPassword: String,
+)
+
+@JsonClass(generateAdapter = true)
 data class LoginRequest(val email: String, val password: String)
 
 interface ApiService {
@@ -316,6 +362,9 @@ interface ApiService {
 
     @GET("users/profile")
     suspend fun getProfile(): Response<ProfileInfoResponse>
+
+    @POST("auth/change-password")
+    suspend fun changePassword(@Body changePasswordRequest: ChangePasswordRequest): Response<Unit>
 }
 
 // adds token to requests if present

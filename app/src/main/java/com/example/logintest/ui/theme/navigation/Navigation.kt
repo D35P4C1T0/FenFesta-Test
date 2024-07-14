@@ -30,7 +30,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.NavType
@@ -63,7 +62,6 @@ import com.example.logintest.ui.theme.screens.ThemeSelector
 import com.example.logintest.ui.theme.screens.calendar.Calendar
 import com.example.logintest.ui.theme.screens.event.EventDetailsScreen
 import com.example.logintest.ui.theme.screens.search.EventSearchScreen
-import com.example.logintest.ui.theme.screens.search.LocationSearch
 import com.example.logintest.ui.utils.AdvLauncher
 import com.example.logintest.ui.utils.NavAnimations.enterTransition
 import com.example.logintest.ui.utils.NavAnimations.exitTransition
@@ -223,13 +221,11 @@ fun MyApp(
                 ) { backStackEntry ->
 
                     currentScreen = Screen.Settings
-
                     val eventId = backStackEntry.arguments?.getInt("eventId")
-                    val viewModel: EventViewModel = viewModel()
-                    val event by viewModel.selectedEvent.collectAsState()
+                    val event by eventsViewModel.selectedEvent.collectAsState()
 
                     LaunchedEffect(eventId) {
-                        eventId?.let { viewModel.fetchEventById(it) }
+                        eventId?.let { eventsViewModel.fetchEventById(it) }
                     }
 
                     event?.let {
@@ -358,14 +354,14 @@ fun MyApp(
                         })
                 }
 
-                composable("search_address") {
-                    currentScreen = Screen.Settings
-                    LocationSearch(
-                        Modifier.padding(innerPadding),
-                        locationViewModel,
-                        onLocationConfirmed = {},
-                        goBackToPreviousPage = { navController.popBackStack() })
-                }
+//                composable("search_address") {
+//                    currentScreen = Screen.Settings
+//                    LocationSearch(
+//                        Modifier.padding(innerPadding),
+//                        locationViewModel,
+//                        onLocationConfirmed = {},
+//                        goBackToPreviousPage = { navController.popBackStack() })
+//                }
             }
         }
     )

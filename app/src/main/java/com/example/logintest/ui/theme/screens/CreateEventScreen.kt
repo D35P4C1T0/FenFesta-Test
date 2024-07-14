@@ -119,16 +119,19 @@ fun CreateEventScreen(
         OutlinedTextField(
             value = eventTags,
             onValueChange = { newValue ->
+//                val newChar = newValue[eventTags.length]
+//                println("New character inserted: '$newChar', ASCII code: ${newChar.code}")
                 val processedValue = newValue
                     .replace(
                         Regex("[^a-zA-Z0-9,]"),
                         ""
                     ) // Remove all non-alphanumeric characters except commas
                     .replace(
-                        Regex(",,+"),
+                        Regex(",{2,}"),
                         ","
-                    ) // Replace multiple consecutive commas with a single comma
-                    .replace(Regex("^,|,$"), "") // Remove leading and trailing commas
+                    ) // Replace two or more consecutive commas with a single comma
+                    .trimStart(',') // Remove leading commas
+//                    .trimEnd(',') // Remove trailing commas
 
                 if (processedValue != eventTags) {
                     eventTags = processedValue
@@ -244,7 +247,7 @@ fun CreateEventScreen(
                             lon = eventLocation!!.lon.toString(),
                             capacity = eventCapacity.toIntOrNull() ?: 0,
                             capacity_left = eventCapacity.toIntOrNull() ?: 0,
-                            tags = eventTags,
+                            tags = eventTags.trimEnd(','), // remove trailing comma
                             created_at = LocalDateTime.now().toString(),
                         )
                         println("new event: $newEvent")
