@@ -173,7 +173,7 @@ fun LoginContent(
     Spacer(modifier = Modifier.height(16.dp))
 
     TextButton(onClick = onNavigateToRegister) {
-        Text("Don't have an account? Register")
+        Text("Non hai un account? Registrati")
     }
 }
 
