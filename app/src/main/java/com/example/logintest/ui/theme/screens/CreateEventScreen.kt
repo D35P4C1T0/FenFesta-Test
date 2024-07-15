@@ -138,6 +138,7 @@ fun CreateEventScreen(
                 }
             },
             label = { Text("Tags") },
+            placeholder = { Text("Separa i tag con le virgole") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
@@ -180,8 +181,8 @@ fun CreateEventScreen(
         if (showLocationPicker) {
             LocationPickerDialog(
                 viewModel = locationViewModel,
-                onDismiss = { showLocationPicker = false },
-                onLocationSelected = { it ->
+                onDismiss = { showLocationPicker = false; locationViewModel.clearCoords() },
+                onLocationSelected = {
                     eventLocation = it
                     showLocationPicker = false
                     println("location confirmed: $eventLocation")
@@ -343,7 +344,7 @@ fun LocationPickerDialog(
         ) {
             LocationSearch(
                 modifier = Modifier.fillMaxWidth(),
-                viewModel = viewModel,
+                locationViewModel = viewModel,
                 onLocationConfirmed = onLocationSelected,
                 goBackToPreviousPage = onDismiss
             )

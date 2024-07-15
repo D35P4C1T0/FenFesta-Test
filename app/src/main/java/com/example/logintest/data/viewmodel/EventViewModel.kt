@@ -200,6 +200,7 @@ class EventViewModel(
         }
     }
 
+
     data class ReservedResponse(@Json(name = "is_reserved") val isReserved: Boolean)
 
     interface ApiService {

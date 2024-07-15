@@ -36,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import com.example.logintest.data.viewmodel.ReservationDeletionState
 import com.example.logintest.data.viewmodel.ReservationState
 import com.example.logintest.data.viewmodel.UserViewModel
 import com.example.logintest.model.EventModel
@@ -50,9 +51,8 @@ fun EventDetailsScreen(
     onBackPress: () -> Unit,
     onReserveClick: () -> Unit,
 ) {
-
-    val reservationState by userViewModel.reservationState.collectAsState()
-    userViewModel.clearReservationState() // clear state
+    userViewModel.clearReservationDeleteState()
+    userViewModel.clearReservationState()
 
     AnimatedVisibility(visible = true, enter = fadeIn(), exit = fadeOut()) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -96,34 +96,23 @@ fun EventDetailsScreen(
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                if (!hideJoinButton) {
-                    Button(
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
-                        onClick = { userViewModel.addReservation(eventViewModel.id.toString()) },
-//                    enabled = reservationState !is ReservationState.Loading
-                    ) {
-                        Text("Join Event")
-                    }
-                }
-
-                when (val state = reservationState) {
-                    is ReservationState.Loading -> CircularProgressIndicator()
-                    is ReservationState.Success -> {
-                        Text(
-                            state.message, color = MaterialTheme.colorScheme.primary
-                        )
-                    }
-
-                    is ReservationState.Error -> Text(
-                        state.message, color = MaterialTheme.colorScheme.error
-                    )
-
-                    is ReservationState.ReservationExists -> {
-                        Text(state.message, color = MaterialTheme.colorScheme.secondary)
-                        // You might want to add some UI here to allow the user to cancel their existing reservation
-                    }
-
-                    else -> {} // Initial state, do nothing
+                when (hideJoinButton) {
+                    true -> {
+                        eventViewModel.id?.let {
+                            ReservationDeletion(
+                                viewModel = userViewModel,
+                                eventId = it
+                            )
+                        }
+                    } // cancel reservation
+                    false -> {
+                        eventViewModel.id?.let {
+                            MakeReservation(
+                                viewModel = userViewModel,
+                                eventId = it
+                            )
+                        }
+                    } // make reservation
                 }
             }
         }
@@ -193,5 +182,65 @@ fun Tag(text: String) {
             color = MaterialTheme.colorScheme.primary,
             style = MaterialTheme.typography.labelMedium
         )
+    }
+}
+
+@Composable
+fun MakeReservation(viewModel: UserViewModel, eventId: Int) {
+    val reservationCreationState by viewModel.reservationState.collectAsState()
+
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Button(
+            onClick = { viewModel.addReservation(eventId.toString()) },
+            enabled = reservationCreationState !is ReservationState.Loading,
+
+            ) {
+            Text("Prenota")
+        }
+
+        when (val state = reservationCreationState) {
+            is ReservationState.Loading -> CircularProgressIndicator()
+            is ReservationState.Success -> Text(
+                state.message,
+                color = MaterialTheme.colorScheme.primary
+            )
+
+            is ReservationState.Error -> Text(
+                state.message,
+                color = MaterialTheme.colorScheme.error
+            )
+
+            else -> {} // Initial state, do nothing
+        }
+    }
+}
+
+@Composable
+fun ReservationDeletion(viewModel: UserViewModel, eventId: Int) {
+    val reservationDeletionState by viewModel.reservationDeletionState.collectAsState()
+
+    Column(horizontalAlignment = Alignment.CenterHorizontally)
+    {
+        Button(
+            onClick = { viewModel.deleteReservation(eventId) },
+            enabled = reservationDeletionState !is ReservationDeletionState.Loading
+        ) {
+            Text("Annulla Prenotazione")
+        }
+
+        when (val state = reservationDeletionState) {
+            is ReservationDeletionState.Loading -> CircularProgressIndicator()
+            is ReservationDeletionState.Success -> Text(
+                state.message,
+                color = MaterialTheme.colorScheme.primary
+            )
+
+            is ReservationDeletionState.Error -> Text(
+                state.message,
+                color = MaterialTheme.colorScheme.error
+            )
+
+            else -> {} // Initial state, do nothing
+        }
     }
 }

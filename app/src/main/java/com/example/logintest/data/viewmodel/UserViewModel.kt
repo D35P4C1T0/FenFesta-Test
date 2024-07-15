@@ -5,12 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.logintest.R
 import com.example.logintest.data.settings.DataStoreUserPreference
-import com.example.logintest.model.EventModel
 import com.example.logintest.model.UserModel
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,6 +23,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 import java.util.concurrent.TimeUnit
 
 class UserViewModel(
@@ -49,6 +48,10 @@ class UserViewModel(
 
     private val _reservationState = MutableStateFlow<ReservationState>(ReservationState.Initial)
     val reservationState: StateFlow<ReservationState> = _reservationState
+
+    private val _reservationDeletionState =
+        MutableStateFlow<ReservationDeletionState>(ReservationDeletionState.Initial)
+    val reservationDeletionState: StateFlow<ReservationDeletionState> = _reservationDeletionState
 
     private val apiService: ApiService
 
@@ -306,6 +309,51 @@ class UserViewModel(
     fun clearReservationState() {
         _reservationState.value = ReservationState.Initial
     }
+
+    fun clearReservationDeleteState() {
+        _reservationDeletionState.value = ReservationDeletionState.Initial
+    }
+
+    fun deleteReservation(eventId: Int) {
+        viewModelScope.launch {
+            _reservationDeletionState.value = ReservationDeletionState.Loading
+            try {
+                val response = apiService.deleteReservation(eventId)
+                if (response.isSuccessful) {
+                    _reservationDeletionState.value =
+                        ReservationDeletionState.Success("Reservation successfully removed")
+                } else {
+                    val errorBody = response.errorBody()?.string()
+                    val errorResponse = parseErrorResponse(errorBody)
+                    when (errorResponse.code) {
+                        "EVENT_NOT_FOUND" -> _reservationDeletionState.value =
+                            ReservationDeletionState.Error("Event not found")
+
+                        "RESERVATION_NOT_FOUND" -> _reservationDeletionState.value =
+                            ReservationDeletionState.Error("No reservation found for this event")
+
+                        "PAST_EVENT" -> _reservationDeletionState.value =
+                            ReservationDeletionState.Error("Cannot remove reservation for past events")
+
+                        else -> _reservationDeletionState.value =
+                            ReservationDeletionState.Error("Failed to remove reservation: ${errorResponse.error}")
+                    }
+                }
+            } catch (e: Exception) {
+                _reservationDeletionState.value =
+                    ReservationDeletionState.Error("An unexpected error occurred: ${e.message}")
+            }
+        }
+    }
+
+    private fun parseErrorResponse(errorBody: String?): ErrorResponse {
+        return try {
+            Moshi.Builder().build().adapter(ErrorResponse::class.java).fromJson(errorBody ?: "")
+                ?: ErrorResponse("Unknown error", "UNKNOWN_ERROR")
+        } catch (e: Exception) {
+            ErrorResponse("Failed to parse error", "PARSE_ERROR")
+        }
+    }
 }
 
 sealed class AuthState
@@ -372,7 +420,6 @@ data class JsonToUser(
     // Add other fields as needed
 )
 
-
 @JsonClass(generateAdapter = true)
 data class LogoutRequest(
     @Json(name = "refresh") val refresh: String
@@ -396,6 +443,13 @@ sealed class ReservationState {
     data class Success(val message: String) : ReservationState()
     data class Error(val message: String) : ReservationState()
     data class ReservationExists(val message: String) : ReservationState()
+}
+
+sealed class ReservationDeletionState {
+    data object Initial : ReservationDeletionState()
+    data object Loading : ReservationDeletionState()
+    data class Success(val message: String) : ReservationDeletionState()
+    data class Error(val message: String) : ReservationDeletionState()
 }
 
 @JsonClass(generateAdapter = true)
@@ -425,6 +479,9 @@ interface ApiService {
 
     @POST("reservation/new")
     suspend fun createReservation(@Body reservation: ReservationRequest): Unit
+
+    @POST("reservations/{id}/remove")
+    suspend fun deleteReservation(@Path("id") id: Int): Response<Unit>
 }
 
 // adds token to requests if present

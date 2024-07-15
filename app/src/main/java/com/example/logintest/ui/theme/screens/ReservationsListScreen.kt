@@ -4,7 +4,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
@@ -22,6 +25,7 @@ import com.example.logintest.model.EventModel
 import com.example.logintest.view.components.EventCard
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -30,8 +34,6 @@ fun ReservationsListScreen(
     eventViewModel: EventViewModel,
     onEventClick: (EventModel) -> Unit
 ) {
-
-
     var isRefreshing by remember { mutableStateOf(false) }
     val refreshState = rememberPullToRefreshState()
     val coroutineScope = rememberCoroutineScope()
@@ -41,6 +43,12 @@ fun ReservationsListScreen(
     }
 
     val reservationsList by eventViewModel.eventsReserved.collectAsState()
+
+    // Separate upcoming and past events
+    val currentDateTime = LocalDateTime.now()
+    val (upcomingEvents, pastEvents) = reservationsList.partition { event ->
+        event.date.isAfter(currentDateTime)
+    }
 
     PullToRefreshBox(
         modifier = modifier,
@@ -56,14 +64,37 @@ fun ReservationsListScreen(
         },
     ) {
         LazyColumn(contentPadding = PaddingValues(8.dp)) {
-            reservationsList.forEach { event ->
-                item {
-                    Box(modifier = Modifier.padding(8.dp)) {
-                        EventCard(
-                            event = event,
-                            onEventClick = { onEventClick(it) }
-                        )
-                    }
+            item {
+                Text(
+                    "Prossimi Eventi",
+                    style = MaterialTheme.typography.headlineSmall,
+                    modifier = Modifier.padding(8.dp)
+                )
+            }
+
+            items(upcomingEvents) { event ->
+                Box(modifier = Modifier.padding(8.dp)) {
+                    EventCard(
+                        event = event,
+                        onEventClick = { onEventClick(it) }
+                    )
+                }
+            }
+
+            item {
+                Text(
+                    "Eventi Passati",
+                    style = MaterialTheme.typography.headlineSmall,
+                    modifier = Modifier.padding(8.dp, 16.dp, 8.dp, 8.dp)
+                )
+            }
+
+            items(pastEvents) { event ->
+                Box(modifier = Modifier.padding(8.dp)) {
+                    EventCard(
+                        event = event,
+                        onEventClick = { onEventClick(it) }
+                    )
                 }
             }
         }

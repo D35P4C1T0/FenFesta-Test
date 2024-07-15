@@ -42,14 +42,14 @@ import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportS
 @Composable
 fun LocationSearch(
     modifier: Modifier,
-    viewModel: LocationViewModel = viewModel(),
+    locationViewModel: LocationViewModel = viewModel(),
     onLocationConfirmed: (LocationModel) -> Unit,
     goBackToPreviousPage: () -> Unit,
 ) {
     var searchText by remember { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
     var isSearchBarFocused by remember { mutableStateOf(false) }
-    val locationData by viewModel.locationData.collectAsState()
+    val locationData by locationViewModel.locationData.collectAsState()
 
     val mapViewportState = rememberMapViewportState {}
 
@@ -66,13 +66,14 @@ fun LocationSearch(
                 },
             perCharacterSearchAction = { searchText = it },
             searchIMEAction = {
-                viewModel.getCoords(searchText)
+                locationViewModel.getCoords(searchText)
                 keyboardController?.hide()
                 isSearchBarFocused = false
             },
             clearSearch = {},
             addSearchToHistory = {},
-            unfocusBar = { isSearchBarFocused = false }
+            unfocusBar = { isSearchBarFocused = false;  },
+            placeHolderText = "Inserisci Via, Civico, Città"
         )
 
         Spacer(modifier = Modifier.height(16.dp))

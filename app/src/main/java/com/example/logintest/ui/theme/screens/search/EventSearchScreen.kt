@@ -64,7 +64,8 @@ fun EventSearchScreen(
             },
             clearSearch = { viewModel.clearSearch() },
             addSearchToHistory = { searchHistoryViewModel.addSearchQuery(it) },
-            unfocusBar = { isSearchBarFocused = false }
+            unfocusBar = { isSearchBarFocused = false },
+            placeHolderText = "Cerca eventi",
         )
 
         if (isSearchBarFocused) {

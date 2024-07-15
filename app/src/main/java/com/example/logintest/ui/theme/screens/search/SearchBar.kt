@@ -26,6 +26,7 @@ fun SearchBar(
     clearSearch: () -> Unit,
     searchIMEAction: (String) -> Unit,
     addSearchToHistory: (String) -> Unit,
+    placeHolderText: String,
 ) {
 
     var searchQuery by remember { mutableStateOf("") }
@@ -33,7 +34,7 @@ fun SearchBar(
     OutlinedTextField(
         modifier = modifier,
         value = searchQuery,
-        placeholder = { Text("Cerca...") },
+        placeholder = { Text(placeHolderText) },
         singleLine = true,
         onValueChange = {
             searchQuery = it
