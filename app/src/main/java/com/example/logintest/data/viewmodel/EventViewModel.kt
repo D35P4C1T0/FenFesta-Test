@@ -10,6 +10,7 @@ import com.example.logintest.data.remote.LocalTimeAdapter
 import com.example.logintest.data.settings.DataStoreUserPreference
 import com.example.logintest.model.EventModel
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -53,6 +54,9 @@ class EventViewModel(
 
     private val _isEventReserved = MutableStateFlow(false)
     val isEventReserved: StateFlow<Boolean> = _isEventReserved
+
+    private val _eventCreator = MutableStateFlow("")
+    val eventCreator: StateFlow<String> = _eventCreator
 
     private val apiService: ApiService
 
@@ -105,7 +109,7 @@ class EventViewModel(
         }
     }
 
-    suspend fun fetchEventById(id: Int) {
+    fun fetchEventById(id: Int) {
         viewModelScope.launch {
             try {
                 isEventReserved(id)
@@ -200,8 +204,30 @@ class EventViewModel(
         }
     }
 
+    fun fetchEventCreatorInfo(eventId: Int) {
+        viewModelScope.launch {
+            try {
+                val info = apiService.getEventCreatorInfo(eventId)
+                println("Event creator info response ${info.body()}")
+                _eventCreator.value = info.body()?.let {
+                    "${it.creatorFirstName} ${it.creatorLastName}"
+                } ?: ""
+            } catch (e: Exception) {
+                println("Error fetching event creator info: ${e.message}")
+            }
+        }
+    }
+
 
     data class ReservedResponse(@Json(name = "is_reserved") val isReserved: Boolean)
+
+    @JsonClass(generateAdapter = true)
+    data class CreatorInfo(
+        @Json(name = "username") val creatorUserName: String,
+        @Json(name = "first_name") val creatorFirstName: String,
+        @Json(name = "last_name") val creatorLastName: String,
+    )
+
 
     interface ApiService {
         @GET("events/upcoming") // Replace with your actual endpoint
@@ -224,5 +250,9 @@ class EventViewModel(
 
         @GET("reservations/{id}/is_reserved")
         suspend fun isEventReserved(@Path("id") id: Int): Response<ReservedResponse>
+
+        @GET("events/{eventId}/creator-info/")
+        suspend fun getEventCreatorInfo(@Path("eventId") eventId: Int): Response<CreatorInfo>
+
     }
 }

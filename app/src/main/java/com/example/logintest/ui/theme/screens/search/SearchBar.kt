@@ -21,11 +21,11 @@ import androidx.compose.ui.text.input.ImeAction
 @Composable
 fun SearchBar(
     modifier: Modifier,
-    unfocusBar: () -> Unit,
-    perCharacterSearchAction: (String) -> Unit,
-    clearSearch: () -> Unit,
-    searchIMEAction: (String) -> Unit,
-    addSearchToHistory: (String) -> Unit,
+    unfocusBar: (() -> Unit)? = null,
+    perCharacterSearchAction: ((String) -> Unit)? = null,
+    clearSearch: (() -> Unit)? = null,
+    searchIMEAction: ((String) -> Unit)? = null,
+    addSearchToHistory: ((String) -> Unit)? = null,
     placeHolderText: String,
 ) {
 
@@ -39,9 +39,13 @@ fun SearchBar(
         onValueChange = {
             searchQuery = it
             if (it.isNotEmpty()) {
-                perCharacterSearchAction(it)
+                if (perCharacterSearchAction != null) {
+                    perCharacterSearchAction(it)
+                }
             } else {
-                clearSearch()
+                if (clearSearch != null) {
+                    clearSearch()
+                }
             }
         },
         shape = MaterialTheme.shapes.medium,
@@ -52,9 +56,15 @@ fun SearchBar(
         keyboardActions = KeyboardActions(
             onSearch = {
                 if (searchQuery.isNotBlank()) {
-                    searchIMEAction(searchQuery)
-                    addSearchToHistory(searchQuery)
-                    unfocusBar()
+                    if (searchIMEAction != null) {
+                        searchIMEAction(searchQuery)
+                    }
+                    if (addSearchToHistory != null) {
+                        addSearchToHistory(searchQuery)
+                    }
+                    if (unfocusBar != null) {
+                        unfocusBar()
+                    }
                 }
             }
         ),

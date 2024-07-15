@@ -13,17 +13,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
-import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.automirrored.filled.Login
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.Divider
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -41,6 +38,17 @@ import com.example.logintest.data.viewmodel.LoginState
 import com.example.logintest.data.viewmodel.UserViewModel
 import com.example.logintest.ui.theme.navigation.navigateWithDefaultOptions
 
+/*
+
+info account
+prenotazioni
+gestisci abbonamento
+cambio password
+elimina account
+altro
+logout
+ */
+
 @Composable
 fun SettingsScreen(
     navController: NavController,
@@ -53,9 +61,9 @@ fun SettingsScreen(
     val loginDependentSettings = when (loginState) {
         LoginState.Success -> listOf(
             Triple("Prenotazioni", Icons.Filled.Bookmarks, "user_reservations"),
+            Triple("Gestisci Abbonamento", Icons.Filled.MailOutline, "manage_subscription"),
             Triple("Cambio Password", Icons.Filled.Lock, "change_password"),
             Triple("Eliminazione Account", Icons.Filled.Delete, "delete_account"),
-            Triple("Gestisci Abbonamento", Icons.Filled.MailOutline, "manage_subscription"),
             Triple("Logout", Icons.AutoMirrored.Filled.ExitToApp, "logout"),
         )
 
@@ -65,9 +73,8 @@ fun SettingsScreen(
     val commonSettings = listOf(
         Triple("Informazioni Account", Icons.Filled.AccountCircle, "account_info"),
         Triple("Light/Dark Mode", Icons.Filled.Build, "light_dark_mode"),
-        Triple("Altro", Icons.Filled.Menu, "other"),
 //        Triple("Cerca Via", Icons.Filled.Search, "search_address"),
-    ) + loginDependentSettings
+    ) + loginDependentSettings + Triple("Altro", Icons.Filled.Menu, "other")
 
 
     LazyColumn(

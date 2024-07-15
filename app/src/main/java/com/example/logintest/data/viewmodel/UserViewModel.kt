@@ -53,6 +53,9 @@ class UserViewModel(
         MutableStateFlow<ReservationDeletionState>(ReservationDeletionState.Initial)
     val reservationDeletionState: StateFlow<ReservationDeletionState> = _reservationDeletionState
 
+    private val _numberOfReservations = MutableStateFlow<Int>(0)
+    val numberOfReservations: StateFlow<Int> = _numberOfReservations
+
     private val apiService: ApiService
 
     private val baseURL = context.getString(R.string.base_url)
@@ -354,6 +357,41 @@ class UserViewModel(
             ErrorResponse("Failed to parse error", "PARSE_ERROR")
         }
     }
+
+    fun fetchReservationCount() {
+        viewModelScope.launch {
+            try {
+                val count = apiService.getReservationCount()
+                if (count.isSuccessful) {
+                    _numberOfReservations.value = count.body()?.number ?: 0
+                }
+            } catch (e: Exception) {
+                println("Error fetching reservation count: ${e.message}")
+            }
+        }
+    }
+
+    fun deleteAccount() {
+        viewModelScope.launch {
+            try {
+                val response = apiService.deleteAccount()
+                if (response.isSuccessful) {
+                    logout()
+                    userPreferences.clearUserData()
+                    _userData.value = null
+                    _loginState.value = LoginState.Idle
+                    _registrationState.value = RegistrationState.Idle
+                    _logoutState.value = LogoutState.Success
+                    println("Account deleted successfully")
+                } else {
+                    println("Failed to delete account: ${response.message()}")
+                }
+            } catch (e: Exception) {
+                println("Failed to delete account: ${e.message}")
+            }
+        }
+    }
+
 }
 
 sealed class AuthState
@@ -459,6 +497,11 @@ data class ErrorResponse(
 )
 
 @JsonClass(generateAdapter = true)
+data class TotalReservationsNumberResponse(
+    @Json(name = "reservation_count") val number: Int,
+)
+
+@JsonClass(generateAdapter = true)
 data class LoginRequest(val email: String, val password: String)
 
 interface ApiService {
@@ -482,6 +525,12 @@ interface ApiService {
 
     @POST("reservations/{id}/remove")
     suspend fun deleteReservation(@Path("id") id: Int): Response<Unit>
+
+    @GET("users/number-of-reservations")
+    suspend fun getReservationCount(): Response<TotalReservationsNumberResponse>
+
+    @POST("users/delete-account")
+    suspend fun deleteAccount(): Response<Unit>
 }
 
 // adds token to requests if present

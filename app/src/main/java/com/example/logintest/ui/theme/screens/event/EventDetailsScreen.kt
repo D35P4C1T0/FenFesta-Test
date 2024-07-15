@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Tag
@@ -36,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import com.example.logintest.data.viewmodel.EventViewModel
 import com.example.logintest.data.viewmodel.ReservationDeletionState
 import com.example.logintest.data.viewmodel.ReservationState
 import com.example.logintest.data.viewmodel.UserViewModel
@@ -45,7 +47,8 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun EventDetailsScreen(
     modifier: Modifier,
-    eventViewModel: EventModel,
+    event: EventModel,
+    eventViewModel: EventViewModel,
     userViewModel: UserViewModel,
     hideJoinButton: Boolean,
     onBackPress: () -> Unit,
@@ -53,6 +56,11 @@ fun EventDetailsScreen(
 ) {
     userViewModel.clearReservationDeleteState()
     userViewModel.clearReservationState()
+
+    val creatorName by eventViewModel.eventCreator.collectAsState()
+    event.id?.let { eventViewModel.fetchEventCreatorInfo(it) }
+
+    println("creator $creatorName")
 
     AnimatedVisibility(visible = true, enter = fadeIn(), exit = fadeOut()) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -66,39 +74,46 @@ fun EventDetailsScreen(
             ) {
                 // Event description
                 Text(
-                    text = "Description",
-                    style = MaterialTheme.typography.headlineSmall,
+                    text = event.name,
+                    style = MaterialTheme.typography.headlineLarge,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
-                Text(text = eventViewModel.description)
+                Text(text = event.description)
 
                 Spacer(modifier = Modifier.height(24.dp))
 
                 // Event details
                 EventDetailItem(
                     icon = Icons.Default.DateRange,
-                    label = "Date",
-                    value = eventViewModel.date.format(DateTimeFormatter.ofPattern("MMMM d, yyyy 'at' h:mm a"))
+                    label = "Data",
+                    value = event.date.format(DateTimeFormatter.ofPattern("MMMM d, yyyy 'at' h:mm a"))
                 )
                 EventDetailItem(
                     icon = Icons.Default.LocationOn,
                     label = "Location",
-                    value = eventViewModel.location
+                    value = event.location
                 )
                 EventDetailItem(
-                    icon = Icons.Default.Person,
-                    label = "Capacity",
-                    value = "${eventViewModel.capacity_left}/${eventViewModel.capacity} spots available"
+                    icon = Icons.Default.Groups,
+                    label = "Capacità",
+                    value = "${event.capacity_left}/${event.capacity} posti disponibili"
                 )
+
+                EventDetailItem(
+                    icon = Icons.Default.Person,
+                    label = "Creatore",
+                    value = creatorName,
+                )
+
                 TagsList(
-                    icon = Icons.Default.Tag, label = "Tags", value = eventViewModel.tags
+                    icon = Icons.Default.Tag, label = "Tags", value = event.tags
                 )
 
                 Spacer(modifier = Modifier.height(32.dp))
 
                 when (hideJoinButton) {
                     true -> {
-                        eventViewModel.id?.let {
+                        event.id?.let {
                             ReservationDeletion(
                                 viewModel = userViewModel,
                                 eventId = it
@@ -106,7 +121,7 @@ fun EventDetailsScreen(
                         }
                     } // cancel reservation
                     false -> {
-                        eventViewModel.id?.let {
+                        event.id?.let {
                             MakeReservation(
                                 viewModel = userViewModel,
                                 eventId = it

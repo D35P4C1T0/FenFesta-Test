@@ -22,7 +22,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -238,7 +237,8 @@ fun MyApp(
                     event?.let {
                         EventDetailsScreen(
                             modifier = Modifier.padding(innerPadding),
-                            eventViewModel = it,
+                            event = it,
+                            eventViewModel = eventsViewModel,
                             userViewModel = userViewModel,
                             onBackPress = { navController.popBackStack() },
                             onReserveClick = {},

@@ -188,13 +188,13 @@ fun LoginResultDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = "Benvenuto ${userData.firstName} ${userData.lastName}!",
+                text = "Bentornato ${userData.firstName} ${userData.lastName}!",
                 style = MaterialTheme.typography.titleLarge
             )
         },
         text = {
             Text(
-                text = "La tua mail è ${userData.email}. Che bella giornata!",
+                text = "Verrai reindirizzato alla schermata principale.",
                 style = MaterialTheme.typography.bodyLarge
             )
         },
@@ -206,13 +206,13 @@ fun LoginResultDialog(
                 Text("Grazie!")
             }
         },
-        dismissButton = {
-            TextButton(
-                onClick = onDismiss,
-                colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.primary)
-            ) {
-                Text("Seh Ciao!")
-            }
-        }
+//        dismissButton = {
+//            TextButton(
+//                onClick = onDismiss,
+//                colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.primary)
+//            ) {
+//                Text("Seh Ciao!")
+//            }
+//        }
     )
 }

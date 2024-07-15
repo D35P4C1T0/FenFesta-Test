@@ -16,7 +16,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -31,7 +30,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -54,12 +52,18 @@ fun AccountInfoScreen(
 ) {
     val userData by userViewModel.userData.collectAsState()
     val loginState by userViewModel.loginState.collectAsState()
+    val userTotalEvents by userViewModel.numberOfReservations.collectAsState()
 
     when (loginState) {
         is LoginState.Success -> {
             userViewModel.profileInfo() // fetches profile info
+            userViewModel.fetchReservationCount()
             userData?.let {
-                AccountInfoContent(user = userData!!, modifier = modifier)
+                AccountInfoContent(
+                    user = userData!!,
+                    modifier = modifier,
+                    totalUserEvents = userTotalEvents
+                )
             } ?: run {
                 Text(
                     text = "Errore Loggato ma no dati",
@@ -84,7 +88,7 @@ fun AccountInfoScreen(
 }
 
 @Composable
-fun AccountInfoContent(user: UserModel, modifier: Modifier) {
+fun AccountInfoContent(user: UserModel, modifier: Modifier, totalUserEvents: Int) {
     val profileImage = remember { mutableStateOf(user.profileImageUrl) }
 
     Column(
@@ -128,23 +132,22 @@ fun AccountInfoContent(user: UserModel, modifier: Modifier) {
         AccountInfoRow(label = "Email", value = user.email)
         AccountInfoRow(
             label = "Eventi partecipati",
-//            value = user.eventsParticipated.toString()
-            value = "69"
+            value = totalUserEvents.toString()
         )
-        AccountInfoRow(label = "id", value = user.id.toString())
+//        AccountInfoRow(label = "id", value = user.id.toString())
 
         Spacer(modifier = Modifier.weight(1f)) // Riempie lo spazio verticale rimanente
 
-        Button(
-            onClick = { /* Handle edit action */ },
-            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
-            modifier = Modifier.padding(
-                top = 48.dp,
-                bottom = 48.dp
-            ) // Spazio aggiuntivo sotto il pulsante
-        ) {
-            Text(text = "Modifica", color = Color.White)
-        }
+//        Button(
+//            onClick = { /* Handle edit action */ },
+//            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
+//            modifier = Modifier.padding(
+//                top = 48.dp,
+//                bottom = 48.dp
+//            ) // Spazio aggiuntivo sotto il pulsante
+//        ) {
+//            Text(text = "Modifica", color = Color.White)
+//        }
     }
 }
 

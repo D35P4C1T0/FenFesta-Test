@@ -1,8 +1,6 @@
 package com.example.logintest.ui.theme.screens
 
 import android.widget.Toast
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,8 +39,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
-import coil.compose.rememberAsyncImagePainter
-import com.example.logintest.R
 import com.example.logintest.data.viewmodel.LocationViewModel
 import com.example.logintest.model.EventModel
 import com.example.logintest.model.LocationModel
@@ -305,19 +301,10 @@ fun IntegerOutlinedTextField(
                 isError = false
                 errorMessage = ""
             } else if (newValue.toIntOrNull() != null) {
-                if (newValue.length <= maxDigits) {
-                    onValueChange(newValue)
-                    internalValue = newValue
-                    isError = false
-                    errorMessage = ""
-                } else {
-                    isError = true
-                    errorMessage = "Maximum $maxDigits digits allowed"
-                    internalValue = ""
-                }
-            } else {
-                isError = true
-                errorMessage = "Invalid integer"
+                onValueChange(newValue)
+                internalValue = newValue
+                isError = false
+                errorMessage = ""
             }
         },
         colors = OutlinedTextFieldDefaults.colors(
@@ -327,12 +314,6 @@ fun IntegerOutlinedTextField(
         ),
         label = { Text(label) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-        supportingText = @Composable {
-            Text(
-                text = if (isError) errorMessage else "${value.length}/$maxDigits digits",
-                color = if (isError) MaterialTheme.colorScheme.error else Color.Unspecified
-            )
-        },
         modifier = modifier
     )
 }
