@@ -94,7 +94,7 @@ fun Calendar(
         }
     }
 
-    val eventsInSelectedDate = remember {
+    val eventsInSelectedDate by remember(selection, eventsByDate) {
         derivedStateOf {
             val date = selection?.date
             if (date == null) emptyList() else eventsByDate[date].orEmpty()
@@ -150,7 +150,8 @@ fun Calendar(
                         containerColor = MaterialTheme.colorScheme.surface,
                         contentColor = MaterialTheme.colorScheme.onSurface,
                         disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant,)
+                        disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
                 ) {
                     SimpleCalendarTitle(
                         modifier = Modifier.padding(8.dp),
@@ -204,7 +205,7 @@ fun Calendar(
                 Spacer(modifier = Modifier.height(8.dp))
                 EventList(
                     modifier = Modifier.fillMaxWidth(),
-                    events = eventsInSelectedDate.value,
+                    events = eventsInSelectedDate,
                     onEventClick = onEventClick
                 )
             }

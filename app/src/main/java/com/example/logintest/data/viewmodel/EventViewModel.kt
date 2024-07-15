@@ -204,7 +204,7 @@ class EventViewModel(
     data class ReservedResponse(@Json(name = "is_reserved") val isReserved: Boolean)
 
     interface ApiService {
-        @GET("events") // Replace with your actual endpoint
+        @GET("events/upcoming") // Replace with your actual endpoint
         suspend fun getEvents(): List<EventModel>
 
         @GET("events/{id}") // Replace with your actual endpoint

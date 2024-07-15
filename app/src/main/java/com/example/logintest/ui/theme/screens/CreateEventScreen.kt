@@ -237,12 +237,25 @@ fun CreateEventScreen(
                         return@Button
                     }
 
+                    // Check if the event date is in the future
+                    val eventDateTime = createLocalDateTime(eventDay, eventTime)
+                    val currentDateTime = LocalDateTime.now()
+
+                    if (eventDateTime.isBefore(currentDateTime)) {
+                        Toast.makeText(
+                            context,
+                            "La data dell'evento deve essere nel futuro",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        return@Button
+                    }
+
                     eventLocation?.let {
                         val newEvent = EventModel(
                             name = eventName,
                             description = eventDescription,
                             creator = creatorUser.id,
-                            date = createLocalDateTime(eventDay, eventTime),
+                            date = eventDateTime,
                             location = eventLocation!!.address,
                             lat = eventLocation!!.lat.toString(),
                             lon = eventLocation!!.lon.toString(),

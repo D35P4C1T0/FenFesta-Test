@@ -95,11 +95,8 @@ fun MyApp(
     var firstLaunch by remember { mutableStateOf(FirstLaunch) }
     val themeOption by themeViewModel.themeOption.collectAsState()
     val eventsList by eventsViewModel.events.collectAsState()
-
     val loginState by userViewModel.loginState.collectAsState()
-
     val userData by userViewModel.userData.collectAsState()
-
     var currentScreen by remember { mutableStateOf(Screen.Home) }
 
     Scaffold(

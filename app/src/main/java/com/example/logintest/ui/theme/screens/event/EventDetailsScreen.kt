@@ -189,7 +189,7 @@ fun Tag(text: String) {
 fun MakeReservation(viewModel: UserViewModel, eventId: Int) {
     val reservationCreationState by viewModel.reservationState.collectAsState()
 
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         Button(
             onClick = { viewModel.addReservation(eventId.toString()) },
             enabled = reservationCreationState !is ReservationState.Loading,
@@ -219,7 +219,7 @@ fun MakeReservation(viewModel: UserViewModel, eventId: Int) {
 fun ReservationDeletion(viewModel: UserViewModel, eventId: Int) {
     val reservationDeletionState by viewModel.reservationDeletionState.collectAsState()
 
-    Column(horizontalAlignment = Alignment.CenterHorizontally)
+    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally)
     {
         Button(
             onClick = { viewModel.deleteReservation(eventId) },
