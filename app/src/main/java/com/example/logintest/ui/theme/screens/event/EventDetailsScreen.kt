@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Grade
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
@@ -27,6 +28,7 @@ import androidx.compose.material.icons.filled.Tag
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,7 +38,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.example.logintest.data.notifications.scheduleNotification
 import com.example.logintest.data.viewmodel.EventViewModel
 import com.example.logintest.data.viewmodel.ReservationDeletionState
 import com.example.logintest.data.viewmodel.ReservationState
@@ -56,6 +60,7 @@ fun EventDetailsScreen(
 ) {
     userViewModel.clearReservationDeleteState()
     userViewModel.clearReservationState()
+    val context = LocalContext.current
 
     val creatorName by eventViewModel.eventCreator.collectAsState()
     event.id?.let { eventViewModel.fetchEventCreatorInfo(it) }
@@ -109,6 +114,10 @@ fun EventDetailsScreen(
                     icon = Icons.Default.Tag, label = "Tags", value = event.tags
                 )
 
+                IconButton(onClick = { scheduleNotification(context, event) }) {
+                    Icon(imageVector = Icons.Default.Grade, contentDescription = "Notifica")
+                }
+
                 Spacer(modifier = Modifier.height(32.dp))
 
                 when (hideJoinButton) {
@@ -124,7 +133,7 @@ fun EventDetailsScreen(
                         event.id?.let {
                             MakeReservation(
                                 viewModel = userViewModel,
-                                eventId = it
+                                eventId = it,
                             )
                         }
                     } // make reservation

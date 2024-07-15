@@ -1,5 +1,6 @@
 package com.example.logintest
 
+import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -13,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.logintest.data.notifications.requestNotificationPermission
 import com.example.logintest.data.settings.DataStoreUserPreference
 import com.example.logintest.data.settings.SearchHistoryDataStore
 import com.example.logintest.data.settings.ThemePreferences
@@ -37,9 +39,7 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
-import com.mapbox.geojson.Point
 import com.mapbox.maps.MapboxExperimental
-import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
@@ -67,11 +67,30 @@ class MainActivity : ComponentActivity() {
 
         // Carica annuncio interstitial
         loadInterstitialAd()
+        requestNotificationPermission(this)
 
         setContent {
             DynamicTheme(
                 themeViewModel = viewModel(factory = themeViewModelFactory),
             )
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            1 -> {
+//        REQUEST_NOTIFICATION_PERMISSION -> {
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    // Permesso concesso, puoi mostrare le notifiche
+                }
+                return
+            }
+            // Gestisci altri risultati delle richieste di permesso se necessario
         }
     }
 
