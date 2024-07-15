@@ -47,6 +47,27 @@ import java.time.ZoneId
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+fun EventList(
+    modifier: Modifier = Modifier.fillMaxHeight(),
+    events: List<EventModel>,
+    onEventClick: (EventModel) -> Unit,
+) {
+//    val events = EventGenerator.generateEvents() // use dummy data
+    Column(
+        modifier = modifier.padding(top = 6.dp),
+        verticalArrangement = Arrangement.spacedBy(3.dp),
+    ) {
+        events.forEach { event ->
+            EventCard(
+                event = event,
+                onEventClick = onEventClick,
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+    }
+}
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
 fun EventCard(
     event: EventModel,
     titleFontSize: TextUnit = MaterialTheme.typography.headlineSmall.fontSize.times(0.70f),
