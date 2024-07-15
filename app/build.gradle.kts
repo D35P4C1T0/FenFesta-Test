@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.logintest"
+    namespace = "com.fenfesta"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.logintest"
+        applicationId = "com.fenfesta"
         minSdk = 26
         targetSdk = 34
         versionCode = 1
