@@ -46,6 +46,7 @@ fun EventDetailsScreen(
     modifier: Modifier,
     eventViewModel: EventModel,
     userViewModel: UserViewModel,
+    hideJoinButton: Boolean,
     onBackPress: () -> Unit,
     onReserveClick: () -> Unit,
 ) {
@@ -95,12 +96,14 @@ fun EventDetailsScreen(
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                Button(
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                    onClick = { userViewModel.addReservation(eventViewModel.id.toString()) },
+                if (!hideJoinButton) {
+                    Button(
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                        onClick = { userViewModel.addReservation(eventViewModel.id.toString()) },
 //                    enabled = reservationState !is ReservationState.Loading
-                ) {
-                    Text("Join Event")
+                    ) {
+                        Text("Join Event")
+                    }
                 }
 
                 when (val state = reservationState) {

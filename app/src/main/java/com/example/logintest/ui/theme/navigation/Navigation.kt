@@ -225,6 +225,8 @@ fun MyApp(
                     val eventId = backStackEntry.arguments?.getInt("eventId")
                     val event by eventsViewModel.selectedEvent.collectAsState()
 
+                    val hideJoinButton by eventsViewModel.isEventReserved.collectAsState()
+
                     LaunchedEffect(eventId) {
                         eventId?.let { eventsViewModel.fetchEventById(it) }
                     }
@@ -236,6 +238,7 @@ fun MyApp(
                             userViewModel = userViewModel,
                             onBackPress = { navController.popBackStack() },
                             onReserveClick = {},
+                            hideJoinButton = hideJoinButton,
                         )
                     }
                 }

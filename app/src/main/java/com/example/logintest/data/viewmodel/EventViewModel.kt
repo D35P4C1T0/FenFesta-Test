@@ -9,6 +9,7 @@ import com.example.logintest.data.remote.EventModelListAdapter
 import com.example.logintest.data.remote.LocalTimeAdapter
 import com.example.logintest.data.settings.DataStoreUserPreference
 import com.example.logintest.model.EventModel
+import com.squareup.moshi.Json
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,6 +50,9 @@ class EventViewModel(
 
     private val _eventsReserved = MutableStateFlow<List<EventModel>>(emptyList())
     val eventsReserved: StateFlow<List<EventModel>> = _eventsReserved
+
+    private val _isEventReserved = MutableStateFlow(false)
+    val isEventReserved: StateFlow<Boolean> = _isEventReserved
 
     private val apiService: ApiService
 
@@ -104,6 +108,7 @@ class EventViewModel(
     suspend fun fetchEventById(id: Int) {
         viewModelScope.launch {
             try {
+                isEventReserved(id)
                 val fetchedEvent = apiService.getEvent(id)
                 _selectedEvent.value = fetchedEvent
             } catch (e: Exception) {
@@ -181,6 +186,22 @@ class EventViewModel(
         _eventsReserved.value = emptyList()
     }
 
+    fun isEventReserved(id: Int) {
+        viewModelScope.launch {
+            try {
+                val response = apiService.isEventReserved(id)
+                println("Is event reserved response ${response.body()}")
+                if (response.isSuccessful) {
+                    _isEventReserved.value = response.body()?.isReserved ?: false
+                }
+            } catch (e: Exception) {
+                println("Error checking if event is reserved: ${e.message}")
+            }
+        }
+    }
+
+    data class ReservedResponse(@Json(name = "is_reserved") val isReserved: Boolean)
+
     interface ApiService {
         @GET("events") // Replace with your actual endpoint
         suspend fun getEvents(): List<EventModel>
@@ -199,5 +220,8 @@ class EventViewModel(
 
         @GET("users/reserved_events")
         suspend fun listAllReservedEvents(): Response<List<EventModel>>
+
+        @GET("reservations/{id}/is_reserved")
+        suspend fun isEventReserved(@Path("id") id: Int): Response<ReservedResponse>
     }
 }
