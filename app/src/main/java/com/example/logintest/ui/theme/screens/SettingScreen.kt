@@ -13,15 +13,18 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.automirrored.filled.Login
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -49,12 +52,14 @@ fun SettingsScreen(
 
     val loginDependentSettings = when (loginState) {
         LoginState.Success -> listOf(
+            Triple("Prenotazioni", Icons.Filled.Bookmarks, "user_reservations"),
             Triple("Cambio Password", Icons.Filled.Lock, "change_password"),
             Triple("Eliminazione Account", Icons.Filled.Delete, "delete_account"),
             Triple("Gestisci Abbonamento", Icons.Filled.MailOutline, "manage_subscription"),
             Triple("Logout", Icons.AutoMirrored.Filled.ExitToApp, "logout"),
         )
-        else -> listOf( Triple("Login", Icons.AutoMirrored.Filled.Login, "login"))
+
+        else -> listOf(Triple("Login", Icons.AutoMirrored.Filled.Login, "login"))
     }
 
     val commonSettings = listOf(
@@ -71,7 +76,10 @@ fun SettingsScreen(
             .padding(horizontal = 16.dp)
     ) {
         items(commonSettings) { (label, icon, route) ->
-            SettingItem(label = label, icon = icon, onClick = { navController.navigateWithDefaultOptions(route) })
+            SettingItem(
+                label = label,
+                icon = icon,
+                onClick = { navController.navigateWithDefaultOptions(route) })
         }
     }
 }
@@ -102,12 +110,12 @@ fun SettingItem(label: String, icon: ImageVector, onClick: () -> Unit) {
                 fontSize = 18.sp
             )
         }
-        Divider(
-            color = MaterialTheme.colorScheme.primary,
-            thickness = 1.dp,
+        HorizontalDivider(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp)
+                .padding(vertical = 8.dp),
+            thickness = 1.dp,
+            color = MaterialTheme.colorScheme.primary
         )
     }
 }

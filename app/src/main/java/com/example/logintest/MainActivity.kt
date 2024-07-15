@@ -147,7 +147,7 @@ fun DynamicTheme(themeViewModel: ThemeViewModel) {
     AppTheme(darkTheme = darkTheme) {
         SystemUIController(isDarkTheme = darkTheme)
         MyApp(
-            userModel = userViewModel,
+            userViewModel = userViewModel,
             themeViewModel = themeViewModel,
             searchHistoryViewModel = searchHistoryViewModel,
             eventsViewModel = eventViewModel,

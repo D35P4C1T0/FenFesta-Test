@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.logintest.R
 import com.example.logintest.data.remote.EventModelListAdapter
 import com.example.logintest.data.remote.LocalTimeAdapter
@@ -17,6 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.Body
@@ -46,6 +46,9 @@ class EventViewModel(
 
     private val _searchResults = MutableStateFlow<List<EventModel>>(emptyList())
     val searchResults: StateFlow<List<EventModel>> = _searchResults
+
+    private val _eventsReserved = MutableStateFlow<List<EventModel>>(emptyList())
+    val eventsReserved: StateFlow<List<EventModel>> = _eventsReserved
 
     private val apiService: ApiService
 
@@ -153,28 +156,30 @@ class EventViewModel(
             try {
                 val results = apiService.createEvent(event)
                 println("Event created result: $results")
-            } catch (e: Exception){
+            } catch (e: Exception) {
                 println("Error creating event: ${e.message}")
                 e.printStackTrace()
             }
         }
     }
 
-    /*
-    name = models.CharField(max_length=100)
-    description = models.TextField()
-    creator = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-    date = models.DateTimeField()
-    location = models.CharField(max_length=100)
-    lat = models.DecimalField(max_digits=9, decimal_places=6)
-    lon = models.DecimalField(max_digits=9, decimal_places=6)
-    capacity = models.IntegerField()
-    capacity_left = models.IntegerField()
-    created_at = models.DateTimeField(auto_now_add=True) // AUTOMATICO
-    tags = models.CharField(max_length=200, blank=True)
-     */
+    fun listAllReservedEvents() {
+        viewModelScope.launch {
+            try {
+                val response = apiService.listAllReservedEvents()
+                println("Reservation response ${response.body()}")
+                if (response.isSuccessful) {
+                    _eventsReserved.value = response.body() ?: emptyList()
+                }
+            } catch (e: Exception) {
+                println("Error fetching reserved events: ${e.message}")
+            }
+        }
+    }
 
-
+    fun clearEventsReservedList() {
+        _eventsReserved.value = emptyList()
+    }
 
     interface ApiService {
         @GET("events") // Replace with your actual endpoint
@@ -191,5 +196,8 @@ class EventViewModel(
 
         @POST("events/new")
         suspend fun createEvent(@Body event: EventModel): EventModel
+
+        @GET("users/reserved_events")
+        suspend fun listAllReservedEvents(): Response<List<EventModel>>
     }
 }

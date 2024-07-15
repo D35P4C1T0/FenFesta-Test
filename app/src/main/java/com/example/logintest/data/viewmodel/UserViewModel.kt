@@ -5,10 +5,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.logintest.R
 import com.example.logintest.data.settings.DataStoreUserPreference
+import com.example.logintest.model.EventModel
 import com.example.logintest.model.UserModel
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,6 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import retrofit2.HttpException
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -44,9 +47,16 @@ class UserViewModel(
         MutableStateFlow<PasswordChangeState>(PasswordChangeState.Initial)
     val passwordChangeState: StateFlow<PasswordChangeState> = _passwordChangeState
 
+    private val _reservationState = MutableStateFlow<ReservationState>(ReservationState.Initial)
+    val reservationState: StateFlow<ReservationState> = _reservationState
+
     private val apiService: ApiService
 
     private val baseURL = context.getString(R.string.base_url)
+
+    private val moshi = Moshi.Builder()
+        .add(KotlinJsonAdapterFactory())
+        .build()
 
     init {
         val okHttpClient = OkHttpClient.Builder()
@@ -54,10 +64,6 @@ class UserViewModel(
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
             .addInterceptor(AuthInterceptor(userPreferences))
-            .build()
-
-        val moshi = Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
             .build()
 
         val retrofit = Retrofit.Builder()
@@ -164,16 +170,6 @@ class UserViewModel(
         firstName: String,
         lastName: String
     ) {
-
-        /*
-        {
-          "username": "newuser",
-          "email": "newuser@example.com",
-          "password": "securepassword123",
-          "first_name": "New",
-          "last_name": "User"
-        }
-         */
         viewModelScope.launch {
             _registrationState.value = RegistrationState.Loading
             try {
@@ -268,6 +264,48 @@ class UserViewModel(
             }
         }
     }
+
+    fun addReservation(eventID: String) {
+        viewModelScope.launch {
+            _reservationState.value = ReservationState.Loading
+            try {
+                apiService.createReservation(ReservationRequest(eventID))
+                _reservationState.value =
+                    ReservationState.Success("Reservation created successfully")
+            } catch (e: HttpException) {
+                when (e.code()) {
+                    400 -> {
+                        val errorBody = e.response()?.errorBody()?.string()
+                        val errorAdapter = moshi.adapter(ErrorResponse::class.java)
+                        val errorResponse = errorBody?.let { errorAdapter.fromJson(it) }
+                        when (errorResponse?.code) {
+                            "MISSING_EVENT_ID" -> _reservationState.value =
+                                ReservationState.Error("Event ID is missing")
+
+                            "EVENT_FULL" -> _reservationState.value =
+                                ReservationState.Error("Evento al completo")
+
+                            "RESERVATION_EXISTS" -> _reservationState.value =
+                                ReservationState.ReservationExists("Ti sei già prenotato per questo evento!")
+
+                            else -> _reservationState.value =
+                                ReservationState.Error("Impossibile creare prenotazione: ${errorResponse?.error ?: "Unknown error"}")
+                        }
+                    }
+
+                    else -> _reservationState.value =
+                        ReservationState.Error("Failed to create reservation: ${e.message()}")
+                }
+            } catch (e: Exception) {
+                _reservationState.value =
+                    ReservationState.Error("Failed to create reservation: ${e.message}")
+            }
+        }
+    }
+
+    fun clearReservationState() {
+        _reservationState.value = ReservationState.Initial
+    }
 }
 
 sealed class AuthState
@@ -348,6 +386,25 @@ data class ChangePasswordRequest(
 )
 
 @JsonClass(generateAdapter = true)
+data class ReservationRequest(
+    @Json(name = "event_id") val eventID: String,
+)
+
+sealed class ReservationState {
+    data object Initial : ReservationState()
+    data object Loading : ReservationState()
+    data class Success(val message: String) : ReservationState()
+    data class Error(val message: String) : ReservationState()
+    data class ReservationExists(val message: String) : ReservationState()
+}
+
+@JsonClass(generateAdapter = true)
+data class ErrorResponse(
+    val error: String,
+    val code: String
+)
+
+@JsonClass(generateAdapter = true)
 data class LoginRequest(val email: String, val password: String)
 
 interface ApiService {
@@ -365,6 +422,9 @@ interface ApiService {
 
     @POST("auth/change-password")
     suspend fun changePassword(@Body changePasswordRequest: ChangePasswordRequest): Response<Unit>
+
+    @POST("reservation/new")
+    suspend fun createReservation(@Body reservation: ReservationRequest): Unit
 }
 
 // adds token to requests if present

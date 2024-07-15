@@ -55,6 +55,7 @@ import com.example.logintest.ui.theme.screens.ManageSubscriptionScreen
 import com.example.logintest.ui.theme.screens.MapScreen
 import com.example.logintest.ui.theme.screens.OtherScreen
 import com.example.logintest.ui.theme.screens.RegistrationScreen
+import com.example.logintest.ui.theme.screens.ReservationsListScreen
 import com.example.logintest.ui.theme.screens.SettingsScreen
 import com.example.logintest.ui.theme.screens.ShareAppScreen
 import com.example.logintest.ui.theme.screens.SupportScreen
@@ -80,7 +81,7 @@ enum class Screen {
 @OptIn(MapboxExperimental::class)
 @Composable
 fun MyApp(
-    userModel: UserViewModel,
+    userViewModel: UserViewModel,
     themeViewModel: ThemeViewModel,
     eventsViewModel: EventViewModel,
     searchHistoryViewModel: SearchHistoryViewModel,
@@ -95,9 +96,9 @@ fun MyApp(
     val themeOption by themeViewModel.themeOption.collectAsState()
     val eventsList by eventsViewModel.events.collectAsState()
 
-    val loginState by userModel.loginState.collectAsState()
+    val loginState by userViewModel.loginState.collectAsState()
 
-    val userData by userModel.userData.collectAsState()
+    val userData by userViewModel.userData.collectAsState()
 
     var currentScreen by remember { mutableStateOf(Screen.Home) }
 
@@ -231,8 +232,10 @@ fun MyApp(
                     event?.let {
                         EventDetailsScreen(
                             modifier = Modifier.padding(innerPadding),
-                            event = it,
-                            onBackPress = { navController.popBackStack() }
+                            eventViewModel = it,
+                            userViewModel = userViewModel,
+                            onBackPress = { navController.popBackStack() },
+                            onReserveClick = {},
                         )
                     }
                 }
@@ -255,31 +258,31 @@ fun MyApp(
                     SettingsScreen(
                         modifier = Modifier.padding(innerPadding),
                         navController = navController,
-                        userViewModel = userModel,
+                        userViewModel = userViewModel,
                     )
                 }
                 composable("account_info") {
-                    AccountInfoScreen(Modifier.padding(innerPadding), userModel, navController)
+                    AccountInfoScreen(Modifier.padding(innerPadding), userViewModel, navController)
                 }
                 composable("change_password") {
                     ChangePasswordScreen(
                         Modifier.padding(innerPadding),
                         navController,
-                        userModel
+                        userViewModel
                     )
                 }
                 composable("delete_account") {
                     DeleteAccountScreen(
                         Modifier.padding(innerPadding),
                         navController,
-                        userModel
+                        userViewModel
                     )
                 }
                 composable("manage_subscription") {
                     ManageSubscriptionScreen(
                         Modifier.padding(innerPadding),
                         navController,
-                        userModel
+                        userViewModel
                     )
                 }
                 composable("light_dark_mode") {
@@ -292,7 +295,7 @@ fun MyApp(
                 composable("login") {
                     LoginPage(
                         Modifier.padding(innerPadding),
-                        userViewModel = userModel,
+                        userViewModel = userViewModel,
                         onLoginSuccess = { println("Login success") },
                         onNavigateToRegister = { navController.navigateWithDefaultOptions("register") },
                         goBackToHome = { navController.navigateWithDefaultOptions("mapbox") }
@@ -301,7 +304,7 @@ fun MyApp(
 
                 composable("register") {
                     RegistrationScreen(
-                        userModel,
+                        userViewModel,
                         onRegistrationSuccess = {
                             Toast.makeText(context, "Account creato", Toast.LENGTH_SHORT).show()
                             navController.navigateWithDefaultOptions("login")
@@ -311,7 +314,7 @@ fun MyApp(
                 }
 
                 composable("logout") {
-                    LogoutScreen(Modifier.padding(innerPadding), navController, userModel)
+                    LogoutScreen(Modifier.padding(innerPadding), navController, userViewModel)
                 }
                 composable("other") {
                     OtherScreen(Modifier.padding(innerPadding), navController)
@@ -352,6 +355,12 @@ fun MyApp(
                         onEventClick = { event ->
                             navController.navigateWithDefaultOptions("eventDetails/${event.id}")
                         })
+                }
+                composable("user_reservations") {
+                    ReservationsListScreen(
+                        Modifier.padding(innerPadding),
+                        eventsViewModel,
+                        onEventClick = { navController.navigateWithDefaultOptions("eventDetails/${it.id}") })
                 }
 
 //                composable("search_address") {
