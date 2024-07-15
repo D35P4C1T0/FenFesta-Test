@@ -59,6 +59,12 @@ var composeVersion = "1.6.8"
 var mapboxVersion = "11.3.1"
 
 dependencies {
+
+    implementation ("androidx.core:core-ktx:1.6.0")
+    implementation ("androidx.work:work-runtime-ktx:2.7.0")
+
+
+    implementation ("com.google.android.gms:play-services-ads:23.1.0")
     implementation("com.google.android.gms:play-services-ads:23.1.0")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
