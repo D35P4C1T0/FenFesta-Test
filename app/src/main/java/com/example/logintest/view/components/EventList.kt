@@ -28,34 +28,22 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import java.time.format.DateTimeFormatter
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import androidx.compose.material.icons.outlined.Grade
+import androidx.compose.material3.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import com.example.logintest.data.notifications.NotificationReceiver
 import com.example.logintest.model.EventModel
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun EventList(
-    modifier: Modifier = Modifier.fillMaxHeight(),
-    events: List<EventModel>,
-    onEventClick: (EventModel) -> Unit,
-) {
-//    val events = EventGenerator.generateEvents() // use dummy data
-    Column(
-        modifier = modifier.padding(top = 6.dp),
-        verticalArrangement = Arrangement.spacedBy(3.dp),
-    ) {
-        events.forEach { event ->
-            EventCard(
-                event = event,
-                onEventClick = onEventClick,
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-        }
-    }
-}
+import java.time.ZoneId
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,7 +55,7 @@ fun EventCard(
     padding: Dp = 16.dp,
     onEventClick: (EventModel) -> Unit,
 ) {
-
+    val context = LocalContext.current
     val title = event.name
     val description = event.description
     val date = event.date
@@ -104,7 +92,6 @@ fun EventCard(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-
                 Text(
                     text = abbreviatedDate(date),
                     fontSize = titleFontSize,
@@ -116,7 +103,7 @@ fun EventCard(
 
                 // add to favorites button, allign far right
                 IconButton(modifier = Modifier.weight(1f), onClick = {
-                    //TODO("add to fav functionality here")
+                    scheduleNotification(context, event)
                 }) {
                     Icon(
                         imageVector = Icons.Outlined.Grade,
@@ -132,13 +119,36 @@ fun EventCard(
                     fontWeight = titleFontWeight,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
-
                 )
             }
         }
     }
 }
 
+private fun scheduleNotification(context: Context, event: EventModel) {
+    val notificationTime = event.date.minusHours(1)
+    val currentTime = LocalDateTime.now()
+
+    val delay = notificationTime.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000 - currentTime.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000
+
+    if (delay > 0) {
+        val intent = Intent(context, NotificationReceiver::class.java).apply {
+            putExtra("event_title", event.name)
+            putExtra("event_content", "Your event at ${event.location} starts in an hour!")
+            putExtra("notification_id", event.id)
+        }
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            event.id,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + delay, pendingIntent)
+    }
+}
 fun abbreviatedDate(dateTime: LocalDateTime): String {
     val formatter = DateTimeFormatter.ofPattern("d\nMMM")
     return dateTime.format(formatter).uppercase()
