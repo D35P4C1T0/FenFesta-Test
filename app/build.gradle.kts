@@ -56,7 +56,7 @@ android {
 }
 
 var composeVersion = "1.6.8"
-var mapboxVersion = "11.5.0"
+var mapboxVersion = "11.3.1"
 
 dependencies {
     implementation("com.google.android.gms:play-services-ads:23.1.0")

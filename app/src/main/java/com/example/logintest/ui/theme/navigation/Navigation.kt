@@ -1,5 +1,6 @@
 package com.example.logintest.ui.theme.navigation
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
@@ -21,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -71,13 +73,15 @@ import com.example.logintest.ui.utils.NavAnimations.popExitTransition
 import com.example.logintest.view.components.BottomNavigationBar
 import com.example.logintest.view.utils.FirstLaunch
 import com.mapbox.maps.MapboxExperimental
-import com.mapbox.maps.extension.compose.animation.viewport.MapViewportState
+import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
 
 enum class Screen {
     Home,
     Settings
 }
 
+
+@MapboxExperimental
 @OptIn(MapboxExperimental::class)
 @Composable
 fun MyApp(
@@ -85,19 +89,22 @@ fun MyApp(
     themeViewModel: ThemeViewModel,
     eventsViewModel: EventViewModel,
     searchHistoryViewModel: SearchHistoryViewModel,
-    mapViewportState: MapViewportState,
     locationViewModel: LocationViewModel,
 ) {
 
-//    Log.d("Compose", "Nav is recomposing")
+    Log.d("Compose", "Nav is recomposing")
     val context = LocalContext.current
     val navController = rememberNavController()
-    var firstLaunch by remember { mutableStateOf(FirstLaunch) }
+    val firstLaunch by remember { mutableStateOf(FirstLaunch) }
     val themeOption by themeViewModel.themeOption.collectAsState()
     val eventsList by eventsViewModel.events.collectAsState()
     val loginState by userViewModel.loginState.collectAsState()
     val userData by userViewModel.userData.collectAsState()
     var currentScreen by remember { mutableStateOf(Screen.Home) }
+
+    val mapViewportState = rememberMapViewportState {}
+
+    println("NAV view port ${mapViewportState.mapViewportStatus}")
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),

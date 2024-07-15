@@ -37,6 +37,7 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.mapbox.geojson.Point
 import com.mapbox.maps.MapboxExperimental
 import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
 import kotlinx.coroutines.CoroutineScope
@@ -142,8 +143,6 @@ fun DynamicTheme(themeViewModel: ThemeViewModel) {
     val searchHistoryViewModel: SearchHistoryViewModel =
         viewModel { SearchHistoryViewModel(searchHistoryDataStore) }
 
-    val mapViewportState = rememberMapViewportState()
-
     AppTheme(darkTheme = darkTheme) {
         SystemUIController(isDarkTheme = darkTheme)
         MyApp(
@@ -151,7 +150,6 @@ fun DynamicTheme(themeViewModel: ThemeViewModel) {
             themeViewModel = themeViewModel,
             searchHistoryViewModel = searchHistoryViewModel,
             eventsViewModel = eventViewModel,
-            mapViewportState = mapViewportState,
             locationViewModel = locationViewModel,
         )
     }
