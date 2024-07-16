@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -17,7 +18,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -239,18 +241,12 @@ private fun Day(
             DayPosition.MonthDate -> if (isSelected) Color.White else Color.Unspecified
             DayPosition.InDate, DayPosition.OutDate -> Color.Gray
         }
-        Text(
-            modifier = Modifier,
-            text = day.date.dayOfMonth.toString(),
-            color = textColor,
-            fontSize = 14.sp,
-        )
-        if (eventsNumber > 0) {
-            NumberDot(
-                number = eventsNumber,
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .offset(x = 8.dp, y = (-8).dp)
+        NumberBadge(number = eventsNumber) {
+            Text(
+                modifier = Modifier,
+                text = day.date.dayOfMonth.toString(),
+                color = textColor,
+                fontSize = 14.sp,
             )
         }
     }
@@ -277,78 +273,6 @@ private fun MonthHeader(
     }
 }
 
-/*
-@Composable
-private fun LazyItemScope.EventInformation(event: EventModel) {
-    Row(
-        modifier = Modifier
-            .fillParentMaxWidth()
-            .height(IntrinsicSize.Max),
-        horizontalArrangement = Arrangement.spacedBy(2.dp),
-    ) {
-        Box(
-            modifier = Modifier
-                .background(color = event.color.toComposeColor())
-                .fillParentMaxWidth(1 / 7f)
-                .aspectRatio(1f),
-            contentAlignment = Alignment.Center,
-        ) {
-            Text(
-                text = event.name.uppercase(Locale.getDefault()),
-                textAlign = TextAlign.Center,
-                lineHeight = 17.sp,
-                fontSize = 12.sp,
-            )
-        }
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight(),
-        ) {
-        }
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight(),
-        ) {
-        }
-    }
-    Divider(thickness = 2.dp)
-}
-
-@Composable
-private fun EventInformation(event: EventModel) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight(),
-    ) {
-        Column(
-            modifier = Modifier
-                .weight(0.7f)
-                .fillMaxHeight()
-                .fillMaxWidth(),
-            verticalArrangement = Arrangement.Center,
-        ) {
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = event.capacity.toString(),
-                textAlign = TextAlign.Center,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Black,
-            )
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = event.location,
-                textAlign = TextAlign.Center,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Light,
-            )
-        }
-    }
-}
-*/
-
 @Composable
 fun rememberFirstCompletelyVisibleMonth(state: CalendarState): CalendarMonth {
     val visibleMonth = remember(state) { mutableStateOf(state.firstVisibleMonth) }
@@ -362,20 +286,52 @@ fun rememberFirstCompletelyVisibleMonth(state: CalendarState): CalendarMonth {
     return visibleMonth.value
 }
 
+//@Composable
+//fun NumberDot(number: Int, modifier: Modifier = Modifier) {
+//    Box(
+//        modifier = modifier
+//            .size(20.dp)
+//            .background(color = MaterialTheme.colorScheme.primary, shape = CircleShape)
+//            .padding
+//            .aspectRatio(1f),
+////        contentAlignment = Alignment.TopStart,  // Changed from TopCenter to Center
+//    ) {
+//        Text(
+//            text = number.toString(),
+//            color = Color.White,
+//            fontSize = 12.sp,
+//            fontWeight = FontWeight.Bold,
+//            textAlign = TextAlign.Center,
+//            modifier = Modifier.align(Alignment.Center)
+//        )
+//    }
+//}
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NumberDot(number: Int, modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier
-            .size(24.dp)
-            .background(color = MaterialTheme.colorScheme.primary, shape = CircleShape)
-            .aspectRatio(1f),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = number.toString(),
-            color = Color.White,
-            fontSize = 11.sp,
-            fontWeight = FontWeight.Bold
+fun NumberBadge(
+    number: Int,
+    modifier: Modifier = Modifier,
+    content: @Composable BoxScope.() -> Unit
+) {
+    Box(modifier = Modifier.size(24.dp)) {
+        BadgedBox(
+            modifier = Modifier.align(Alignment.TopCenter),
+            badge = {
+                if (number > 0) {
+                    Badge(
+                        modifier = Modifier.offset(x = 6.5.dp, y = (-6.5).dp),
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                    ) {
+                        Text(
+                            text = number.toString(),
+                            style = MaterialTheme.typography.labelSmall
+                        )
+                    }
+                }
+            },
+            content = content,
         )
     }
 }

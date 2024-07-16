@@ -78,7 +78,7 @@ fun BottomNavigationBar(navController: NavController) {
                 alwaysShowLabel = true,
                 selected = currentRoute == item.route,
                 onClick = {
-                    println("Navigating to ${item.route}, current route is $currentRoute")
+                    //println("Navigating to ${item.route}, current route is $currentRoute")
                     if (currentRoute != item.route) {
 //                        navController.navigate(item.route) {
 //                            popUpTo(navController.graph.startDestinationId)

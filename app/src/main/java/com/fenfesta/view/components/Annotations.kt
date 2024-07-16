@@ -23,7 +23,7 @@ fun Annotations(
     eventList: List<EventModel>,
     onClick: (String) -> Unit,
 ) {
-    println("Adding annotations to the map... $eventList")
+    //println("Adding annotations to the map... $eventList")
     val context = LocalContext.current
     val bitmap = getBitmapFromVectorDrawable(context, R.drawable.marker_icon)
 //    val listOfAnnotations = toAnnotations(eventList)
@@ -31,7 +31,7 @@ fun Annotations(
     PointAnnotationGroup(
         annotations = listOfAnnotations,
         onClick = { pointAnnotation ->
-            // println("Annotation clicked: ${pointAnnotation.getData()?.asJsonObject?.get("id")}")
+            // //println("Annotation clicked: ${pointAnnotation.getData()?.asJsonObject?.get("id")}")
             // LOL it works
             val id = pointAnnotation.getData()?.asJsonObject?.get("id")?.asString
             if (id != null) {

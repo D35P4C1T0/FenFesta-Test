@@ -103,7 +103,7 @@ fun MyApp(
 
     val mapViewportState = rememberMapViewportState {}
 
-    println("NAV view port ${mapViewportState.mapViewportStatus}")
+    //println("NAV view port ${mapViewportState.mapViewportStatus}")
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -241,7 +241,7 @@ fun MyApp(
                             eventViewModel = eventsViewModel,
                             userViewModel = userViewModel,
                             onBackPress = { navController.popBackStack() },
-                            onReserveClick = {},
+                            onReserveClick = { },
                             hideJoinButton = hideJoinButton,
                         )
                     }
@@ -266,6 +266,8 @@ fun MyApp(
                         modifier = Modifier.padding(innerPadding),
                         navController = navController,
                         userViewModel = userViewModel,
+                        currentTheme = themeOption,
+                        onThemeChanged = { themeViewModel.setThemeOption(it) },
                     )
                 }
                 composable("account_info") {
@@ -292,18 +294,17 @@ fun MyApp(
                         userViewModel
                     )
                 }
-                composable("light_dark_mode") {
-                    ThemeSelector(
-                        modifier = Modifier.padding(innerPadding),
-                        currentTheme = themeOption,
-                        onThemeSelected = { themeViewModel.setThemeOption(it) }
-                    )
-                }
+//                composable("light_dark_mode") {
+//                    ThemeSelector(
+//                        currentTheme = themeOption,
+//                        onThemeSelected = { themeViewModel.setThemeOption(it) }
+//                    )
+//                }
                 composable("login") {
                     LoginPage(
                         Modifier.padding(innerPadding),
                         userViewModel = userViewModel,
-                        onLoginSuccess = { println("Login success") },
+                        onLoginSuccess = { },
                         onNavigateToRegister = { navController.navigateWithDefaultOptions("register") },
                         goBackToHome = { navController.navigateWithDefaultOptions("mapbox") }
                     )

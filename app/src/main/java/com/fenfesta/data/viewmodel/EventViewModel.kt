@@ -2,9 +2,7 @@ package com.fenfesta.data.viewmodel
 
 import android.content.Context
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.fenfesta.R
 import com.fenfesta.data.notifications.NotificationScheduler
@@ -110,7 +108,7 @@ class EventViewModel(
                 val response = apiService.getEvents()
                 _events.value = response
             } catch (e: Exception) {
-                println("Error fetching events: ${e.message}")
+                //println("Error fetching events: ${e.message}")
                 e.printStackTrace()
                 // Print the stack trace to get more details about the error
                 e.stackTrace.forEach { println(it) }
@@ -125,7 +123,7 @@ class EventViewModel(
                 val fetchedEvent = apiService.getEvent(id)
                 _selectedEvent.value = fetchedEvent
             } catch (e: Exception) {
-                println("Error fetching event with id $id: ${e.message}")
+                //println("Error fetching event with id $id: ${e.message}")
                 e.printStackTrace()
                 _selectedEvent.value = null
             }
@@ -138,7 +136,7 @@ class EventViewModel(
                 val fetchedEvents = apiService.getEventsByMonth(month)
                 _monthEvents.value = fetchedEvents
             } catch (e: Exception) {
-                println("Error fetching events for month $month: ${e.message}")
+                //println("Error fetching events for month $month: ${e.message}")
                 e.printStackTrace()
                 // Print the stack trace to get more details about the error
                 e.stackTrace.forEach { println(it) }
@@ -157,7 +155,7 @@ class EventViewModel(
                 val results = apiService.searchEvents(keyword)
                 _searchResults.value = results
             } catch (e: Exception) {
-                println("Error searching events: ${e.message}")
+                //println("Error searching events: ${e.message}")
                 e.printStackTrace()
                 _searchResults.value = emptyList()
             }
@@ -169,13 +167,13 @@ class EventViewModel(
     }
 
     fun createEvent(event: EventModel) {
-        println("Asking to create event: $event")
+        //println("Asking to create event: $event")
         viewModelScope.launch {
             try {
                 val results = apiService.createEvent(event)
-                println("Event created result: $results")
+                //println("Event created result: $results")
             } catch (e: Exception) {
-                println("Error creating event: ${e.message}")
+                //println("Error creating event: ${e.message}")
                 e.printStackTrace()
             }
         }
@@ -185,12 +183,12 @@ class EventViewModel(
         viewModelScope.launch {
             try {
                 val response = apiService.listAllReservedEvents()
-                println("Reservation response ${response.body()}")
+                //println("Reservation response ${response.body()}")
                 if (response.isSuccessful) {
                     _eventsReserved.value = response.body() ?: emptyList()
                 }
             } catch (e: Exception) {
-                println("Error fetching reserved events: ${e.message}")
+                //println("Error fetching reserved events: ${e.message}")
             }
         }
     }
@@ -203,12 +201,12 @@ class EventViewModel(
         viewModelScope.launch {
             try {
                 val response = apiService.isEventReserved(id)
-                println("Is event reserved response ${response.body()}")
+                //println("Is event reserved response ${response.body()}")
                 if (response.isSuccessful) {
                     _isEventReserved.value = response.body()?.isReserved ?: false
                 }
             } catch (e: Exception) {
-                println("Error checking if event is reserved: ${e.message}")
+                //println("Error checking if event is reserved: ${e.message}")
             }
         }
     }
@@ -217,12 +215,12 @@ class EventViewModel(
         viewModelScope.launch {
             try {
                 val info = apiService.getEventCreatorInfo(eventId)
-                println("Event creator info response ${info.body()}")
+                //println("Event creator info response ${info.body()}")
                 _eventCreator.value = info.body()?.let {
                     "${it.creatorFirstName} ${it.creatorLastName}"
                 } ?: ""
             } catch (e: Exception) {
-                println("Error fetching event creator info: ${e.message}")
+                //println("Error fetching event creator info: ${e.message}")
             }
         }
     }
@@ -281,7 +279,7 @@ class EventViewModel(
         @GET("events/search")
         suspend fun searchEvents(@Query("keyword") keyword: String): List<EventModel>
 
-        @POST("events/new/")
+        @POST("events/new")
         suspend fun createEvent(@Body event: EventModel): EventModel
 
         @GET("users/reserved_events")

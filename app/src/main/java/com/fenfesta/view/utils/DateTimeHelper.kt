@@ -19,13 +19,13 @@ object DateTimeHelper {
         // Combine date and time
         val combinedDateTime = LocalDateTime.of(date, time)
 
-        println("Combined DateTime: $combinedDateTime")
+        //println("Combined DateTime: $combinedDateTime")
 
         // Format to the desired output
         val outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
         val formattedString = combinedDateTime.atOffset(ZoneOffset.UTC).format(outputFormatter)
 
-        println("Formatted String: $formattedString")
+        //println("Formatted String: $formattedString")
 
         // Parse the formatted string back to LocalDateTime
         return LocalDateTime.parse(formattedString, DateTimeFormatter.ISO_DATE_TIME)

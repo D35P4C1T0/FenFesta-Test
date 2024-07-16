@@ -79,7 +79,7 @@ fun DeleteAccountContent(
 
         SearchBar(
             modifier = Modifier.fillMaxWidth(),
-            perCharacterSearchAction = { confirmationText = it; println(it) },
+            perCharacterSearchAction = { confirmationText = it },
             placeHolderText = "Inserisci la tua mail"
         )
 
@@ -87,7 +87,7 @@ fun DeleteAccountContent(
 
         Button(
             onClick = {
-                println(user.email)
+                //println(user.email)
                 if (confirmationText == user.email) {
                     showDialog = true
                 } else {

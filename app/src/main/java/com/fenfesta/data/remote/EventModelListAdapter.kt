@@ -27,7 +27,7 @@ class EventModelListAdapter {
                     tags = json["tags"] as? String ?: "",
                 )
             } catch (e: Exception) {
-                println("Error parsing event: $e")
+                //println("Error parsing event: $e")
                 null
             }
         }
@@ -41,7 +41,7 @@ class EventModelListAdapter {
                 ZonedDateTime.parse(dateString).toLocalDateTime()
             }
         } catch (e: Exception) {
-            println("Error parsing date: $dateString")
+            //println("Error parsing date: $dateString")
             LocalDateTime.now()
         }
     }

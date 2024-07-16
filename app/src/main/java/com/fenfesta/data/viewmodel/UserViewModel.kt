@@ -90,20 +90,6 @@ class UserViewModel(
         }
     }
 
-    // dumb function to get user data
-    fun getUser(): UserModel {
-        return UserModel(
-            id = 123,
-//            password="password",
-            "Banana333",
-            "Flavio",
-            "Ranieri",
-            "latteconlemani@libero.it",
-            true,
-            "https://static.nexilia.it/mangaforever/2022/08/af9011e585d0772b2332ab7d16985672-1280x720.jpg"
-        )
-    }
-
     fun changePassword(oldPassword: String, newPassword: String, confirmPassword: String) {
         viewModelScope.launch {
             _passwordChangeState.value = PasswordChangeState.Loading
@@ -134,7 +120,7 @@ class UserViewModel(
             _loginState.value = LoginState.Loading
             try {
                 val response = apiService.login(LoginRequest(email, password))
-                println("response: $response")
+                //println("response: $response")
                 handleAuthResponse(response, isLogin = true)
             } catch (e: Exception) {
                 _loginState.value = LoginState.Error("Login failed: ${e.message}")
@@ -155,7 +141,7 @@ class UserViewModel(
                         _loginState.value = LoginState.Idle
                         _registrationState.value = RegistrationState.Idle
                         _logoutState.value = LogoutState.Success
-                        println("Logout successful")
+                        //println("Logout successful")
                     } else {
                         _logoutState.value =
                             LogoutState.Error("Logout failed: ${response.message()}")
@@ -205,7 +191,7 @@ class UserViewModel(
                 userPreferences.saveUserName(authResponse.user.username)
                 userPreferences.saveUserEmail(authResponse.user.email)
 
-                println("Successful Login: $authResponse")
+                //println("Successful Login: $authResponse")
 
                 // Save user data
                 _userData.value = UserModel(
@@ -250,7 +236,7 @@ class UserViewModel(
         viewModelScope.launch {
             try {
                 val response = apiService.getProfile()
-                println("Profile info response: $response")
+                //println("Profile info response: $response")
                 if (response.isSuccessful) {
                     response.body()?.let { profileInfoResponse ->
                         _userData.value = UserModel(
@@ -266,7 +252,7 @@ class UserViewModel(
                     }
                 }
             } catch (e: Exception) {
-                println("Error fetching profile info: ${e.message}")
+                //println("Error fetching profile info: ${e.message}")
             }
         }
     }
@@ -366,7 +352,7 @@ class UserViewModel(
                     _numberOfReservations.value = count.body()?.number ?: 0
                 }
             } catch (e: Exception) {
-                println("Error fetching reservation count: ${e.message}")
+                //println("Error fetching reservation count: ${e.message}")
             }
         }
     }
@@ -382,12 +368,12 @@ class UserViewModel(
                     _loginState.value = LoginState.Idle
                     _registrationState.value = RegistrationState.Idle
                     _logoutState.value = LogoutState.Success
-                    println("Account deleted successfully")
+                    //println("Account deleted successfully")
                 } else {
-                    println("Failed to delete account: ${response.message()}")
+                    //println("Failed to delete account: ${response.message()}")
                 }
             } catch (e: Exception) {
-                println("Failed to delete account: ${e.message}")
+                //println("Failed to delete account: ${e.message}")
             }
         }
     }
@@ -520,7 +506,7 @@ interface ApiService {
     @POST("auth/change-password")
     suspend fun changePassword(@Body changePasswordRequest: ChangePasswordRequest): Response<Unit>
 
-    @POST("reservation/new")
+    @POST("reservations/new")
     suspend fun createReservation(@Body reservation: ReservationRequest): Unit
 
     @POST("reservations/{id}/remove")
@@ -537,9 +523,9 @@ interface ApiService {
 class AuthInterceptor(private val userPreferences: DataStoreUserPreference) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
         val originalRequest = chain.request()
-        println("Intercepting request: $originalRequest")
+        //println("Intercepting request: $originalRequest")
         val accessToken = runBlocking { userPreferences.getAccessToken() }
-        println("Access token: $accessToken")
+        //println("Access token: $accessToken")
         return if (accessToken.isNotEmpty()) {
             val newRequest = originalRequest.newBuilder()
                 .header("Authorization", "Bearer $accessToken")

@@ -114,19 +114,19 @@ fun EventCard(
                 Spacer(modifier = Modifier.weight(0.55f))
 
                 // add to favorites button, allign far right
-                IconButton(modifier = Modifier.weight(1f), onClick = {
-//                    scheduleNotification(context, event)
-                }) {
-                    Icon(
-                        imageVector = Icons.Outlined.Grade,
-                        contentDescription = "Add to Favourites",
-                    )
-                }
+//                IconButton(modifier = Modifier.weight(1f), onClick = {
+////                    scheduleNotification(context, event)
+//                }) {
+//                    Icon(
+//                        imageVector = Icons.Outlined.Grade,
+//                        contentDescription = "Add to Favourites",
+//                    )
+//                }
 
                 Text(
                     modifier = Modifier.weight(6f),
                     textAlign = TextAlign.End,
-                    text = "$title - $location\n$startTime-$endTime",
+                    text = "$title\n$startTime",
                     fontSize = titleFontSize,
                     fontWeight = titleFontWeight,
                     maxLines = 2,

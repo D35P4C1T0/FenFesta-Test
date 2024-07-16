@@ -59,7 +59,7 @@ class LocationViewModel(
                 val response = apiService.getCoords(GeocodeRequest(address))
                 if (response.isSuccessful) {
                     response.body()?.let { coordsResponse ->
-                        println("Geocode response: $coordsResponse")
+                        //println("Geocode response: $coordsResponse")
                         _locationData.value = LocationModel(
                             address = coordsResponse.address,
                             lat = coordsResponse.latitude.toDouble(),
@@ -71,7 +71,7 @@ class LocationViewModel(
                 }
             } catch (e: Exception) {
                 // Handle error
-                println("Error: $e")
+                //println("Error: $e")
             }
         }
     }

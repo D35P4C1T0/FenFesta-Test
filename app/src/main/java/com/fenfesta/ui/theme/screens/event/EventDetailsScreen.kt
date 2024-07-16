@@ -43,6 +43,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.fenfesta.data.viewmodel.EventViewModel
+import com.fenfesta.data.viewmodel.LoginState
 import com.fenfesta.data.viewmodel.ReservationDeletionState
 import com.fenfesta.data.viewmodel.ReservationState
 import com.fenfesta.data.viewmodel.UserViewModel
@@ -66,11 +67,11 @@ fun EventDetailsScreen(
     val isEventNotified by eventViewModel.isEventNotified(event.id.toString())
         .collectAsState(initial = false)
 
+    val isLoggedIn by userViewModel.loginState.collectAsState()
+    println("isLogged in $isLoggedIn")
 
     val creatorName by eventViewModel.eventCreator.collectAsState()
     event.id?.let { eventViewModel.fetchEventCreatorInfo(it) }
-
-    println("creator $creatorName")
 
     AnimatedVisibility(visible = true, enter = fadeIn(), exit = fadeOut()) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -147,31 +148,37 @@ fun EventDetailsScreen(
             }
 
             // Reservation button at the bottom
-            Box(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth()
-                    .padding(bottom = 48.dp, start = 28.dp, end = 28.dp)
-            ) {
-                when (hideJoinButton) {
-                    true -> {
-                        event.id?.let {
-                            ReservationDeletion(
-                                viewModel = userViewModel,
-                                eventId = it
-                            )
-                        }
-                    }
+            when (isLoggedIn) {
+                is LoginState.Success -> {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                            .fillMaxWidth()
+                            .padding(bottom = 48.dp, start = 28.dp, end = 28.dp)
+                    ) {
+                        when (hideJoinButton) {
+                            true -> {
+                                event.id?.let {
+                                    ReservationDeletion(
+                                        viewModel = userViewModel,
+                                        eventId = it
+                                    )
+                                }
+                            }
 
-                    false -> {
-                        event.id?.let {
-                            MakeReservation(
-                                viewModel = userViewModel,
-                                eventId = it,
-                            )
+                            false -> {
+                                event.id?.let {
+                                    MakeReservation(
+                                        viewModel = userViewModel,
+                                        eventId = it,
+                                    )
+                                }
+                            }
                         }
                     }
                 }
+
+                else -> {}
             }
         }
     }

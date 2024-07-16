@@ -1,13 +1,24 @@
 package com.fenfesta.ui.theme.screens
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
+import androidx.compose.material.icons.filled.Call
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,21 +28,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.fenfesta.ui.theme.navigation.navigateWithDefaultOptions
 
-@OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun OtherScreen(modifier: Modifier, navController: NavController) {
-    OtherContent(modifier = modifier, navController = navController)
-}
-
-@Composable
-fun OtherContent(modifier: Modifier = Modifier, navController: NavController) {
+fun OtherScreen(modifier: Modifier = Modifier, navController: NavController) {
     val options = listOf(
         Triple("Informazioni sull'App", Icons.Filled.Info, "app_info"),
         Triple("Supporto", Icons.Filled.Call, "support"),
-       // Triple("Termini e Condizioni", Icons.Filled.Warning, "terms_conditions"),
+        // Triple("Termini e Condizioni", Icons.Filled.Warning, "terms_conditions"),
         Triple("Condividi App", Icons.Filled.Share, "share_app"),
-       // Triple("Feedback", Icons.Filled.ThumbUp, "feedback")
     )
 
     LazyColumn(
@@ -40,7 +43,10 @@ fun OtherContent(modifier: Modifier = Modifier, navController: NavController) {
             .padding(16.dp)
     ) {
         items(options) { (label, icon, route) ->
-            OtherOptionItem(label = label, icon = icon, onClick = { navController.navigateWithDefaultOptions(route) })
+            OtherOptionItem(
+                label = label,
+                icon = icon,
+                onClick = { navController.navigateWithDefaultOptions(route) })
         }
     }
 }
@@ -71,12 +77,12 @@ fun OtherOptionItem(label: String, icon: ImageVector, onClick: () -> Unit) {
                 fontSize = 18.sp
             )
         }
-        Divider(
-            color = MaterialTheme.colorScheme.primary,
-            thickness = 1.dp,
+        HorizontalDivider(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp)
+                .padding(vertical = 8.dp),
+            thickness = 1.dp,
+            color = MaterialTheme.colorScheme.primary
         )
     }
 }

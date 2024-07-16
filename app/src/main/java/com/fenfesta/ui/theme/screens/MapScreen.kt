@@ -43,7 +43,7 @@ fun MapScreen(
     onMarkerClick: (String) -> Unit,
 ) {
 
-    println("MAP view port ${mapViewportState.mapViewportStatus}")
+    //println("MAP view port ${mapViewportState.mapViewportStatus}")
 
     var relaunch by remember {
         mutableStateOf(false)
@@ -54,10 +54,10 @@ fun MapScreen(
         onResult = { permissions ->
             if (!permissions.values.all { it }) {
                 //handle permission denied
-                println("Permission denied")
+                //println("Permission denied")
             } else {
                 relaunch = !relaunch
-                println("Permission granted")
+                //println("Permission granted")
             }
         }
     )
@@ -83,7 +83,7 @@ fun MapScreen(
         Annotations(eventList = eventsList, onClick = onMarkerClick)
         MapEffect(Unit) { mapView ->
             val lastCameraPosition = mapView.mapboxMap.cameraState.center
-            println("Last camera position: $lastCameraPosition")
+            //println("Last camera position: $lastCameraPosition")
             // Use mapView to access all the Mapbox Maps APIs including plugins etc.
             // For example, to enable debug mode:
             mapView.mapboxMap.style?.localizeLabels(locale = Locale("it"))
@@ -99,9 +99,9 @@ fun MapScreen(
 
     LaunchedEffect(key1 = relaunch) {
         try {
-            println("map relaunch called")
+            //println("map relaunch called")
             val location = LocationService().getCurrentLocation(context)
-            println("Location: $location")
+            //println("Location: $location")
             if (isFirstLaunch.isFirstLaunch) { // working on first time launch
                 updateEvents()
                 mapViewportState.flyTo(
@@ -122,7 +122,7 @@ fun MapScreen(
             when (e) {
                 is LocationService.LocationServiceException.LocationDisabledException -> {
                     //handle location disabled, show dialog or a snack-bar to enable location
-                    println("Location disabled")
+                    //println("Location disabled")
                 }
 
                 is LocationService.LocationServiceException.MissingPermissionException -> {
@@ -136,12 +136,12 @@ fun MapScreen(
 
                 is LocationService.LocationServiceException.NoNetworkEnabledException -> {
                     //handle no network enabled, show dialog or a snack-bar to enable network
-                    println("No network enabled")
+                    //println("No network enabled")
                 }
 
                 is LocationService.LocationServiceException.UnknownException -> {
                     //handle unknown exception
-                    println("Unknown exception")
+                    //println("Unknown exception")
                 }
             }
         }

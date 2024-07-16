@@ -115,7 +115,7 @@ fun CreateEventScreen(
             value = eventTags,
             onValueChange = { newValue ->
 //                val newChar = newValue[eventTags.length]
-//                println("New character inserted: '$newChar', ASCII code: ${newChar.code}")
+//                //println("New character inserted: '$newChar', ASCII code: ${newChar.code}")
                 val processedValue = newValue
                     .replace(
                         Regex("[^a-zA-Z0-9,]"),
@@ -180,7 +180,7 @@ fun CreateEventScreen(
                 onLocationSelected = {
                     eventLocation = it
                     showLocationPicker = false
-                    println("location confirmed: $eventLocation")
+                    //println("location confirmed: $eventLocation")
                 }
             )
         }
@@ -259,7 +259,7 @@ fun CreateEventScreen(
                             tags = eventTags.trimEnd(','), // remove trailing comma
                             created_at = LocalDateTime.now().toString(),
                         )
-                        println("new event: $newEvent")
+                        //println("new event: $newEvent")
                         onCreateEvent(newEvent) // spara in su l'eventp
                     }
                 },
