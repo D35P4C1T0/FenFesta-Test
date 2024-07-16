@@ -38,14 +38,14 @@ fun BottomNavigationBar(navController: NavController) {
 
     val items = listOf(
         TabItem(
-            "Map",
+            "Mappa",
             Icons.Outlined.PinDrop,
             Icons.Filled.PinDrop,
             false,
             route = "mapbox"
         ),
         TabItem(
-            "Events",
+            "Eventi",
             Icons.Outlined.CalendarToday,
             Icons.Filled.CalendarToday,
             false,

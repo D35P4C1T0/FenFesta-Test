@@ -2,7 +2,6 @@ package com.fenfesta.ui.theme.screens.search
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -72,65 +71,64 @@ fun LocationSearch(
             },
             clearSearch = {},
             addSearchToHistory = {},
-            unfocusBar = { isSearchBarFocused = false;  },
+            unfocusBar = { isSearchBarFocused = false; },
             placeHolderText = "Inserisci Via, Civico, Città"
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Display the results in an info box
         locationData?.let { location ->
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    contentColor = MaterialTheme.colorScheme.onSurface
+                ),
+                modifier = Modifier.fillMaxWidth(),
             ) {
-                Card(
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        contentColor = MaterialTheme.colorScheme.onSurface
-                    ),
-                    modifier = Modifier.fillMaxWidth(),
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
                 ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Column(
-                            modifier = Modifier.padding(16.dp),
-                            verticalArrangement = Arrangement.Top
+                        Text("Location Details", style = MaterialTheme.typography.headlineSmall)
+                        IconButton(
+                            modifier = Modifier.size(48.dp),  // Increased size
+                            onClick = {
+                                onLocationConfirmed(location)
+                                goBackToPreviousPage()
+                            },
+                            colors = IconButtonDefaults.iconButtonColors(
+                                contentColor = MaterialTheme.colorScheme.onPrimary,
+                                containerColor = MaterialTheme.colorScheme.primary
+                            )
                         ) {
-                            Text("Location Details", style = MaterialTheme.typography.headlineSmall)
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text("Address: ${location.address} ${location.streetNumber}")
-                            Text("City: ${location.city}")
-                            Text("Latitude: ${location.lat}")
-                            Text("Longitude: ${location.lon}")
-                        }
-//                        Spacer(modifier = Modifier.height(16.dp))
-                        Column {
-                            IconButton(
-                                modifier = Modifier.size(25.dp),
-                                onClick = {
-                                    onLocationConfirmed(location)
-                                    goBackToPreviousPage()
-                                },
-                                colors = IconButtonDefaults.iconButtonColors(
-                                    contentColor = MaterialTheme.colorScheme.onPrimary,
-                                    containerColor = MaterialTheme.colorScheme.primary
-                                )
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Check,
-                                    contentDescription = "Confirm Location"
-                                )
-                            }
+                            Icon(
+                                imageVector = Icons.Default.Check,
+                                contentDescription = "Confirm Location",
+                                modifier = Modifier.size(24.dp)  // Explicit icon size
+                            )
                         }
                     }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text("Address: ${location.address} ${location.streetNumber}")
+                    Text("City: ${location.city}")
+                    Text("Latitude: ${location.lat}")
+                    Text("Longitude: ${location.lon}")
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
                     MiniMap(
                         modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)  // Set an explicit height for the map
                             .clip(MaterialTheme.shapes.medium)
-                            .padding(16.dp)
                             .border(
                                 4.dp,
                                 MaterialTheme.colorScheme.surface,
@@ -140,7 +138,6 @@ fun LocationSearch(
                         locationData = location
                     )
                 }
-
             }
         }
     }

@@ -1,10 +1,16 @@
 package com.fenfesta.ui.theme.screens
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,7 +37,7 @@ fun AppInfoContent(modifier: Modifier = Modifier) {
     ) {
         // Titolo App e Versione
         Text(
-            text = "FenFesta Alpha",
+            text = "FenFesta",
             style = MaterialTheme.typography.headlineLarge,
             color = MaterialTheme.colorScheme.primary
         )
@@ -42,7 +48,7 @@ fun AppInfoContent(modifier: Modifier = Modifier) {
             color = MaterialTheme.colorScheme.onSurface
         )
         Text(
-            text = "Data di rilascio: 10 Luglio 2024",
+            text = "Data di rilascio: 24 Luglio 2024",
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurface
         )
@@ -66,12 +72,7 @@ fun AppInfoContent(modifier: Modifier = Modifier) {
             fontSize = 20.sp
         )
         Text(
-            text = "• Edoardo Ghirardello",
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurface
-        )
-        Text(
-            text = "• Matteo Girardi",
+            text = "Matteo Girardi • Edoardo Ghirardello",
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurface
         )

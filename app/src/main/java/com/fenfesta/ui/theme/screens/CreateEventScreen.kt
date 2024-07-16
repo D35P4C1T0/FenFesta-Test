@@ -147,6 +147,7 @@ fun CreateEventScreen(
                 OutlinedTextField(
                     value = eventLocation?.toString() ?: "",
                     onValueChange = { /* Read-only, so no change handler */ },
+                    maxLines = 1,
                     readOnly = true,
                     label = { Text("Indirizzo") },
                     trailingIcon = {
@@ -184,34 +185,6 @@ fun CreateEventScreen(
                 }
             )
         }
-
-        // Row 5: Image and Location
-//        Row(
-//            modifier = Modifier.fillMaxWidth(),
-//            horizontalArrangement = Arrangement.spacedBy(8.dp),
-//            verticalAlignment = Alignment.CenterVertically
-//        ) {
-//            Column {
-//                Text(text = "Immagine", modifier = Modifier.padding(start = 4.dp, bottom = 4.dp))
-//                Box(
-//                    modifier = Modifier
-//                        .size(100.dp)
-//                        .border(1.dp, MaterialTheme.colorScheme.outline, MaterialTheme.shapes.small)
-//                        .background(MaterialTheme.colorScheme.surface)
-//                ) {
-//                    IconButton(
-//                        modifier = Modifier.fillMaxSize(),
-//                        onClick = { /* TODO: Implement image picker */ }
-//                    ) {
-//                        Icon(
-//                            painter = rememberAsyncImagePainter(R.drawable.logo_fen_festa_monocromo),
-//                            contentDescription = "Add Image",
-//                            modifier = Modifier.fillMaxSize(),
-//                        )
-//                    }
-//                }
-//            }
-//        }
 
         // Create Button
         Box(
