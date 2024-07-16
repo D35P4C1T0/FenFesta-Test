@@ -95,7 +95,7 @@ fun LocationSearch(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("Location Details", style = MaterialTheme.typography.headlineSmall)
+                        Text("Dettagli posizione", style = MaterialTheme.typography.headlineSmall)
                         IconButton(
                             modifier = Modifier.size(48.dp),  // Increased size
                             onClick = {
@@ -109,7 +109,7 @@ fun LocationSearch(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Check,
-                                contentDescription = "Confirm Location",
+                                contentDescription = "Conferma",
                                 modifier = Modifier.size(24.dp)  // Explicit icon size
                             )
                         }
@@ -117,10 +117,10 @@ fun LocationSearch(
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    Text("Address: ${location.address} ${location.streetNumber}")
-                    Text("City: ${location.city}")
-                    Text("Latitude: ${location.lat}")
-                    Text("Longitude: ${location.lon}")
+                    Text("Indirizzo: ${location.address} ${location.streetNumber}")
+                    Text("Città: ${location.city}")
+//                    Text("Latitudine: ${location.lat}")
+//                    Text("Longitude: ${location.lon}")
 
                     Spacer(modifier = Modifier.height(16.dp))
 

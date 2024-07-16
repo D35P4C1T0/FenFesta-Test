@@ -115,11 +115,6 @@ fun FAQSection() {
         )
 
         FAQItem(
-            question = "Come posso modificare il mio profilo?",
-            answer = "Vai alla sezione 'Informazioni Account' e premi il pulsante 'Modifica'"
-        )
-
-        FAQItem(
             question = "Come posso contattare il supporto?",
             answer = "Puoi contattarci via email a supporto@fanfesta.com"
         )
