@@ -1,6 +1,6 @@
 package com.fenfesta
 
-import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,10 +11,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.fenfesta.data.notifications.requestNotificationPermission
+import com.fenfesta.data.notifications.RequestNotificationPermission
 import com.fenfesta.data.settings.DataStoreUserPreference
 import com.fenfesta.data.settings.SearchHistoryDataStore
 import com.fenfesta.data.settings.ThemePreferences
@@ -67,30 +69,11 @@ class MainActivity : ComponentActivity() {
 
         // Carica annuncio interstitial
         loadInterstitialAd()
-        requestNotificationPermission(this)
 
         setContent {
             DynamicTheme(
                 themeViewModel = viewModel(factory = themeViewModelFactory),
             )
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            1 -> {
-//        REQUEST_NOTIFICATION_PERMISSION -> {
-                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    // Permesso concesso, puoi mostrare le notifiche
-                }
-                return
-            }
-            // Gestisci altri risultati delle richieste di permesso se necessario
         }
     }
 
@@ -141,6 +124,18 @@ fun DynamicTheme(themeViewModel: ThemeViewModel) {
         ThemeOption.LIGHT -> false
         ThemeOption.DARK -> true
         ThemeOption.SYSTEM -> isSystemInDarkTheme()
+    }
+
+    // Notification Permission
+    var notificationPermissionGranted by remember { mutableStateOf(false) }
+
+    // Andri
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        RequestNotificationPermission { isGranted ->
+            notificationPermissionGranted = isGranted
+        }
+    } else {
+        notificationPermissionGranted = true
     }
 
     // Login

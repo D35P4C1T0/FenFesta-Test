@@ -60,12 +60,14 @@ var mapboxVersion = "11.3.1"
 
 dependencies {
 
-    implementation ("androidx.core:core-ktx:1.6.0")
-    implementation ("androidx.work:work-runtime-ktx:2.7.0")
+    // Notifications
+    implementation("androidx.work:work-runtime-ktx:2.8.1")
+    implementation("androidx.core:core-ktx:1.10.1")
 
-
+    // GPS
     implementation ("com.google.android.gms:play-services-ads:23.1.0")
     implementation("com.google.android.gms:play-services-ads:23.1.0")
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -75,9 +77,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
-    //implementation(libs.firebase.firestore.ktx)
     implementation(libs.play.services.location)
-//    implementation(libs.androidx.compose.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

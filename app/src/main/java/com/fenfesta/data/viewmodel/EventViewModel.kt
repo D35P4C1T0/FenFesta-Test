@@ -2,19 +2,25 @@ package com.fenfesta.data.viewmodel
 
 import android.content.Context
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.fenfesta.R
+import com.fenfesta.data.notifications.NotificationScheduler
 import com.fenfesta.data.remote.EventModelListAdapter
 import com.fenfesta.data.remote.LocalTimeAdapter
 import com.fenfesta.data.settings.DataStoreUserPreference
+import com.fenfesta.data.settings.NotificationPreferences
 import com.fenfesta.model.EventModel
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -57,6 +63,9 @@ class EventViewModel(
 
     private val _eventCreator = MutableStateFlow("")
     val eventCreator: StateFlow<String> = _eventCreator
+
+    private val notificationScheduler = NotificationScheduler(context)
+    private val notificationPreferences = NotificationPreferences(context)
 
     private val apiService: ApiService
 
@@ -218,6 +227,36 @@ class EventViewModel(
         }
     }
 
+    // Notifications
+//    val notifiedEvents = notificationPreferences.notifiedEvents.asLiveData()
+    val notifiedEvents: Flow<Set<String>> = notificationPreferences.notifiedEvents
+
+
+    fun toggleEventNotification(event: EventModel) {
+        viewModelScope.launch {
+            val eventId = event.id.toString()
+            val isCurrentlyNotified = notificationPreferences.isEventNotified(eventId)
+
+            if (isCurrentlyNotified) {
+                notificationPreferences.removeNotifiedEvent(eventId)
+                event.id?.let { notificationScheduler.cancelNotification(it) }
+            } else {
+                notificationPreferences.addNotifiedEvent(eventId)
+                event.id?.let {
+                    notificationScheduler.scheduleNotification(
+                        it,
+                        event.name,
+                        event.date
+                    )
+                }
+            }
+        }
+    }
+
+    fun isEventNotified(eventId: String): Flow<Boolean> {
+        return notificationPreferences.notifiedEvents.map { it.contains(eventId) }
+    }
+
 
     data class ReservedResponse(@Json(name = "is_reserved") val isReserved: Boolean)
 
@@ -242,7 +281,7 @@ class EventViewModel(
         @GET("events/search")
         suspend fun searchEvents(@Query("keyword") keyword: String): List<EventModel>
 
-        @POST("events/new")
+        @POST("events/new/")
         suspend fun createEvent(@Body event: EventModel): EventModel
 
         @GET("users/reserved_events")

@@ -1,5 +1,6 @@
 package com.fenfesta.ui.theme.screens.event
 
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -20,9 +21,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Grade
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.NotificationAdd
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Tag
 import androidx.compose.material3.Button
@@ -40,7 +42,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.fenfesta.data.notifications.scheduleNotification
 import com.fenfesta.data.viewmodel.EventViewModel
 import com.fenfesta.data.viewmodel.ReservationDeletionState
 import com.fenfesta.data.viewmodel.ReservationState
@@ -62,6 +63,10 @@ fun EventDetailsScreen(
     userViewModel.clearReservationState()
     val context = LocalContext.current
 
+    val isEventNotified by eventViewModel.isEventNotified(event.id.toString())
+        .collectAsState(initial = false)
+
+
     val creatorName by eventViewModel.eventCreator.collectAsState()
     event.id?.let { eventViewModel.fetchEventCreatorInfo(it) }
 
@@ -69,7 +74,6 @@ fun EventDetailsScreen(
 
     AnimatedVisibility(visible = true, enter = fadeIn(), exit = fadeOut()) {
         Box(modifier = Modifier.fillMaxSize()) {
-            // Background color based on event color
             Column(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = modifier
@@ -78,12 +82,39 @@ fun EventDetailsScreen(
                     .padding(28.dp)
             ) {
                 // Event description
-                Text(
-                    text = event.name,
-                    style = MaterialTheme.typography.headlineLarge,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-                Text(text = event.description)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = event.name,
+                            style = MaterialTheme.typography.headlineLarge,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                        Text(text = event.description)
+                    }
+                    Column {
+                        IconButton(
+                            onClick = {
+                                if (!isEventNotified) {
+                                    Toast.makeText(context, "Notifica Aggiunta", Toast.LENGTH_SHORT)
+                                        .show()
+                                } else {
+                                    Toast.makeText(context, "Notifica Rimossa", Toast.LENGTH_SHORT)
+                                        .show()
+                                }
+                                eventViewModel.toggleEventNotification(event)
+                            }
+                        ) {
+                            Icon(
+                                imageVector = if (isEventNotified) Icons.Default.Notifications else Icons.Default.NotificationAdd,
+                                contentDescription = if (isEventNotified) "Remove notification" else "Add notification",
+                                tint = if (isEventNotified) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                    }
+                }
 
                 Spacer(modifier = Modifier.height(24.dp))
 
@@ -103,23 +134,25 @@ fun EventDetailsScreen(
                     label = "Capacità",
                     value = "${event.capacity_left}/${event.capacity} posti disponibili"
                 )
-
                 EventDetailItem(
                     icon = Icons.Default.Person,
                     label = "Creatore",
                     value = creatorName,
                 )
-
                 TagsList(
                     icon = Icons.Default.Tag, label = "Tags", value = event.tags
                 )
 
-                IconButton(onClick = { scheduleNotification(context, event) }) {
-                    Icon(imageVector = Icons.Default.Grade, contentDescription = "Notifica")
-                }
+                Spacer(modifier = Modifier.weight(1f))
+            }
 
-                Spacer(modifier = Modifier.height(32.dp))
-
+            // Reservation button at the bottom
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .padding(bottom = 48.dp, start = 28.dp, end = 28.dp)
+            ) {
                 when (hideJoinButton) {
                     true -> {
                         event.id?.let {
@@ -128,7 +161,8 @@ fun EventDetailsScreen(
                                 eventId = it
                             )
                         }
-                    } // cancel reservation
+                    }
+
                     false -> {
                         event.id?.let {
                             MakeReservation(
@@ -136,11 +170,10 @@ fun EventDetailsScreen(
                                 eventId = it,
                             )
                         }
-                    } // make reservation
+                    }
                 }
             }
         }
-
     }
 }
 
@@ -166,19 +199,25 @@ fun EventDetailItem(icon: ImageVector, label: String, value: String) {
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun TagsList(icon: ImageVector, label: String, value: String) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        val tagsArray = value.split(",")
-        Icon(
-            imageVector = icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary
-        )
-        Column(modifier = Modifier.padding(start = 16.dp)) {
-            Text(text = label, style = MaterialTheme.typography.titleSmall)
-//            Text(text = value, style = MaterialTheme.typography.bodySmall)
+    val tagsArray = value.split(",")
+    Column {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary
+            )
+            Column(modifier = Modifier.padding(start = 16.dp)) {
+                Text(text = label, style = MaterialTheme.typography.titleSmall)
+            }
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        Row {
             FlowRow(
                 modifier = Modifier.fillMaxWidth(),
             ) {
